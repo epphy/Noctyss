@@ -1,4 +1,6 @@
 package ru.vladimir.votvproduction.event.nightmarenight;
 
-public class EventInstance {
+import ru.vladimir.votvproduction.event.AbstractEventInstance;
+
+public class EventInstance implements AbstractEventInstance {
 }

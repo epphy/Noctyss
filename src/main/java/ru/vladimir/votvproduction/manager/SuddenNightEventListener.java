@@ -1,4 +1,4 @@
-package ru.vladimir.votvproduction.listener;
+package ru.vladimir.votvproduction.manager;
 
 public class SuddenNightEventListener {
 }

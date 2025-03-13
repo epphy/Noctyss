@@ -1,4 +1,4 @@
-package ru.vladimir.votvproduction.listener.customevent;
+package ru.vladimir.votvproduction.manager.customevent;
 
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;

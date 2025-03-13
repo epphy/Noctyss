@@ -1,14 +1,14 @@
-package ru.vladimir.votvproduction.listener.customevent;
+package ru.vladimir.votvproduction.manager.customevent;
 
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class GlobalEvent extends WorldEvent {
+public class NightStartEvent extends WorldEvent {
     private static final HandlerList handlers = new HandlerList();
 
-    public GlobalEvent(@NotNull World world) {
+    public NightStartEvent(@NotNull World world) {
         super(world);
     }
 
