@@ -22,7 +22,7 @@ public final class VOTVProduction extends JavaPlugin {
     }
 
     private void startupMessage() {
-        LoggerUtility.info("Welcome! Thanks for choosing us!");
+        LoggerUtility.info(this.getClass(), "Welcome! Thanks for choosing us!");
     }
 
     /*
@@ -37,6 +37,6 @@ public final class VOTVProduction extends JavaPlugin {
     }
 
     private void shutdownMessage() {
-        LoggerUtility.info("Have a nice day!");
+        LoggerUtility.info(this.getClass(), "Have a nice day!");
     }
 }

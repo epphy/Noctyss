@@ -17,25 +17,30 @@ public class LoggerUtility {
     public static void init(Logger logger) {
         if (LoggerUtility.logger == null) {
             LoggerUtility.logger = logger;
-            info("Logger utility initialised");
+            info(LoggerUtility.class,"Logger utility initialised");
             return;
         }
-        info("Logger utility is already initialised");
+        info(LoggerUtility.class, "Logger utility is already initialised");
     }
 
-    public static void info(String information) {
-        logger.info(information);
+    public static void setLevel(Level level) {
+        logger.setLevel(level);
+        info(LoggerUtility.class, "Logger level updated to %s".formatted(level));
     }
 
-    public static void warn(String warning) {
-        logger.warning(warning);
+    public static void info(Class<?> clazz, String information) {
+        logger.info(clazz.getName() + ": " + information);
     }
 
-    public static void err(String error) {
-        logger.severe(error);
+    public static void warn(Class<?> clazz, String warning) {
+        logger.warning(clazz.getName() + ": " + warning);
     }
 
-    public static void log(Level level, String message) {
-        logger.log(level, message);
+    public static void err(Class<?> clazz, String error) {
+        logger.severe(clazz.getName() + ": " + error);
+    }
+
+    public static void log(Class<?> clazz, Level level, String message) {
+        logger.log(level, clazz.getName() + ": " + message);
     }
 }
