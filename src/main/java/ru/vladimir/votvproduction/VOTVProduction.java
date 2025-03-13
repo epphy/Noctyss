@@ -13,7 +13,12 @@ public final class VOTVProduction extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        initLogger();
         startupMessage();
+    }
+
+    private void initLogger() {
+        LoggerUtility.init(getLogger());
     }
 
     private void startupMessage() {

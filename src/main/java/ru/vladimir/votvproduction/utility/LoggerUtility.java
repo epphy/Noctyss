@@ -3,6 +3,12 @@ package ru.vladimir.votvproduction.utility;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A utility class for centralized logging. This class provides static methods
+ * for logging different levels of messages, including info, warning, error,
+ * and custom log levels. It uses a shared Logger instance that must be
+ * initialized before use.
+ */
 public class LoggerUtility {
     private static Logger logger;
 
@@ -11,8 +17,10 @@ public class LoggerUtility {
     public static void init(Logger logger) {
         if (LoggerUtility.logger == null) {
             LoggerUtility.logger = logger;
+            info("Logger utility initialised");
+            return;
         }
-        LoggerUtility.info("Logger utility has been initialised");
+        info("Logger utility is already initialised");
     }
 
     public static void info(String information) {
