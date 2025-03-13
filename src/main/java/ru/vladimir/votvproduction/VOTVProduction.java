@@ -1,17 +1,37 @@
 package ru.vladimir.votvproduction;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 public final class VOTVProduction extends JavaPlugin {
 
+    /*
+
+    STARTUP LOGIC
+
+     */
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        startupMessage();
     }
+
+    private void startupMessage() {
+        LoggerUtility.info("Welcome! Thanks for choosing us!");
+    }
+
+    /*
+
+    SHUTDOWN LOGIC
+
+     */
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        shutdownMessage();
+    }
+
+    private void shutdownMessage() {
+        LoggerUtility.info("Have a nice day!");
     }
 }
