@@ -1,7 +1,3 @@
-Here's a polished **GitHub repository description** for your project:
-
----
-
 # **VOTVProduction – Dynamic Event System for PaperMC**
 
 **VOTVProduction** is a modular, event-driven **PaperMC plugin** that introduces dynamic, unpredictable gameplay experiences based on the Voices of the Void game. It provides a **flexible API**, optimized performance, and an **extensible framework** for creating and managing custom events.
@@ -24,4 +20,4 @@ Here's a polished **GitHub repository description** for your project:
 3️⃣ **Manage Events:** Use `/events start <event>` and `/events stop <event>` to control events manually.
 
 📜 **Documentation & API details**: *[Link to Wiki or README]*  
-📥 **Download:** *[Link to releases]*
+\
