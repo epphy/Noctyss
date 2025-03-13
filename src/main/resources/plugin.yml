@@ -6,3 +6,8 @@ prefix: VOTVProduction
 authors: [ Vladimir ]
 description: VOTVProduction is a modular, event-driven PaperMC plugin that introduces dynamic, unpredictable gameplay experiences based on the Voices of the Void game. It provides a flexible API, optimized performance, and an extensible framework for creating and managing custom events.
 website: https://github.com/epphy
+
+commands:
+  votvproduction:
+    usage: /votvproduction [start/stop/list/debug] <event> <world>
+    description: Main command to manage all events of VOTVProduction.
