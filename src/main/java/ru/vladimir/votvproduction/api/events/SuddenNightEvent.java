@@ -1,0 +1,18 @@
+package ru.vladimir.votvproduction.api.events;
+
+import org.bukkit.World;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.world.WorldEvent;
+import org.jetbrains.annotations.NotNull;
+
+public class SuddenNightEvent extends WorldEvent {
+
+    public SuddenNightEvent(@NotNull World world, boolean isAsync) {
+        super(world, isAsync);
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return null;
+    }
+}
