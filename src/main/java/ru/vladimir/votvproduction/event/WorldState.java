@@ -50,7 +50,7 @@ public record WorldState(World world, Map<EventType, EventInstance> activeEvents
         return List.copyOf(activeEvents.values());
     }
 
-    @Override
+    @Override @NotNull
     public Map<EventType, EventInstance> activeEvents() {
         return Map.copyOf(activeEvents);
     }

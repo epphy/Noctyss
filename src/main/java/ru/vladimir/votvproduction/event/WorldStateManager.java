@@ -1,8 +1,8 @@
 package ru.vladimir.votvproduction.event;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Map;
@@ -13,23 +13,22 @@ public record WorldStateManager(Map<World, WorldState> worldStates) {
         return worldStates.containsKey(world);
     }
 
+    @Nullable
+    public WorldState getWorldState(World world) {
+        return worldStates.get(world);
+    }
+
+    @NotNull
     public List<World> getWorlds() {
         return List.copyOf(worldStates.keySet());
     }
 
-    @Nullable
-    public WorldState getWorldState(World world) {
-        if (!hasWorldState(world)) {
-            return null;
-        }
-        return worldStates.get(world);
-    }
-
+    @NotNull
     public List<WorldState> getWorldStates() {
         return List.copyOf(worldStates.values());
     }
 
-    @Override
+    @Override @NotNull
     public Map<World, WorldState> worldStates() {
         return Map.copyOf(worldStates);
     }
