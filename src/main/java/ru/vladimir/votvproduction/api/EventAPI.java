@@ -61,7 +61,7 @@ public class EventAPI {
             return false;
         }
 
-        return worldState.hasActiveEvent(eventType);
+        return worldState.isEventActive(eventType);
     }
 
     @Nullable
