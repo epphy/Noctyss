@@ -28,19 +28,19 @@ public class LoggerUtility {
         info(LoggerUtility.class, "Logger level updated to %s".formatted(level));
     }
 
-    public static void info(Class<?> clazz, String information) {
-        logger.info(clazz.getName() + ": " + information);
+    public static void info(Object object, String information) {
+        logger.info("%s: %s".formatted(object.getClass().getSimpleName(), information));
     }
 
-    public static void warn(Class<?> clazz, String warning) {
-        logger.warning(clazz.getName() + ": " + warning);
+    public static void warn(Object object, String warning) {
+        logger.warning("%s: %s".formatted(object.getClass().getSimpleName(), warning));
     }
 
-    public static void err(Class<?> clazz, String error) {
-        logger.severe(clazz.getName() + ": " + error);
+    public static void err(Object object, String error) {
+        logger.severe("%s: %s".formatted(object.getClass().getSimpleName(), error));
     }
 
-    public static void log(Class<?> clazz, Level level, String message) {
-        logger.log(level, clazz.getName() + ": " + message);
+    public static void log(Object object, Level level, String message) {
+        logger.log(level, "%s: %s".formatted(object.getClass().getSimpleName(), message));
     }
 }

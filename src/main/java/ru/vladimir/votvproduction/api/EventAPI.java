@@ -4,8 +4,8 @@ import lombok.Getter;
 import ru.vladimir.votvproduction.event.WorldStateManager;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
+@Getter
 public class EventAPI {
-    @Getter
     private static WorldStateManager worldStateManager;
 
     private EventAPI() {}
