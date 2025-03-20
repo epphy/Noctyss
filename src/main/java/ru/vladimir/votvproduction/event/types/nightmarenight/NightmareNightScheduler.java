@@ -5,10 +5,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
+import ru.vladimir.votvproduction.event.EventManager;
+import ru.vladimir.votvproduction.event.EventType;
 import ru.vladimir.votvproduction.event.types.EventScheduler;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -18,18 +21,20 @@ public class NightmareNightScheduler implements EventScheduler {
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
+    private final EventManager eventManager;
     private final NightmareNightConfig config;
     private final Random random;
-    private int taskId = -1;
+    private final Set<World> checkedWorlds = new HashSet<>();
     private List<World> worlds;
-    private Set<World> checkedWorlds;
     private int eventChance;
+    private int taskId = -1;
 
     @Override
     public void start() {
         cache();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::processWorlds, DELAY, config.getCheckFrequency()).getTaskId();
+        LoggerUtility.info(this, "Started scheduler");
     }
 
     private void processWorlds() {
@@ -39,18 +44,19 @@ public class NightmareNightScheduler implements EventScheduler {
                 continue;
             }
 
-            // Check process
             if (!GameTimeUtility.isNight(world)) {
                 checkedWorlds.remove(world);
                 continue;
             } else if (checkedWorlds.contains(world)) {
                 continue;
             } else if (!passesChance()) {
+                checkedWorlds.add(world);
                 continue;
             }
 
-            // Handle the rest of stuff
-            int a = 5;
+            checkedWorlds.add(world);
+            eventManager.startEvent(EventType.NIGHTMARE_NIGHT, world);
+            LoggerUtility.info(this, "Scheduling event for world %s".formatted(world.getName()));
         }
     }
 
@@ -72,5 +78,6 @@ public class NightmareNightScheduler implements EventScheduler {
     private void cache() {
         worlds = config.getAllowedWorlds();
         eventChance = config.getEventChance();
+        LoggerUtility.info(this, "Cached fields");
     }
 }

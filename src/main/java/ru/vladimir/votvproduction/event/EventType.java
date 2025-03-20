@@ -1,5 +1,5 @@
 package ru.vladimir.votvproduction.event;
 
 public enum EventType {
-    NIGHTMARENIGHT, SUDDENNIGHT
+    NIGHTMARE_NIGHT, SUDDEN_NIGHT
 }

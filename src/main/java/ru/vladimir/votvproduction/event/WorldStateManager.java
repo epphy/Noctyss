@@ -1,6 +1,7 @@
 package ru.vladimir.votvproduction.event;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public record WorldStateManager(Map<World, WorldState> worldStates) {
         return List.copyOf(worldStates.keySet());
     }
 
+    @Nullable
     public WorldState getWorldState(World world) {
         if (!hasWorldState(world)) {
-            LoggerUtility.warn(this.getClass(), "World state is not present in the map for world %s".formatted(world.getName()));
             return null;
         }
         return worldStates.get(world);

@@ -26,7 +26,7 @@ public class GlobalEventScheduler implements EventScheduler {
         final NightmareNightScheduler scheduler = new NightmareNightScheduler(
                 plugin, configService.nightmareNightConfig(), new Random());
         scheduler.start();
-        eventSchedulers.put(EventType.NIGHTMARENIGHT, scheduler);
+        eventSchedulers.put(EventType.NIGHTMARE_NIGHT, scheduler);
         LoggerUtility.info(this, "Nightmare Night scheduler started");
     }
 
@@ -36,12 +36,12 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void stopNightmareNightScheduler() {
-        if (!eventSchedulers.containsKey(EventType.NIGHTMARENIGHT)) {
+        if (!eventSchedulers.containsKey(EventType.NIGHTMARE_NIGHT)) {
             LoggerUtility.warn(this, "Nightmare Night scheduler is not active to be stopped");
             return;
         }
-        eventSchedulers.get(EventType.NIGHTMARENIGHT).stop();
-        eventSchedulers.remove(EventType.NIGHTMARENIGHT);
+        eventSchedulers.get(EventType.NIGHTMARE_NIGHT).stop();
+        eventSchedulers.remove(EventType.NIGHTMARE_NIGHT);
         LoggerUtility.info(this, "Nightmare Night scheduler stopped");
     }
 }

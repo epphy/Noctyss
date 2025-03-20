@@ -1,7 +1,11 @@
 package ru.vladimir.votvproduction.api;
 
 import lombok.Getter;
+import org.bukkit.World;
+import ru.vladimir.votvproduction.event.EventType;
+import ru.vladimir.votvproduction.event.WorldState;
 import ru.vladimir.votvproduction.event.WorldStateManager;
+import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 @Getter
@@ -17,5 +21,54 @@ public class EventAPI {
             return;
         }
         LoggerUtility.info(EventAPI.class, "EventAPI is already initialised");
+    }
+
+    /*
+
+    WORLD STATE MANAGER SECTION
+
+     */
+
+    public static boolean isEventAllowed(World world, EventType eventType) {
+        if (world == null || eventType == null) {
+            LoggerUtility.warn(EventAPI.class, "World or event type is null: %s, %s".formatted(world, eventType));
+            return false;
+        }
+        final WorldState worldState = worldStateManager.getWorldState(world);
+        if (worldState == null) {
+            return false;
+        }
+        return worldState.isEventAllowed(eventType);
+    }
+
+    public static boolean hasWorldState(World world) {
+        if (world == null) {
+            LoggerUtility.warn(EventAPI.class, "World is null");
+            return false;
+        }
+        return worldStateManager.hasWorldState(world);
+    }
+
+    public static boolean hasActiveEvent(World world, EventType eventType) {
+        if (world == null || eventType == null) {
+            LoggerUtility.warn(EventAPI.class, "World or event type is null: %s, %s".formatted(world, eventType));
+            return false;
+        }
+
+        final WorldState worldState = worldStateManager.getWorldState(world);
+        if (worldState == null) {
+            return false;
+        }
+
+        return worldState.hasActiveEvent(eventType);
+    }
+
+    public static boolean addEvent(World world, EventType eventType, EventInstance eventInstance) {
+        final WorldState worldState = worldStateManager.getWorldState(world);
+        if (worldState == null) {
+            return false;
+        }
+
+        return worldState.addEvent(eventType, eventInstance);
     }
 }

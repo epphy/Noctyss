@@ -1,6 +1,6 @@
 package ru.vladimir.votvproduction.event.types;
 
-public interface EventScheduler {
-    void start();
-    void stop();
+import ru.vladimir.votvproduction.event.Controllable;
+
+public interface EventScheduler extends Controllable {
 }
