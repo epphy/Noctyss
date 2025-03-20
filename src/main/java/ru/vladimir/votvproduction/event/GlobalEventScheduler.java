@@ -9,6 +9,7 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RequiredArgsConstructor
 public class GlobalEventScheduler implements EventScheduler {
@@ -23,7 +24,7 @@ public class GlobalEventScheduler implements EventScheduler {
 
     private void startNightmareNightScheduler() {
         final NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                plugin, configService.nightmareNightConfig());
+                plugin, configService.nightmareNightConfig(), new Random());
         scheduler.start();
         eventSchedulers.put(EventType.NIGHTMARENIGHT, scheduler);
         LoggerUtility.info(this, "Nightmare Night scheduler started");
