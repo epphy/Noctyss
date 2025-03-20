@@ -11,18 +11,18 @@ import java.util.Map;
 public record WorldState(World world, Map<EventType, EventInstance> activeEvents, List<EventType> allowedEvents) {
 
     public boolean addEvent(EventType eventType, EventInstance eventInstance) {
-        if (isEventActive(eventType) || !isEventAllowed(eventType)) return false;
+        if (hasActiveEvent(eventType) || !isEventAllowed(eventType)) return false;
         activeEvents.put(eventType, eventInstance);
         return true;
     }
 
     public boolean removeEvent(EventType eventType) {
-        if (!isEventActive(eventType) || !isEventAllowed(eventType)) return false;
+        if (!hasActiveEvent(eventType) || !isEventAllowed(eventType)) return false;
         activeEvents.remove(eventType);
         return true;
     }
 
-    public boolean isEventActive(EventType eventType) {
+    public boolean hasActiveEvent(EventType eventType) {
         return activeEvents.containsKey(eventType);
     }
 
