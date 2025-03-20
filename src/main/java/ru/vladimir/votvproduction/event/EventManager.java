@@ -45,13 +45,55 @@ public class EventManager {
         if (eventType == null || world == null) {
             LoggerUtility.warn(this, "Stop error: Either event type or world is null: %s, %s".formatted(eventType, world));
             return;
+        } else if (!EventAPI.hasWorldState(world) || !EventAPI.hasActiveEvent(world, eventType)) {
+            LoggerUtility.warn(this, "Stop error: Either world %s is not allowed or the event %s is not found"
+                    .formatted(eventType, world.getName()));
+            return;
         }
+
+        final WorldState worldState = EventAPI.getWorldState(world);
+        if (worldState == null) {
+            LoggerUtility.warn(this, "Could not stop event %s for world %s because world state is null"
+                    .formatted(eventType, world.getName()));
+            return;
+        }
+
+        final EventInstance eventInstance = worldState.getActiveEvent(eventType);
+        if (eventInstance == null) {
+            LoggerUtility.warn(this, "Could not stop event %s for world %s because event instance is null"
+                    .formatted(eventType, world.getName()));
+            return;
+        }
+
+        eventInstance.stop();
+        if (!worldState.removeEvent(eventType)) {
+            LoggerUtility.info(this, "Could not stop event %s for world %s because event is not in the list"
+                    .formatted(eventType, world.getName()));
+            return;
+        }
+        LoggerUtility.info(this, "Stopped event %s in world %s".formatted(eventType, world.getName()));
     }
 
     public void stopAllEvents(World world) {
         if (world == null) {
             LoggerUtility.warn(this, "Stop error: World is null");
             return;
+        }
+
+        final WorldState worldState = EventAPI.getWorldState(world);
+        if (worldState == null) {
+            LoggerUtility.warn(this, "Could not stop all events for world %s because world state is null"
+                    .formatted(world.getName()));
+            return;
+        }
+
+        for (final EventType eventType : worldState.getActiveEventTypes()) {
+            if (eventType == null) {
+                LoggerUtility.warn(this, "Could not stop an event for world %s because event type is null"
+                        .formatted(world.getName()));
+                return;
+            }
+            stopEvent(eventType, world);
         }
     }
 

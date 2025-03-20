@@ -2,6 +2,7 @@ package ru.vladimir.votvproduction.api;
 
 import lombok.Getter;
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.votvproduction.event.EventType;
 import ru.vladimir.votvproduction.event.WorldState;
 import ru.vladimir.votvproduction.event.WorldStateManager;
@@ -63,6 +64,11 @@ public class EventAPI {
         return worldState.hasActiveEvent(eventType);
     }
 
+    @Nullable
+    public static WorldState getWorldState(World world) {
+        return worldStateManager.getWorldState(world);
+    }
+
     public static boolean addEvent(World world, EventType eventType, EventInstance eventInstance) {
         final WorldState worldState = worldStateManager.getWorldState(world);
         if (worldState == null) {
@@ -70,5 +76,14 @@ public class EventAPI {
         }
 
         return worldState.addEvent(eventType, eventInstance);
+    }
+
+    public static boolean removeEvent(World world, EventType eventType) {
+        final WorldState worldState = worldStateManager.getWorldState(world);
+        if (worldState == null) {
+            return false;
+        }
+
+        return worldState.removeEvent(eventType);
     }
 }
