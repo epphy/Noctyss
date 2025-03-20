@@ -1,4 +1,4 @@
-package ru.vladimir.votvproduction.event.events;
+package ru.vladimir.votvproduction.event.types;
 
 public interface EventInstance {
     void start();

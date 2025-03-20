@@ -2,8 +2,7 @@ package ru.vladimir.votvproduction.event;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
-import ru.vladimir.votvproduction.event.events.EventInstance;
-import ru.vladimir.votvproduction.event.events.EventType;
+import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.List;
