@@ -5,32 +5,24 @@ import ru.vladimir.votvproduction.api.EventAPI;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class EventManager {
-    private static final Map<EventType, Supplier<EventInstance>> EVENTS = new EnumMap<>(EventType.class);
+    private static final List<EventType> EVENTS = new ArrayList<>();
 
     public void initialise() {
         registerEvents();
     }
 
-    public boolean startEvent(World world, EventType eventType) {
+    public boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
             LoggerUtility.info(this, "Cannot start event. Event '%s' is not allowed in world '%s'."
                     .formatted(eventType, world));
             return false;
         }
 
-        final Supplier<EventInstance> eventSupplier = EVENTS.get(eventType);
-        if (eventSupplier == null) {
-            LoggerUtility.warn(this, "Cannot start event. No supplier is registered for event type '%s'."
-                    .formatted(eventType));
-            return false;
-        }
-
-        final EventInstance eventInstance = eventSupplier.get();
         if (EventAPI.addEvent(world, eventType, eventInstance)) {
             eventInstance.start();
             LoggerUtility.info(this, "Event '%s' successfully started in world '%s'."
@@ -94,10 +86,8 @@ public final class EventManager {
     }
 
     private void registerEvents() {
-        for (EventType eventType : EventType.values()) {
-            EVENTS.put(eventType, eventType.getEventSupplier());
-            LoggerUtility.info(this, "Event '%s' has been registered.".formatted(eventType));
-        }
+
+
         LoggerUtility.info(this, "All events have been registered successfully.");
     }
 }
