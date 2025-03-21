@@ -55,7 +55,7 @@ public class NightmareNightScheduler implements EventScheduler {
             }
 
             checkedWorlds.add(world);
-            eventManager.startEvent(EventType.NIGHTMARE_NIGHT, world);
+            eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT);
             LoggerUtility.info(this, "Scheduling event for world %s".formatted(world.getName()));
         }
     }
