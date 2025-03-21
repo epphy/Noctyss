@@ -16,8 +16,8 @@ public final class SoundPlayer implements Module {
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final World world;
-    private final List<Sound> sounds;
     private final Random random;
+    private final List<Sound> sounds;
     private final long frequency;
     private int taskId = -1;
 

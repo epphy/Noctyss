@@ -10,3 +10,7 @@ settings:
   effect:
     give-effect-frequency: 200
     effects: ["darkness", "blindness"]
+
+  sound:
+    play-sound-frequency: 1200
+    sounds: ["ambient.cave"]

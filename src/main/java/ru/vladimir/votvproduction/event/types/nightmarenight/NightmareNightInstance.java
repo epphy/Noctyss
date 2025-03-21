@@ -6,11 +6,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.modules.EffectGiver;
 import ru.vladimir.votvproduction.event.modules.Module;
+import ru.vladimir.votvproduction.event.modules.SoundPlayer;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @RequiredArgsConstructor
 public class NightmareNightInstance implements EventInstance {
@@ -43,5 +45,12 @@ public class NightmareNightInstance implements EventInstance {
                 config.getEffects(),
                 config.getEffectGiveFrequency())
         );
+        MODULES.add(new SoundPlayer(
+                plugin,
+                world,
+                new Random(),
+                config.getSounds(),
+                config.getSoundPlayFrequency()
+        ));
     }
 }

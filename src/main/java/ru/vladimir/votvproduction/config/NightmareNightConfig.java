@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,6 +23,7 @@ public class NightmareNightConfig implements Config {
     private static final String FILE_CONFIG_NAME = "NightmareNight.yml";
     private static final String SETTINGS = "settings.";
     private static final String EFFECT_SETTINGS = "settings.effect.";
+    private static final String SOUND_SETTINGS = "settings.sound.";
     private final JavaPlugin plugin;
     private FileConfiguration fileConfig;
     private File file;
@@ -30,6 +32,8 @@ public class NightmareNightConfig implements Config {
     private int eventChance;
     private long effectGiveFrequency;
     private List<PotionEffect> effects;
+    private long soundPlayFrequency;
+    private List<Sound> sounds;
 
     @Override
     public void load() {
@@ -57,6 +61,9 @@ public class NightmareNightConfig implements Config {
         effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
         effects = getEffects(
                 fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
+        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency");
+        sounds = getSounds(
+                fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
     }
 
     private List<World> getAllowedWorlds(List<String> worldNames) {
@@ -69,15 +76,24 @@ public class NightmareNightConfig implements Config {
     private List<PotionEffect> getEffects(List<String> effectNames) {
         return effectNames.stream()
                 .filter(Objects::nonNull)
-                .map(this::getEffectKey)
+                .map(this::getKey)
                 .map(key -> RegistryAccess.registryAccess().getRegistry(RegistryKey.MOB_EFFECT).get(key))
                 .filter(Objects::nonNull)
                 .map(type -> new PotionEffect(type, (int) effectGiveFrequency + 100, 0))
                 .toList();
     }
 
-    private NamespacedKey getEffectKey(String effectName) {
-        return new NamespacedKey("minecraft", effectName.toLowerCase().trim());
+    private List<Sound> getSounds(List<String> soundNames) {
+        return soundNames.stream()
+                .filter(Objects::nonNull)
+                .map(this::getKey)
+                .map(key -> RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT).get(key))
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private NamespacedKey getKey(String name) {
+        return new NamespacedKey("minecraft", name.toLowerCase().trim());
     }
 
     @Override
