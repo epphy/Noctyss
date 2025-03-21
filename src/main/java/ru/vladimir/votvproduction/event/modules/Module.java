@@ -1,6 +1,6 @@
 package ru.vladimir.votvproduction.event.modules;
 
-public interface Module {
-    void start();
-    void stop();
+import ru.vladimir.votvproduction.event.Controllable;
+
+public interface Module extends Controllable {
 }
