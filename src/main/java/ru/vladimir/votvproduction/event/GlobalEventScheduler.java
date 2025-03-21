@@ -12,36 +12,27 @@ import java.util.Map;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class GlobalEventScheduler implements EventScheduler {
+public final class GlobalEventScheduler implements EventScheduler {
+    private static final Map<EventType, EventScheduler> EVENT_SCHEDULERS = new HashMap<>();
     private final JavaPlugin plugin;
     private final ConfigService configService;
-    private final Map<EventType, EventScheduler> eventSchedulers = new HashMap<>();
+    private final EventManager eventManager;
 
     @Override
     public void start() {
-        startNightmareNightScheduler();
+        addNightmareNight();
     }
 
-    private void startNightmareNightScheduler() {
-        final NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                plugin, configService.nightmareNightConfig(), new Random());
+    private void addNightmareNight() {
+        NightmareNightScheduler scheduler = new NightmareNightScheduler(
+                plugin, eventManager, configService.nightmareNightConfig(), new Random());
+        EVENT_SCHEDULERS.put(EventType.NIGHTMARE_NIGHT, scheduler);
         scheduler.start();
-        eventSchedulers.put(EventType.NIGHTMARE_NIGHT, scheduler);
-        LoggerUtility.info(this, "Nightmare Night scheduler started");
+        LoggerUtility.info(this, "NightmareNight Scheduler has been booted");
     }
 
     @Override
     public void stop() {
-        stopNightmareNightScheduler();
-    }
-
-    private void stopNightmareNightScheduler() {
-        if (!eventSchedulers.containsKey(EventType.NIGHTMARE_NIGHT)) {
-            LoggerUtility.warn(this, "Nightmare Night scheduler is not active to be stopped");
-            return;
-        }
-        eventSchedulers.get(EventType.NIGHTMARE_NIGHT).stop();
-        eventSchedulers.remove(EventType.NIGHTMARE_NIGHT);
-        LoggerUtility.info(this, "Nightmare Night scheduler stopped");
+        // TODO: Not required yet
     }
 }

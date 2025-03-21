@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.api.EventAPI;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.EventManager;
 import ru.vladimir.votvproduction.event.EventType;
@@ -17,7 +18,7 @@ import java.util.Random;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class NightmareNightScheduler implements EventScheduler {
+public final class NightmareNightScheduler implements EventScheduler {
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
@@ -47,16 +48,18 @@ public class NightmareNightScheduler implements EventScheduler {
             if (!GameTimeUtility.isNight(world)) {
                 checkedWorlds.remove(world);
                 continue;
-            } else if (checkedWorlds.contains(world)) {
-                continue;
-            } else if (!passesChance()) {
-                checkedWorlds.add(world);
+            }
+
+            if (checkedWorlds.contains(world)) {
                 continue;
             }
 
+            if (!passesChance() || EventAPI.hasActiveEvent(world, EventType.NIGHTMARE_NIGHT))
+                continue;
+
             checkedWorlds.add(world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT);
-            LoggerUtility.info(this, "Scheduling event for world %s".formatted(world.getName()));
+            LoggerUtility.info(this, "Scheduling event for world %s".formatted(world));
         }
     }
 
