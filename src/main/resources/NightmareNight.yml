@@ -1,0 +1,12 @@
+# Nightmare Night event settings
+#
+# All time is measured in ticks. 20 ticks == 1 second
+
+settings:
+  event-chance: 5
+  check-frequency: 100 # How often should be checked for night
+  allowed-worlds: ["world"] # Worlds where the event is allowed
+
+  effect:
+    give-effect-frequency: 200
+    effects: ["darkness", "blindness"]
