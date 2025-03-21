@@ -37,15 +37,13 @@ public final class EffectGiver implements Module {
 
     @Override
     public void stop() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            if (taskId != -1) {
-                Bukkit.getScheduler().cancelTask(taskId);
-                takeAwayEffects();
-                LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world));
-            } else {
-                LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world));
-            }
-        });
+        if (taskId != -1) {
+            Bukkit.getScheduler().cancelTask(taskId);
+            takeAwayEffects();
+            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world));
+        } else {
+            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world));
+        }
     }
 
     private void takeAwayEffects() {

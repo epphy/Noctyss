@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  * and custom log levels. It uses a shared Logger instance that must be
  * initialized before use.
  */
-public class LoggerUtility {
+public final class LoggerUtility {
     private static Logger logger;
 
     private LoggerUtility() {}
@@ -42,5 +42,9 @@ public class LoggerUtility {
 
     public static void log(Object object, Level level, String message) {
         logger.log(level, "%s: %s".formatted(object.getClass().getSimpleName(), message));
+    }
+
+    public static void announce(String announcement) {
+        logger.info(announcement);
     }
 }
