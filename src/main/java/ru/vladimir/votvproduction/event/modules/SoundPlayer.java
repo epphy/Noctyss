@@ -6,6 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.List;
@@ -30,15 +31,33 @@ public final class SoundPlayer implements Module {
 
     private void playSound() {
         final Sound sound = getSound();
+        if (sound == null) {
+            LoggerUtility.warn(this, "Could not play a sound because sound is null");
+            return;
+        }
+
         final float randomVolume = random.nextFloat(1.0f, 5.0f);
         final float randomPitch = random.nextFloat(1.0f, 5.0f);
 
         for (final Player player : world.getPlayers()) {
-            player.playSound(player, sound, randomVolume, randomPitch);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                player.stopAllSounds();
+                player.playSound(player, sound, randomVolume, randomPitch);
+            });
         }
     }
 
+    @Nullable
     private Sound getSound() {
+        if (sounds.isEmpty()) {
+            LoggerUtility.warn(this, "In world '%s', the sounds list is empty");
+            return null;
+        }
+
+        if (sounds.size() == 1) {
+            return sounds.getFirst();
+        }
+
         final int randomIndex = random.nextInt(sounds.size() - 1);
         return sounds.get(randomIndex);
     }

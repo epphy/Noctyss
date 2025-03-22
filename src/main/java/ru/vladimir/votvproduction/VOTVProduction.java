@@ -41,8 +41,10 @@ public final class VOTVProduction extends JavaPlugin {
     private void loadConfig() { // TODO
         saveDefaultConfig(); // TODO
         NightmareNightConfig config = new NightmareNightConfig(this); // TODO
+        MessageConfig messageConfig = new MessageConfig(this); // TODO
         config.load(); // TODO
-        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), new MessageConfig(this));
+        messageConfig.load(); // TODO
+        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), messageConfig);
     }
 
     private void loadGameTimeUtility() { // TODO
