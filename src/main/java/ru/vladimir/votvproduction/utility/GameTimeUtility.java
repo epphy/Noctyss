@@ -6,10 +6,16 @@ public final class GameTimeUtility {
     private static final long DAY_DURATION_TICKS = 24000L;
     private static final long NIGHT_START_TICKS_TIME = 13000L;
     private static final long NIGHT_END_TICKS_TIME = 24000L;
+    private static final long[] MIDNIGHT_TICKS_TIME_RANGE = new long[] {17500L, 18500L};
 
     public static boolean isNight(World world) {
         final long worldDayTime = world.getTime();
         return worldDayTime >= NIGHT_START_TICKS_TIME && worldDayTime <= NIGHT_END_TICKS_TIME;
+    }
+
+    public static boolean isMidnight(World world) {
+        final long worldDayTime = world.getTime();
+        return worldDayTime >= MIDNIGHT_TICKS_TIME_RANGE[0] && worldDayTime <= MIDNIGHT_TICKS_TIME_RANGE[1];
     }
 
     public static void setTime(World world, long newTime) {
