@@ -16,5 +16,5 @@ settings:
     sounds: ["ambient.cave"]
 
   time:
-    time-modification-frequency: 100 # Should not be too high as it is used to check the time. 1,000 is max
-    night-length: 22000 # Default night duration: 11,000 ticks ( 24,000 - 13,000 )
+    time-modification-frequency: 100 # Too high (like above 1,000) will lead to unexpected behaviour
+    night-length: 22000 # Default night duration: 11,000 ( 24,000 - 13,000 )

@@ -9,6 +9,7 @@ import ru.vladimir.votvproduction.config.GeneralConfig;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.config.SuddenNightConfig;
 import ru.vladimir.votvproduction.event.*;
+import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public final class VOTVProduction extends JavaPlugin {
     public void onEnable() {
         initLogger();
         loadConfig(); // TODO
+        loadGameTimeUtility(); // TODO
         loadAPI(); // TODO
         loadScheduler(); // TODO
         startupMessage();
@@ -44,6 +46,10 @@ public final class VOTVProduction extends JavaPlugin {
         NightmareNightConfig config = new NightmareNightConfig(this); // TODO
         config.load(); // TODO
         configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig());
+    }
+
+    private void loadGameTimeUtility() { // TODO
+        GameTimeUtility.init(this); // TODO
     }
 
     private void loadAPI() { // TODO
