@@ -24,6 +24,7 @@ public class NightmareNightConfig implements Config {
     private static final String SETTINGS = "settings.";
     private static final String EFFECT_SETTINGS = "settings.effect.";
     private static final String SOUND_SETTINGS = "settings.sound.";
+    private static final String TIME_SETTINGS = "settings.time.";
     private final JavaPlugin plugin;
     private FileConfiguration fileConfig;
     private File file;
@@ -34,6 +35,8 @@ public class NightmareNightConfig implements Config {
     private List<PotionEffect> effects;
     private long soundPlayFrequency;
     private List<Sound> sounds;
+    private long timeModifyFrequency;
+    private long nightLength;
 
     @Override
     public void load() {
@@ -61,9 +64,11 @@ public class NightmareNightConfig implements Config {
         effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
         effects = getEffects(
                 fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
-        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency");
+        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency", 1200);
         sounds = getSounds(
                 fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
+        timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
+        nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
     }
 
     private List<World> getAllowedWorlds(List<String> worldNames) {
