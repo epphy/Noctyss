@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 
 @RequiredArgsConstructor
-public class BedCancelEvent implements Listener {
+public class BedCancelEvent implements Listener, BukkitEvent {
     private final World world;
     private final Component cannotSleep;
 
