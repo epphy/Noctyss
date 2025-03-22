@@ -1,14 +1,14 @@
 package ru.vladimir.votvproduction.event.modules.bukkitevents;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 
-@RequiredArgsConstructor
-public class BedCancelEvent implements Listener, BukkitEvent {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+final class BedCancelEvent implements BukkitEvent {
     private final World world;
     private final Component cannotSleep;
 

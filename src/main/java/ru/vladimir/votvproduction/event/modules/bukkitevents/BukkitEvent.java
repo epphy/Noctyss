@@ -1,4 +1,6 @@
 package ru.vladimir.votvproduction.event.modules.bukkitevents;
 
-public interface BukkitEvent {
+import org.bukkit.event.Listener;
+
+interface BukkitEvent extends Listener {
 }
