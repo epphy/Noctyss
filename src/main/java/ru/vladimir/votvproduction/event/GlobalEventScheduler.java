@@ -1,6 +1,7 @@
 package ru.vladimir.votvproduction.event;
 
 import lombok.RequiredArgsConstructor;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.config.ConfigService;
 import ru.vladimir.votvproduction.event.types.EventScheduler;
@@ -15,6 +16,7 @@ import java.util.Random;
 public final class GlobalEventScheduler implements EventScheduler {
     private static final Map<EventType, EventScheduler> EVENT_SCHEDULERS = new HashMap<>();
     private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
     private final ConfigService configService;
     private final EventManager eventManager;
 
@@ -25,7 +27,7 @@ public final class GlobalEventScheduler implements EventScheduler {
 
     private void addNightmareNight() {
         NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                plugin, eventManager, configService.nightmareNightConfig(), new Random());
+                plugin, pluginManager, eventManager, configService.nightmareNightConfig(), configService.messageConfig(), new Random());
         EVENT_SCHEDULERS.put(EventType.NIGHTMARE_NIGHT, scheduler);
         scheduler.start();
         LoggerUtility.info(this, "NightmareNight Scheduler has been booted");

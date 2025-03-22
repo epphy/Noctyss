@@ -4,10 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.EventAPI;
-import ru.vladimir.votvproduction.config.ConfigService;
-import ru.vladimir.votvproduction.config.GeneralConfig;
-import ru.vladimir.votvproduction.config.NightmareNightConfig;
-import ru.vladimir.votvproduction.config.SuddenNightConfig;
+import ru.vladimir.votvproduction.config.*;
 import ru.vladimir.votvproduction.event.*;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
@@ -45,7 +42,7 @@ public final class VOTVProduction extends JavaPlugin {
         saveDefaultConfig(); // TODO
         NightmareNightConfig config = new NightmareNightConfig(this); // TODO
         config.load(); // TODO
-        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig());
+        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), new MessageConfig(this));
     }
 
     private void loadGameTimeUtility() { // TODO
@@ -63,7 +60,7 @@ public final class VOTVProduction extends JavaPlugin {
 
     private void loadScheduler() { // TODO
         EventManager eventManager = new EventManager(); // TODO
-        GlobalEventScheduler eventScheduler = new GlobalEventScheduler(this, configService, eventManager); // TODO
+        GlobalEventScheduler eventScheduler = new GlobalEventScheduler(this, getServer().getPluginManager(), configService, eventManager); // TODO
         eventScheduler.start(); // TODO
     }
 

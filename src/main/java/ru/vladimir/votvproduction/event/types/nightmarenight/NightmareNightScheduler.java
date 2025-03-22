@@ -3,8 +3,10 @@ package ru.vladimir.votvproduction.event.types.nightmarenight;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.EventAPI;
+import ru.vladimir.votvproduction.config.MessageConfig;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.EventManager;
 import ru.vladimir.votvproduction.event.EventType;
@@ -22,8 +24,10 @@ public final class NightmareNightScheduler implements EventScheduler {
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
     private final EventManager eventManager;
     private final NightmareNightConfig config;
+    private final MessageConfig messageConfig;
     private final Random random;
     private final Set<World> checkedWorlds = new HashSet<>();
     private List<World> worlds;
@@ -59,7 +63,7 @@ public final class NightmareNightScheduler implements EventScheduler {
 
             checkedWorlds.add(world);
             final NightmareNightInstance eventInstance = new NightmareNightInstance(
-                    plugin, config, world);
+                    plugin, pluginManager, config, messageConfig, world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
             LoggerUtility.info(this, "Scheduling event for world %s".formatted(world));
         }
