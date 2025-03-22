@@ -7,6 +7,7 @@ import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.modules.EffectGiver;
 import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.event.modules.SoundPlayer;
+import ru.vladimir.votvproduction.event.modules.time.MidnightLoopModifier;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
@@ -51,6 +52,12 @@ public class NightmareNightInstance implements EventInstance {
                 new Random(),
                 config.getSounds(),
                 config.getSoundPlayFrequency()
+        ));
+        MODULES.add(new MidnightLoopModifier(
+                plugin,
+                world,
+                config.getTimeModifyFrequency(),
+                config.getNightLength()
         ));
     }
 }

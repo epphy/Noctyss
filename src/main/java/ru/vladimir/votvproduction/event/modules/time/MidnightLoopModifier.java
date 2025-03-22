@@ -9,7 +9,7 @@ import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 @RequiredArgsConstructor
-public class SmoothNightModifier implements Module {
+public class MidnightLoopModifier implements Module {
     private static final long MORNING_TICKS_TIME = 0L;
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
     private final JavaPlugin plugin;
@@ -38,8 +38,9 @@ public class SmoothNightModifier implements Module {
             nightState = NightState.PAUSE;
         }
 
-        if ((nightLength - elapsedTime) == 6000L) {
+        if ((nightLength - elapsedTime) <= 6000L) {
             nightState = NightState.FINAL;
+            GameTimeUtility.setTime(world, (nightLength - elapsedTime));
         }
 
         if (nightState == NightState.PAUSE) {
