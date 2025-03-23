@@ -21,3 +21,10 @@ settings:
 
   spawnrate:
     monster-multiplier: 2
+
+  notification:
+    end:
+      frame: TASK
+      icon: COAL_BLOCK
+      text: What was that?
+      one-time: true # Players receive it once in one world

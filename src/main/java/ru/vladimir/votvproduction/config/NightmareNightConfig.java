@@ -1,17 +1,18 @@
 package ru.vladimir.votvproduction.config;
 
+import eu.endercentral.crazy_advancements.advancement.AdvancementDisplay;
+import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.Nullable;
+import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.io.File;
 import java.util.List;
@@ -26,6 +27,7 @@ public class NightmareNightConfig implements Config {
     private static final String SOUND_SETTINGS = "settings.sound.";
     private static final String TIME_SETTINGS = "settings.time.";
     private static final String SPAWNRATE_SETTINGS = "settings.spawnrate.";
+    private static final String NOTIFICATION_SETTINGS = "settings.notification.";
     private final JavaPlugin plugin;
     private FileConfiguration fileConfig;
     private File file;
@@ -39,6 +41,7 @@ public class NightmareNightConfig implements Config {
     private long timeModifyFrequency;
     private long nightLength;
     private int monsterMultiplier;
+    private ToastNotification endToast;
 
     @Override
     public void load() {
@@ -59,19 +62,19 @@ public class NightmareNightConfig implements Config {
     }
 
     private void parse() {
+        parseGeneralSettings();
+        parseEffectSettings();
+        parseSoundSettings();
+        parseTimeSettings();
+        parseSpawnrateSettings();
+        parseNotificationSettings();
+    }
+
+    private void parseGeneralSettings() {
         checkFrequency = fileConfig.getInt(SETTINGS + "check-frequency", 100);
         allowedWorlds = getAllowedWorlds(
                 fileConfig.getStringList(SETTINGS + "allowed-worlds"));
         eventChance = fileConfig.getInt(SETTINGS + "event-chance", 5);
-        effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
-        effects = getEffects(
-                fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
-        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency", 1200);
-        sounds = getSounds(
-                fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
-        timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
-        nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
-        monsterMultiplier = fileConfig.getInt(SPAWNRATE_SETTINGS + "monster-multiplier", 2);
     }
 
     private List<World> getAllowedWorlds(List<String> worldNames) {
@@ -79,6 +82,12 @@ public class NightmareNightConfig implements Config {
                 .map(Bukkit::getWorld)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private void parseEffectSettings() {
+        effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
+        effects = getEffects(
+                fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
     }
 
     private List<PotionEffect> getEffects(List<String> effectNames) {
@@ -91,6 +100,12 @@ public class NightmareNightConfig implements Config {
                 .toList();
     }
 
+    private void parseSoundSettings() {
+        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency", 1200);
+        sounds = getSounds(
+                fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
+    }
+
     private List<Sound> getSounds(List<String> soundNames) {
         return soundNames.stream()
                 .filter(Objects::nonNull)
@@ -98,6 +113,56 @@ public class NightmareNightConfig implements Config {
                 .map(key -> RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT).get(key))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private void parseTimeSettings() {
+        timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
+        nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
+    }
+
+    private void parseSpawnrateSettings() {
+        monsterMultiplier = fileConfig.getInt(SPAWNRATE_SETTINGS + "monster-multiplier", 2);
+    }
+
+    private void parseNotificationSettings() {
+        endToast = getEndToast();
+    }
+
+    @Nullable
+    private ToastNotification getEndToast() {
+        final AdvancementDisplay.AdvancementFrame frame = getFrame(
+                fileConfig.getString(NOTIFICATION_SETTINGS + "end.frame", "TASK"));
+        final Material icon = getIcon(
+                fileConfig.getString(NOTIFICATION_SETTINGS + "end.icon", "COAL_BLOCK"));
+        final String text = fileConfig.getString(NOTIFICATION_SETTINGS + "end.text", "What was that?");
+
+        if (frame == null || icon == null) {
+            LoggerUtility.warn(this, "Failed to load end toast because either frame or icon are null: %s, %s"
+                    .formatted(frame, icon));
+            return null;
+        }
+
+        return new ToastNotification(icon, text, frame);
+    }
+
+    @Nullable
+    private AdvancementDisplay.AdvancementFrame getFrame(String frameName) {
+        try {
+            return AdvancementDisplay.AdvancementFrame.valueOf(frameName);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            LoggerUtility.warn(this, "Failed to load frame for end toast because it is null");
+            return null;
+        }
+    }
+
+    @Nullable
+    private Material getIcon(String materialName) {
+        try {
+            return Material.valueOf(materialName.toUpperCase().trim());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            LoggerUtility.warn(this, "Failed to load icon for end toast because it is null");
+            return null;
+        }
     }
 
     private NamespacedKey getKey(String name) {

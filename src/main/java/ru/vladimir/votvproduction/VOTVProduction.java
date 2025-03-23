@@ -26,6 +26,7 @@ public final class VOTVProduction extends JavaPlugin {
     @Override
     public void onEnable() {
         initLogger();
+        startup(); // TODO
         loadConfig(); // TODO
         loadGameTimeUtility(); // TODO
         loadAPI(); // TODO
@@ -36,6 +37,11 @@ public final class VOTVProduction extends JavaPlugin {
     private void initLogger() {
         LoggerUtility.init(getLogger());
         LoggerUtility.setLevel(Level.ALL); // TODO
+    }
+
+    private void startup() {
+        StartupManager.checkVersion(this);
+        StartupManager.checkDependencies(this);
     }
 
     private void loadConfig() { // TODO

@@ -7,6 +7,9 @@ author: Ephy
 description: VOTVProduction is a modular, event-driven PaperMC plugin that introduces dynamic, unpredictable gameplay experiences based on the Voices of the Void game. It provides a flexible API, optimized performance, and an extensible framework for creating and managing custom events.
 website: https://github.com/epphy
 
+depend:
+  - CrazyAdvancementAPI
+
 commands:
   votv:
     usage: /votv [start/stop/list/debug] <event> <world>
