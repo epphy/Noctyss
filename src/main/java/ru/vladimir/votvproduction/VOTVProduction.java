@@ -44,7 +44,7 @@ public final class VOTVProduction extends JavaPlugin {
         MessageConfig messageConfig = new MessageConfig(this); // TODO
         config.load(); // TODO
         messageConfig.load(); // TODO
-        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), messageConfig);
+        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), messageConfig); // TODO
     }
 
     private void loadGameTimeUtility() { // TODO

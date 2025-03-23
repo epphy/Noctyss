@@ -13,13 +13,13 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BukkitEventManager implements Module {
+public class BukkitEventService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final World world;
     private final List<BukkitEvent> bukkitEvents;
 
-    private BukkitEventManager(Builder builder) {
+    private BukkitEventService(Builder builder) {
         this.plugin = builder.getPlugin();
         this.pluginManager = builder.getPluginManager();
         this.world = builder.getWorld();
@@ -63,8 +63,8 @@ public class BukkitEventManager implements Module {
             return this;
         }
 
-        public BukkitEventManager build() {
-            return new BukkitEventManager(this);
+        public BukkitEventService build() {
+            return new BukkitEventService(this);
         }
     }
 }

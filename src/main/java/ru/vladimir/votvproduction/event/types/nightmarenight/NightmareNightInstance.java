@@ -6,10 +6,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.config.MessageConfig;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
+import ru.vladimir.votvproduction.event.EventManager;
+import ru.vladimir.votvproduction.event.EventType;
 import ru.vladimir.votvproduction.event.modules.EffectGiver;
 import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.event.modules.SoundPlayer;
-import ru.vladimir.votvproduction.event.modules.bukkitevents.BukkitEventManager;
+import ru.vladimir.votvproduction.event.modules.bukkitevents.BukkitEventService;
+import ru.vladimir.votvproduction.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.votvproduction.event.modules.time.MidnightLoopModifier;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
@@ -22,6 +25,7 @@ import java.util.Random;
 public class NightmareNightInstance implements EventInstance {
     private static final List<Module> MODULES = new ArrayList<>();
     private final JavaPlugin plugin;
+    private final EventManager eventManager;
     private final PluginManager pluginManager;
     private final NightmareNightConfig config;
     private final MessageConfig messageConfig;
@@ -61,14 +65,24 @@ public class NightmareNightInstance implements EventInstance {
         MODULES.add(new MidnightLoopModifier(
                 plugin,
                 world,
+                eventManager,
+                EventType.NIGHTMARE_NIGHT,
                 config.getTimeModifyFrequency(),
                 config.getNightLength()
         ));
-        MODULES.add(new BukkitEventManager.Builder(
+        MODULES.add(new BukkitEventService.Builder(
                 plugin,
                 pluginManager,
                 world)
                 .addBedCancelEvent(messageConfig.getCannotSleep())
-                .build());
+                .build()
+        );
+        MODULES.add(new SpawnRateService.Builder(
+                plugin,
+                pluginManager,
+                world)
+                .addMonsterSpawnMultiplier()
+                .build()
+        );
     }
 }

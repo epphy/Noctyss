@@ -63,7 +63,7 @@ public final class NightmareNightScheduler implements EventScheduler {
 
             checkedWorlds.add(world);
             final NightmareNightInstance eventInstance = new NightmareNightInstance(
-                    plugin, pluginManager, config, messageConfig, world);
+                    plugin, eventManager, pluginManager, config, messageConfig, world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
             LoggerUtility.info(this, "Scheduling event for world %s".formatted(world));
         }

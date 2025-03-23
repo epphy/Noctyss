@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.event.EventManager;
+import ru.vladimir.votvproduction.event.EventType;
 import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
@@ -14,6 +16,8 @@ public class MidnightLoopModifier implements Module {
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
     private final JavaPlugin plugin;
     private final World world;
+    private final EventManager eventManager;
+    private final EventType eventType;
     private final long frequency;
     private final long nightLength;
     private NightState nightState = NightState.START;
@@ -38,9 +42,15 @@ public class MidnightLoopModifier implements Module {
             nightState = NightState.PAUSE;
         }
 
-        if ((nightLength - elapsedTime) <= 6000L) {
+        if (elapsedTime >= nightLength && nightState == NightState.FINAL) {
+            eventManager.stopEvent(world, eventType);
+            return;
+        }
+
+        if ((nightLength - elapsedTime) <= 6000L && nightState != NightState.FINAL) {
             nightState = NightState.FINAL;
             GameTimeUtility.setTime(world, (nightLength - elapsedTime));
+            return;
         }
 
         if (nightState == NightState.PAUSE) {
