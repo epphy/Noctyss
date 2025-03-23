@@ -3,28 +3,34 @@
 # All time is measured in ticks. 20 ticks == 1 second
 
 settings:
+  enabled: true
   event-chance: 5
   check-frequency: 100 # How often should be checked for night
   allowed-worlds: ["world"] # Worlds where the event is allowed
 
   effect:
+    enabled: true
     give-effect-frequency: 200
     effects: ["darkness", "blindness"]
 
   sound:
+    enabled: true
     play-sound-frequency: 1200
     sounds: ["ambient.cave"]
 
   time:
+    enabled: true
     time-modification-frequency: 100 # Too high (like above 1,000) will lead to unexpected behaviour
     night-length: 22000 # Default night duration: 11,000 ( 24,000 - 13,000 )
 
   spawnrate:
+    enabled: true
     monster-multiplier: 2
 
   notification:
     end:
+      enabled: true
+      one-time: true # Players receive it once in one world
       frame: TASK
       icon: COAL_BLOCK
       text: What was that?
-      one-time: true # Players receive it once in one world

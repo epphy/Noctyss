@@ -41,7 +41,7 @@ public class NightmareNightConfig implements Config {
     private long timeModifyFrequency;
     private long nightLength;
     private int monsterMultiplier;
-    private ToastNotification endToast;
+    private Toast endToast;
 
     @Override
     public void load() {
@@ -115,6 +115,10 @@ public class NightmareNightConfig implements Config {
                 .toList();
     }
 
+    private NamespacedKey getKey(String name) {
+        return new NamespacedKey("minecraft", name.toLowerCase().trim());
+    }
+
     private void parseTimeSettings() {
         timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
         nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
@@ -129,7 +133,9 @@ public class NightmareNightConfig implements Config {
     }
 
     @Nullable
-    private ToastNotification getEndToast() {
+    private Toast getEndToast() {
+        final boolean enabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
+        final boolean oneTime = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "one-time", true);
         final AdvancementDisplay.AdvancementFrame frame = getFrame(
                 fileConfig.getString(NOTIFICATION_SETTINGS + "end.frame", "TASK"));
         final Material icon = getIcon(
@@ -142,7 +148,7 @@ public class NightmareNightConfig implements Config {
             return null;
         }
 
-        return new ToastNotification(icon, text, frame);
+        return new Toast(enabled, oneTime, new ToastNotification(icon, text, frame));
     }
 
     @Nullable
@@ -163,10 +169,6 @@ public class NightmareNightConfig implements Config {
             LoggerUtility.warn(this, "Failed to load icon for end toast because it is null");
             return null;
         }
-    }
-
-    private NamespacedKey getKey(String name) {
-        return new NamespacedKey("minecraft", name.toLowerCase().trim());
     }
 
     @Override
