@@ -81,7 +81,7 @@ public class NightmareNightInstance implements EventInstance {
                 plugin,
                 pluginManager,
                 world)
-                .addMonsterSpawnMultiplier()
+                .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
                 .build()
         );
     }

@@ -25,6 +25,7 @@ public class NightmareNightConfig implements Config {
     private static final String EFFECT_SETTINGS = "settings.effect.";
     private static final String SOUND_SETTINGS = "settings.sound.";
     private static final String TIME_SETTINGS = "settings.time.";
+    private static final String SPAWNRATE_SETTINGS = "settings.spawnrate.";
     private final JavaPlugin plugin;
     private FileConfiguration fileConfig;
     private File file;
@@ -37,6 +38,7 @@ public class NightmareNightConfig implements Config {
     private List<Sound> sounds;
     private long timeModifyFrequency;
     private long nightLength;
+    private int monsterMultiplier;
 
     @Override
     public void load() {
@@ -69,6 +71,7 @@ public class NightmareNightConfig implements Config {
                 fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
         timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
         nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
+        monsterMultiplier = fileConfig.getInt(SPAWNRATE_SETTINGS + "monster-multiplier", 2);
     }
 
     private List<World> getAllowedWorlds(List<String> worldNames) {
