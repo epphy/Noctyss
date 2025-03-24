@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class GeneralConfig implements Config {
+public final class GeneralConfig implements AbstractConfig {
+    private int debugLevel;
     private Map<World, List<EventType>> allowedEventWorlds;
 
     @Override
@@ -18,6 +19,6 @@ public class GeneralConfig implements Config {
 
     @Override
     public void reload() {
-
+        load();
     }
 }

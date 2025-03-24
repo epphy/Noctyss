@@ -20,14 +20,18 @@ import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
-public class NightmareNightConfig implements Config {
+public final class NightmareNightConfig implements AbstractConfig {
     private static final String FILE_CONFIG_NAME = "NightmareNight.yml";
+
+    // Sections
     private static final String SETTINGS = "settings.";
     private static final String EFFECT_SETTINGS = "settings.effect.";
     private static final String SOUND_SETTINGS = "settings.sound.";
     private static final String TIME_SETTINGS = "settings.time.";
     private static final String SPAWNRATE_SETTINGS = "settings.spawnrate.";
     private static final String NOTIFICATION_SETTINGS = "settings.notification.";
+
+    // Configs
     private final JavaPlugin plugin;
     private FileConfiguration fileConfig;
     private File file;

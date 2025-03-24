@@ -11,7 +11,7 @@ import java.io.File;
 
 @Getter
 @RequiredArgsConstructor
-public class MessageConfig implements Config {
+public final class MessageConfig implements AbstractConfig {
     private static final String FILE_NAME = "MessageConfig.yml";
     private static final String NIGHTMARE_NIGHT = "messages.nightmare-night.";
     private final JavaPlugin plugin;

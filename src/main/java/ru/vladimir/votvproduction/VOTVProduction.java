@@ -1,19 +1,13 @@
 package ru.vladimir.votvproduction;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.EventAPI;
-import ru.vladimir.votvproduction.api.WorldState;
-import ru.vladimir.votvproduction.api.WorldStateManager;
+import ru.vladimir.votvproduction.api.WorldStateConfigurer;
 import ru.vladimir.votvproduction.config.*;
 import ru.vladimir.votvproduction.event.*;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 public final class VOTVProduction extends JavaPlugin {
@@ -29,6 +23,7 @@ public final class VOTVProduction extends JavaPlugin {
     public void onEnable() {
         initLogger();
         loadConfig(); // TODO
+        configureLogger();
         loadGameTimeUtility(); // TODO
         loadAPI(); // TODO
         loadScheduler(); // TODO
@@ -37,7 +32,6 @@ public final class VOTVProduction extends JavaPlugin {
 
     private void initLogger() {
         LoggerUtility.init(getLogger());
-        LoggerUtility.setLevel(Level.ALL); // TODO
     }
 
     private void loadConfig() { // TODO
@@ -46,7 +40,15 @@ public final class VOTVProduction extends JavaPlugin {
         MessageConfig messageConfig = new MessageConfig(this); // TODO
         config.load(); // TODO
         messageConfig.load(); // TODO
-        configService = new ConfigService(new GeneralConfig(), config, new SuddenNightConfig(), messageConfig); // TODO
+        configService = new ConfigService(new GeneralConfig(), config, messageConfig); // TODO
+    }
+
+    private void configureLogger() {
+        switch (configService.generalConfig().getDebugLevel()) {
+            case 1 -> LoggerUtility.setLevel(Level.INFO); // Debug
+            case 2 -> LoggerUtility.setLevel(Level.ALL); // Extra detailed debug
+            default -> LoggerUtility.setLevel(Level.WARNING); // Default
+        }
     }
 
     private void loadGameTimeUtility() { // TODO
@@ -54,12 +56,8 @@ public final class VOTVProduction extends JavaPlugin {
     }
 
     private void loadAPI() { // TODO
-        Map<World, WorldState> worldStates = new HashMap<>(); // TODO
-        for (World world : Bukkit.getWorlds()) { // TODO
-            worldStates.put(world, new WorldState(world, new HashMap<>(), List.of(EventType.NIGHTMARE_NIGHT))); // TODO
-        } // TODO
-        WorldStateManager worldStateManager = new WorldStateManager(worldStates); // TODO
-        EventAPI.init(worldStateManager); // TODO
+        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer(configService.generalConfig()); // TODO
+        EventAPI.init(worldStateConfigurer); // TODO
     }
 
     private void loadScheduler() { // TODO

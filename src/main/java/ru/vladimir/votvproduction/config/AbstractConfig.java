@@ -1,6 +1,6 @@
 package ru.vladimir.votvproduction.config;
 
-public interface Config {
+interface AbstractConfig {
     void load();
     void reload();
 }
