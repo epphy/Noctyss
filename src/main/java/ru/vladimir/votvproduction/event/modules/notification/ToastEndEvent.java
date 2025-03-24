@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.vladimir.votvproduction.config.Toast;
+import ru.vladimir.votvproduction.config.notification.Toast;
 
 import java.util.ArrayList;
 import java.util.List;

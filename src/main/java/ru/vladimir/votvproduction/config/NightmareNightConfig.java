@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.Nullable;
+import ru.vladimir.votvproduction.config.notification.Toast;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.io.File;
@@ -31,19 +32,40 @@ public final class NightmareNightConfig implements AbstractConfig {
     private static final String SPAWNRATE_SETTINGS = "settings.spawnrate.";
     private static final String NOTIFICATION_SETTINGS = "settings.notification.";
 
-    // Configs
+    // Dependency
     private final JavaPlugin plugin;
+
+    // Configs
     private FileConfiguration fileConfig;
     private File file;
+
+    // General
+    private boolean eventEnabled;
     private long checkFrequency;
     private int eventChance;
+
+    // Effect
+    private boolean effectEnabled;
     private long effectGiveFrequency;
     private List<PotionEffect> effects;
+
+    // Sound
+    private boolean soundEnabled;
     private long soundPlayFrequency;
     private List<Sound> sounds;
+
+    // Time
+    private boolean timeEnabled;
     private long timeModifyFrequency;
     private long nightLength;
+
+    // Spawn rate
+    private boolean spawnRateEnabled;
     private int monsterMultiplier;
+
+    // Notification
+    private boolean notificationsEnabled;
+    private boolean endNotificationEnabled;
     private Toast endToast;
 
     @Override
@@ -74,11 +96,13 @@ public final class NightmareNightConfig implements AbstractConfig {
     }
 
     private void parseGeneralSettings() {
+        eventEnabled = fileConfig.getBoolean(SETTINGS + "enabled", true);
         checkFrequency = fileConfig.getInt(SETTINGS + "check-frequency", 100);
         eventChance = fileConfig.getInt(SETTINGS + "event-chance", 5);
     }
 
     private void parseEffectSettings() {
+        effectEnabled = fileConfig.getBoolean(EFFECT_SETTINGS + "enabled", true);
         effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
         effects = getEffects(
                 fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
@@ -95,6 +119,7 @@ public final class NightmareNightConfig implements AbstractConfig {
     }
 
     private void parseSoundSettings() {
+        soundEnabled = fileConfig.getBoolean(SOUND_SETTINGS + "enabled", true);
         soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency", 1200);
         sounds = getSounds(
                 fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
@@ -114,15 +139,19 @@ public final class NightmareNightConfig implements AbstractConfig {
     }
 
     private void parseTimeSettings() {
+        timeEnabled = fileConfig.getBoolean(TIME_SETTINGS + "enabled", true);
         timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
         nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
     }
 
     private void parseSpawnrateSettings() {
+        spawnRateEnabled = fileConfig.getBoolean(SPAWNRATE_SETTINGS + "enabled", true);
         monsterMultiplier = fileConfig.getInt(SPAWNRATE_SETTINGS + "monster-multiplier", 2);
     }
 
     private void parseNotificationSettings() {
+        notificationsEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
+        endNotificationEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "end.enabled", true);
         endToast = getEndToast();
     }
 
