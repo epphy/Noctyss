@@ -13,8 +13,14 @@ import java.io.File;
 @RequiredArgsConstructor
 public final class MessageConfig implements AbstractConfig {
     private static final String FILE_NAME = "MessageConfig.yml";
+
+    // Sections
     private static final String NIGHTMARE_NIGHT = "messages.nightmare-night.";
+
+    // Dependency
     private final JavaPlugin plugin;
+
+    // Configs
     private FileConfiguration fileConfig;
     private File file;
     private Component cannotSleep;
