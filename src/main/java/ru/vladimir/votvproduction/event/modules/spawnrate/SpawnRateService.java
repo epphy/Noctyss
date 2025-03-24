@@ -56,7 +56,9 @@ public class SpawnRateService implements Module {
         private final List<SpawnRule> spawnRules = new ArrayList<>();
 
         public Builder addMonsterSpawnMultiplier(int multiplier) {
-            spawnRules.add(new MonsterSpawnMultiplier(world, multiplier));
+            MonsterSpawnMultiplier spawnRule = new MonsterSpawnMultiplier(world, multiplier);
+            spawnRule.init();
+            spawnRules.add(spawnRule);
             return this;
         }
 
