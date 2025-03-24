@@ -4,6 +4,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * A utility class for managing game time-related operations in a Minecraft server environment.
+ * <p>
+ * This class provides methods for:
+ * - Determining if the current time in a given world is night.
+ * - Checking if the current time corresponds to a specific midnight range.
+ * - Setting the time in a specified world to a user-defined value.
+ * <p>
+ * The methods in this class utilize Minecraft's internal time mechanics, where a full day cycle
+ * consists of 24000 ticks.
+ * <p>
+ * This class depends on a JavaPlugin instance to schedule tasks, which must be initialized using
+ * the {@code init(JavaPlugin plugin)} method before any other operations can be performed.
+ */
 public final class GameTimeUtility {
     private static final long DAY_DURATION_TICKS = 24000L;
     private static final long NIGHT_START_TICKS_TIME = 13000L;
@@ -14,9 +28,9 @@ public final class GameTimeUtility {
     public static void init(JavaPlugin plugin) {
         if (GameTimeUtility.plugin == null) {
             GameTimeUtility.plugin = plugin;
-            LoggerUtility.info(GameTimeUtility.class, "GameTimeUtility has been initialised");
+            LoggerUtility.info("GameTimeUtility", "GameTimeUtility has been initialised");
         } else {
-            LoggerUtility.info(GameTimeUtility.class, "GameTimeUtility is already initialised");
+            LoggerUtility.info("GameTimeUtility", "GameTimeUtility is already initialised");
         }
     }
 

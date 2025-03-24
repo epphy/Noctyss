@@ -1,4 +1,4 @@
-package ru.vladimir.votvproduction.event;
+package ru.vladimir.votvproduction.api;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;

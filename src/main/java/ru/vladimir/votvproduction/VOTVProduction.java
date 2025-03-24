@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.EventAPI;
+import ru.vladimir.votvproduction.api.WorldState;
+import ru.vladimir.votvproduction.api.WorldStateManager;
 import ru.vladimir.votvproduction.config.*;
 import ru.vladimir.votvproduction.event.*;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
@@ -26,7 +28,6 @@ public final class VOTVProduction extends JavaPlugin {
     @Override
     public void onEnable() {
         initLogger();
-        startup(); // TODO
         loadConfig(); // TODO
         loadGameTimeUtility(); // TODO
         loadAPI(); // TODO
@@ -37,11 +38,6 @@ public final class VOTVProduction extends JavaPlugin {
     private void initLogger() {
         LoggerUtility.init(getLogger());
         LoggerUtility.setLevel(Level.ALL); // TODO
-    }
-
-    private void startup() {
-        StartupManager.checkVersion(this);
-        StartupManager.checkDependencies(this);
     }
 
     private void loadConfig() { // TODO
@@ -63,7 +59,7 @@ public final class VOTVProduction extends JavaPlugin {
             worldStates.put(world, new WorldState(world, new HashMap<>(), List.of(EventType.NIGHTMARE_NIGHT))); // TODO
         } // TODO
         WorldStateManager worldStateManager = new WorldStateManager(worldStates); // TODO
-        EventAPI.initialise(worldStateManager); // TODO
+        EventAPI.init(worldStateManager); // TODO
     }
 
     private void loadScheduler() { // TODO

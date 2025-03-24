@@ -8,6 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.config.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @RequiredArgsConstructor
 class ToastEndEvent implements NotificationRule {
     private final JavaPlugin plugin;
@@ -17,9 +21,11 @@ class ToastEndEvent implements NotificationRule {
     @Override
     public void send() {
         final ToastNotification toastNotification = endToast.toastNotification();
-
+        final List<UUID> playerIds = new ArrayList<>();
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () -> toastNotification.send(player));
+            playerIds.add(player.getUniqueId());
         }
+
     }
 }

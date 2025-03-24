@@ -2,12 +2,12 @@ package ru.vladimir.votvproduction.event;
 
 import org.bukkit.World;
 import ru.vladimir.votvproduction.api.EventAPI;
+import ru.vladimir.votvproduction.api.WorldState;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public final class EventManager {
     private static final List<EventType> EVENTS = new ArrayList<>();

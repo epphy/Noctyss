@@ -8,7 +8,7 @@ description: VOTVProduction is a modular, event-driven PaperMC plugin that intro
 website: https://github.com/epphy
 
 depend:
-  - CrazyAdvancementAPI
+  - CrazyAdvancementsAPI
 
 commands:
   votv:
