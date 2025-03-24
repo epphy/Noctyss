@@ -1,14 +1,21 @@
 package ru.vladimir.votvproduction.config;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record ConfigService(GeneralConfig generalConfig,
-                            NightmareNightConfig nightmareNightConfig,
-                            MessageConfig messageConfig) {
-    private static final List<AbstractConfig> configs = new ArrayList<>();
+@Getter
+@RequiredArgsConstructor
+public final class ConfigService {
+    private final JavaPlugin plugin;
+    private final List<AbstractConfig> configs = new ArrayList<>();
+    private GeneralConfig generalConfig;
+    private MessageConfig messageConfig;
+    private NightmareNightConfig nightmareNightConfig;
 
     public void init() {
         register();
@@ -31,9 +38,16 @@ public record ConfigService(GeneralConfig generalConfig,
     }
 
     private void register() {
+        plugin.saveDefaultConfig();
+
+        generalConfig = new GeneralConfig(plugin.getConfig());
+        messageConfig = new MessageConfig(plugin);
+        nightmareNightConfig = new NightmareNightConfig(plugin);
+
         configs.add(generalConfig);
         configs.add(messageConfig);
         configs.add(nightmareNightConfig);
+
         LoggerUtility.info(this, "All configs have been registered: %s".formatted(configs));
     }
 }

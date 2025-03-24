@@ -6,7 +6,6 @@ settings:
   enabled: true
   event-chance: 5
   check-frequency: 100 # How often should be checked for night
-  allowed-worlds: ["world"] # Worlds where the event is allowed
 
   effect:
     enabled: true
@@ -28,6 +27,7 @@ settings:
     monster-multiplier: 2
 
   notification:
+    enabled: true
     end:
       enabled: true
       one-time: true # Players receive it once in one world
