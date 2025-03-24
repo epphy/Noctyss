@@ -46,4 +46,11 @@ record WorldStateManager(Map<World, WorldState> worldStates) {
     public Map<World, WorldState> worldStates() {
         return Map.copyOf(worldStates);
     }
+
+    @Override
+    public String toString() {
+        return "WorldStateManager{" +
+                "worldStates=" + worldStates +
+                '}';
+    }
 }

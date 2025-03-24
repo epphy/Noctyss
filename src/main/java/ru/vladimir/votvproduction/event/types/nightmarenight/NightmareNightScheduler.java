@@ -58,7 +58,7 @@ public final class NightmareNightScheduler implements EventScheduler {
                 continue;
             }
 
-            if (!passesChance() || EventAPI.hasActiveEvent(world, EventType.NIGHTMARE_NIGHT))
+            if (!passesChance() || EventAPI.isEventActive(world, EventType.NIGHTMARE_NIGHT))
                 continue;
 
             checkedWorlds.add(world);

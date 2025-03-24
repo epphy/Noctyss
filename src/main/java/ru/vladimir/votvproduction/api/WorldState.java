@@ -89,4 +89,13 @@ record WorldState(World world, Map<EventType, EventInstance> activeEvents, List<
     List<EventType> getAllowedEvents() {
         return List.copyOf(allowedEvents);
     }
+
+    @Override
+    public String toString() {
+        return "WorldState{" +
+                "world=" + world +
+                ", activeEvents=" + activeEvents +
+                ", allowedEvents=" + allowedEvents +
+                '}';
+    }
 }

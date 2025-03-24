@@ -2,7 +2,6 @@ package ru.vladimir.votvproduction.event;
 
 import org.bukkit.World;
 import ru.vladimir.votvproduction.api.EventAPI;
-import ru.vladimir.votvproduction.api.WorldState;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
@@ -23,7 +22,7 @@ public final class EventManager {
             return false;
         }
 
-        if (EventAPI.addEvent(world, eventType, eventInstance)) {
+        if (EventAPI.addActiveEvent(world, eventType, eventInstance)) {
             eventInstance.start();
             LoggerUtility.info(this, "Event '%s' successfully started in world '%s'."
                     .formatted(eventType, world));
@@ -50,7 +49,7 @@ public final class EventManager {
             return false;
         }
 
-        if (worldState.removeActiveEvent(eventType)) {
+        if (EventAPI.removeActiveEvent(world, eventType)) {
             eventInstance.stop();
             LoggerUtility.info(this, "Event '%s' successfully stopped in world '%s'.".formatted(eventType, world));
             return true;
