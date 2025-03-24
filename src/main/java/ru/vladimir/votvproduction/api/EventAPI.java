@@ -95,4 +95,8 @@ public final class EventAPI {
     public static List<EventType> getActiveEventTypes(World world) {
         return worldStateManager.getWorldState(world).getActiveEventTypes();
     }
+
+    public static List<World> getWorldsWithAllowedEvent(EventType eventType) {
+        return worldStateManager.getWorldsWithAllowedEvent(eventType);
+    }
 }

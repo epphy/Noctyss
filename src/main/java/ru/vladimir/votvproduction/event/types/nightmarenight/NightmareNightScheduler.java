@@ -85,7 +85,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worlds = config.getAllowedWorlds();
+        worlds = EventAPI.getWorldsWithAllowedEvent(EventType.NIGHTMARE_NIGHT);
         eventChance = config.getEventChance();
         LoggerUtility.info(this, "Cached fields");
     }

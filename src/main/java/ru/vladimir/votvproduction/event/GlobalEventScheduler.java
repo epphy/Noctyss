@@ -26,8 +26,9 @@ public final class GlobalEventScheduler implements EventScheduler {
     }
 
     private void addNightmareNight() {
-        NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                plugin, pluginManager, eventManager, configService.nightmareNightConfig(), configService.messageConfig(), new Random());
+        final NightmareNightScheduler scheduler = new NightmareNightScheduler(
+                plugin, pluginManager, eventManager, configService.getNightmareNightConfig(),
+                configService.getMessageConfig(), new Random());
         EVENT_SCHEDULERS.put(EventType.NIGHTMARE_NIGHT, scheduler);
         scheduler.start();
         LoggerUtility.info(this, "NightmareNight Scheduler has been booted");
