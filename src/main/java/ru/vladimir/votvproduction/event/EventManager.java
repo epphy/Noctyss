@@ -50,7 +50,7 @@ public final class EventManager {
             return false;
         }
 
-        if (worldState.removeEvent(eventType)) {
+        if (worldState.removeActiveEvent(eventType)) {
             eventInstance.stop();
             LoggerUtility.info(this, "Event '%s' successfully stopped in world '%s'.".formatted(eventType, world));
             return true;

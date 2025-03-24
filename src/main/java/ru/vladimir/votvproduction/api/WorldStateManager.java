@@ -2,29 +2,43 @@ package ru.vladimir.votvproduction.api;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record WorldStateManager(Map<World, WorldState> worldStates) {
+/**
+ * Manages the states of multiple {@code World} instances and provides access
+ * to their respective {@code WorldState} objects. Each {@code WorldState}
+ * encapsulates information about active and allowed events within a specific
+ * {@code World}.
+ * <p>
+ * The {@code WorldStateManager} ensures that a {@code WorldState} exists for
+ * a given {@code World}. If a requested {@code WorldState} does not exist, it
+ * creates a new one with default configurations.
+ */
+record WorldStateManager(Map<World, WorldState> worldStates) {
 
-    public boolean hasWorldState(World world) {
-        return worldStates.containsKey(world);
-    }
-
-    @Nullable
-    public WorldState getWorldState(World world) {
+    @NotNull
+    WorldState getWorldState(World world) {
+        if (!hasWorldState(world)) {
+            worldStates.put(world, new WorldState(world, new HashMap<>(), new ArrayList<>()));
+        }
         return worldStates.get(world);
     }
 
+    private boolean hasWorldState(World world) {
+        return worldStates.containsKey(world);
+    }
+
     @NotNull
-    public List<World> getWorlds() {
+    List<World> getWorlds() {
         return List.copyOf(worldStates.keySet());
     }
 
     @NotNull
-    public List<WorldState> getWorldStates() {
+    List<WorldState> getWorldStates() {
         return List.copyOf(worldStates.values());
     }
 

@@ -63,7 +63,7 @@ public final class EventAPI {
             return false;
         }
 
-        return worldState.hasActiveEvent(eventType);
+        return worldState.isEventActive(eventType);
     }
 
     @Nullable
@@ -91,7 +91,7 @@ public final class EventAPI {
             return false;
         }
 
-        return worldState.addEvent(eventType, eventInstance);
+        return worldState.addActiveEvent(eventType, eventInstance);
     }
 
     public static boolean removeEvent(World world, EventType eventType) {
@@ -108,6 +108,12 @@ public final class EventAPI {
             return false;
         }
 
-        return worldState.removeEvent(eventType);
+        return worldState.removeActiveEvent(eventType);
     }
+
+    /*
+
+    WE ARE FREE TO EXTENSION
+
+     */
 }

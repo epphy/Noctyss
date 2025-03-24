@@ -1,0 +1,7 @@
+settings:
+  debug-level: 0 # 0 - 2
+
+events-setup: # Here you choose which worlds can use which events
+  world: [NIGHTMARE-NIGHT]
+  # world-key: [events-values]
+  # custom-world: [event1, event2]
