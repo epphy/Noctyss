@@ -1,5 +1,4 @@
 package ru.vladimir.votvproduction.event.modules.notification;
 
-public interface NotificationRule {
-    void send();
+interface NotificationRule {
 }

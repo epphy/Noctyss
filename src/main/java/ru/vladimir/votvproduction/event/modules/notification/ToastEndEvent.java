@@ -2,30 +2,30 @@ package ru.vladimir.votvproduction.event.modules.notification;
 
 import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.votvproduction.config.notification.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+// TODO:
+//  When is called, make sure to process one-time (aka store all players uuids via the
+//  Map<World, Map<EventType, Map<NotificationRule, UUID>>> map, where world is the event
+//  world, event type is the event type, notification rule is this, and uuid is player's id.
 
 @RequiredArgsConstructor
-class ToastEndEvent implements NotificationRule {
+final class ToastEndEvent implements NotificationRule, Listener {
     private final JavaPlugin plugin;
     private final World world;
     private final Toast endToast;
 
-    @Override
-    public void send() {
-        final ToastNotification toastNotification = endToast.toastNotification();
-        final List<UUID> playerIds = new ArrayList<>();
-        for (final Player player : world.getPlayers()) {
-            Bukkit.getScheduler().runTask(plugin, () -> toastNotification.send(player));
-            playerIds.add(player.getUniqueId());
+    @EventHandler
+    public void on(NightmareNightEndEvent event) {
+        final ToastNotification toast = endToast.toastNotification();
+        for (final Player player : event.getWorld().getPlayers()) {
+            toast.send(player);
         }
-
     }
 }

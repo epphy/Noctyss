@@ -36,10 +36,12 @@ public final class NightmareNightScheduler implements EventScheduler {
 
     @Override
     public void start() {
-        cache();
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::processWorlds, DELAY, config.getCheckFrequency()).getTaskId();
-        LoggerUtility.info(this, "Started scheduler");
+        if (config.isEventEnabled()) {
+            cache();
+            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+                    plugin, this::processWorlds, DELAY, config.getCheckFrequency()).getTaskId();
+            LoggerUtility.info(this, "Started scheduler");
+        }
     }
 
     private void processWorlds() {

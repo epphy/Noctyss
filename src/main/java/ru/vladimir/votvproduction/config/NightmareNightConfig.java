@@ -65,7 +65,6 @@ public final class NightmareNightConfig implements AbstractConfig {
 
     // Notification
     private boolean notificationsEnabled;
-    private boolean endNotificationEnabled;
     private Toast endToast;
 
     @Override
@@ -151,12 +150,11 @@ public final class NightmareNightConfig implements AbstractConfig {
 
     private void parseNotificationSettings() {
         notificationsEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
-        endNotificationEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "end.enabled", true);
-        endToast = getEndToast();
+        endToast = getToast();
     }
 
     @Nullable
-    private Toast getEndToast() {
+    private Toast getToast() {
         final boolean enabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
         final boolean oneTime = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "one-time", true);
         final AdvancementDisplay.AdvancementFrame frame = getFrame(
@@ -171,7 +169,7 @@ public final class NightmareNightConfig implements AbstractConfig {
             return null;
         }
 
-        return new Toast(enabled, oneTime, new ToastNotification(icon, text, frame));
+        return new Toast(oneTime, new ToastNotification(icon, text, frame));
     }
 
     @Nullable

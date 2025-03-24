@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.api.events.nightmarenight.NightmareNightEndEvent;
+import ru.vladimir.votvproduction.api.events.nightmarenight.NightmareNightStartEvent;
 import ru.vladimir.votvproduction.config.MessageConfig;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.EventManager;
@@ -12,6 +14,7 @@ import ru.vladimir.votvproduction.event.modules.EffectGiver;
 import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.event.modules.SoundPlayer;
 import ru.vladimir.votvproduction.event.modules.bukkitevents.BukkitEventService;
+import ru.vladimir.votvproduction.event.modules.notification.NotificationService;
 import ru.vladimir.votvproduction.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.votvproduction.event.modules.time.MidnightLoopModifier;
 import ru.vladimir.votvproduction.event.types.EventInstance;
@@ -34,6 +37,7 @@ public class NightmareNightInstance implements EventInstance {
     @Override
     public void start() {
         registerModules();
+        pluginManager.callEvent(new NightmareNightStartEvent(world, true));
         for (final Module module : MODULES) {
             module.start();
         }
@@ -42,6 +46,7 @@ public class NightmareNightInstance implements EventInstance {
 
     @Override
     public void stop() {
+        pluginManager.callEvent(new NightmareNightEndEvent(world, true));
         for (final Module module : MODULES) {
             module.stop();
         }
@@ -49,27 +54,36 @@ public class NightmareNightInstance implements EventInstance {
     }
 
     private void registerModules() {
-        MODULES.add(new EffectGiver(
-                plugin,
-                world,
-                config.getEffects(),
-                config.getEffectGiveFrequency())
-        );
-        MODULES.add(new SoundPlayer(
-                plugin,
-                world,
-                new Random(),
-                config.getSounds(),
-                config.getSoundPlayFrequency()
-        ));
-        MODULES.add(new MidnightLoopModifier(
-                plugin,
-                world,
-                eventManager,
-                EventType.NIGHTMARE_NIGHT,
-                config.getTimeModifyFrequency(),
-                config.getNightLength()
-        ));
+        if (config.isEffectEnabled()) {
+            MODULES.add(new EffectGiver(
+                    plugin,
+                    world,
+                    config.getEffects(),
+                    config.getEffectGiveFrequency())
+            );
+        }
+
+        if (config.isSoundEnabled()) {
+            MODULES.add(new SoundPlayer(
+                    plugin,
+                    world,
+                    new Random(),
+                    config.getSounds(),
+                    config.getSoundPlayFrequency()
+            ));
+        }
+
+        if (config.isTimeEnabled()) {
+            MODULES.add(new MidnightLoopModifier(
+                    plugin,
+                    world,
+                    eventManager,
+                    EventType.NIGHTMARE_NIGHT,
+                    config.getTimeModifyFrequency(),
+                    config.getNightLength()
+            ));
+        }
+
         MODULES.add(new BukkitEventService.Builder(
                 plugin,
                 pluginManager,
@@ -77,12 +91,25 @@ public class NightmareNightInstance implements EventInstance {
                 .addBedCancelEvent(messageConfig.getCannotSleep())
                 .build()
         );
-        MODULES.add(new SpawnRateService.Builder(
-                plugin,
-                pluginManager,
-                world)
-                .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
-                .build()
-        );
+
+        if (config.isSpawnRateEnabled()) {
+            MODULES.add(new SpawnRateService.Builder(
+                    plugin,
+                    pluginManager,
+                    world)
+                    .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
+                    .build()
+            );
+        }
+
+        if (config.isNotificationsEnabled()) {
+            MODULES.add(new NotificationService.Builder(
+                    plugin,
+                    pluginManager,
+                    world)
+                    .addToastEndEvent(config.getEndToast())
+                    .build()
+            );
+        }
     }
 }
