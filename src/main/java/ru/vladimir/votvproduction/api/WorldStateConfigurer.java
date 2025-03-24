@@ -1,6 +1,5 @@
 package ru.vladimir.votvproduction.api;
 
-import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import ru.vladimir.votvproduction.config.GeneralConfig;
 import ru.vladimir.votvproduction.event.EventType;
@@ -9,9 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor
-public class WorldStateConfigurer {
-    private final GeneralConfig generalConfig;
+public record WorldStateConfigurer(GeneralConfig generalConfig) {
 
     WorldStateManager configure() {
         final Map<World, WorldState> worldStates = new HashMap<>();

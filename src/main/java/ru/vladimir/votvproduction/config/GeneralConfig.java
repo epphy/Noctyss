@@ -25,6 +25,7 @@ public final class GeneralConfig implements AbstractConfig {
     @Override
     public void load() {
         parse();
+        validate();
     }
 
     private void parse() {
@@ -95,6 +96,19 @@ public final class GeneralConfig implements AbstractConfig {
             }
         }
         return eventTypes;
+    }
+
+    private void validate() {
+        if (debugLevel < 0 || debugLevel > 2) {
+            LoggerUtility.warn(this, "Invalid debug level '%d'. Setting to default"
+                    .formatted(debugLevel));
+            debugLevel = 0;
+        }
+
+        if (allowedEventWorlds.isEmpty()) {
+            LoggerUtility.warn(this,
+                    "List of allowed event worlds is null and therefore no events will be handled");
+        }
     }
 
     @Override

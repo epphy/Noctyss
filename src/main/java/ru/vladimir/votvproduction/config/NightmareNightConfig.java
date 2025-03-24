@@ -36,7 +36,6 @@ public final class NightmareNightConfig implements AbstractConfig {
     private FileConfiguration fileConfig;
     private File file;
     private long checkFrequency;
-    private List<World> allowedWorlds;
     private int eventChance;
     private long effectGiveFrequency;
     private List<PotionEffect> effects;
@@ -76,16 +75,7 @@ public final class NightmareNightConfig implements AbstractConfig {
 
     private void parseGeneralSettings() {
         checkFrequency = fileConfig.getInt(SETTINGS + "check-frequency", 100);
-        allowedWorlds = getAllowedWorlds(
-                fileConfig.getStringList(SETTINGS + "allowed-worlds"));
         eventChance = fileConfig.getInt(SETTINGS + "event-chance", 5);
-    }
-
-    private List<World> getAllowedWorlds(List<String> worldNames) {
-        return worldNames.stream()
-                .map(Bukkit::getWorld)
-                .filter(Objects::nonNull)
-                .toList();
     }
 
     private void parseEffectSettings() {

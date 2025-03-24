@@ -2,6 +2,7 @@ package ru.vladimir.votvproduction.api;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import ru.vladimir.votvproduction.event.EventType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,29 @@ import java.util.Map;
  * creates a new one with default configurations.
  */
 record WorldStateManager(Map<World, WorldState> worldStates) {
+
+    @NotNull
+    public List<World> getWorldsWithAllowedEvent(EventType eventType) {
+        final List<World> worlds = new ArrayList<>();
+        for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
+            if (entry.getValue().isEventAllowed(eventType)) {
+                worlds.add(entry.getKey());
+            }
+        }
+        return worlds;
+    }
+
+    @NotNull
+    public List<WorldState> getWorldStatesWithAllowedEvent(EventType eventType) {
+        final List<WorldState> worldStates = new ArrayList<>();
+        for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
+            final WorldState worldState = entry.getValue();
+            if (worldState.isEventAllowed(eventType)) {
+                worldStates.add(worldState);
+            }
+        }
+        return worldStates;
+    }
 
     @NotNull
     WorldState getWorldState(World world) {
