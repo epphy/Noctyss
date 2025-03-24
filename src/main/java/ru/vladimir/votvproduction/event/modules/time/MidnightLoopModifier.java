@@ -14,6 +14,7 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 public class MidnightLoopModifier implements Module {
     private static final long MORNING_TICKS_TIME = 0L;
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
+    private static final long FULL_DAY_TICKS_TIME = 24000L;
     private final JavaPlugin plugin;
     private final World world;
     private final EventManager eventManager;
@@ -49,7 +50,7 @@ public class MidnightLoopModifier implements Module {
 
         if ((nightLength - elapsedTime) <= 6000L && nightState != NightState.FINAL) {
             nightState = NightState.FINAL;
-            GameTimeUtility.setTime(world, (nightLength - elapsedTime));
+            GameTimeUtility.setTime(world, (FULL_DAY_TICKS_TIME - (nightLength - elapsedTime)));
             return;
         }
 
