@@ -2,8 +2,10 @@ package ru.vladimir.votvproduction.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import ru.vladimir.votvproduction.event.EventType;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
@@ -13,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 @Getter
 @RequiredArgsConstructor
 public final class GeneralConfig implements AbstractConfig {
     private static final String SETTINGS = "settings.";
     private final FileConfiguration fileConfig;
-    private boolean enabled;
     private int debugLevel;
     private Map<World, List<EventType>> allowedEventWorlds;
 
@@ -29,13 +31,12 @@ public final class GeneralConfig implements AbstractConfig {
     }
 
     private void parse() {
-        enabled = fileConfig.getBoolean(SETTINGS + "plugin-enabled", true);
         debugLevel = fileConfig.getInt(SETTINGS + "debug-level", 0);
-        allowedEventWorlds = getWorldMap(fileConfig.getMapList(SETTINGS + "allowed-worlds"));
+        allowedEventWorlds = getWorldMap(fileConfig.getConfigurationSection(SETTINGS + "allowed-worlds"));
     }
 
-    private Map<World, List<EventType>> getWorldMap(List<Map<?, ?>> worldStringMaps) {
-        if (worldStringMaps.isEmpty()) {
+    private Map<World, List<EventType>> getWorldMap(ConfigurationSection section) {
+        if (section == null) {
             LoggerUtility.warn(this,
                     "List of worlds for allowed events is empty and therefore events won't be used");
             return Map.of();
@@ -43,42 +44,17 @@ public final class GeneralConfig implements AbstractConfig {
 
         final Map<World, List<EventType>> worldMap = new HashMap<>();
 
-        for (final Map<?, ?> worldStringMap : worldStringMaps) {
-            for (final Map.Entry<?, ?> entry : worldStringMap.entrySet()) {
+        for (final String worldName : section.getKeys(false)) {
 
-                if (!(entry.getKey() instanceof final String worldName)) {
-                    LoggerUtility.warn(this, "Invalid world name type: %s"
-                            .formatted(entry.getKey()));
-                    continue;
-                }
-
-                if (!(entry.getValue() instanceof final List<?> rawEventTypeNames)) {
-                    LoggerUtility.warn(this, "Invalid event type list for world %s: %s"
-                            .formatted(worldMap, entry.getValue()));
-                    continue;
-                }
-
-                final List<String> eventTypeNames = new ArrayList<>();
-                for (final Object obj : rawEventTypeNames) {
-                    if (obj instanceof String eventTypeName) {
-                        eventTypeNames.add(eventTypeName);
-                    } else {
-                        LoggerUtility.warn(this, "Invalid event type found in list for world %s: %s"
-                                .formatted(worldName, obj));
-                    }
-                }
-
-                final World world = Bukkit.getWorld(worldName);
-                if (world == null) {
-                    LoggerUtility.warn(this, "World not found: %s"
-                            .formatted(worldName));
-                    continue;
-                }
-
-                final List<EventType> eventTypes = getEventTypes(eventTypeNames);
-
-                worldMap.put(world, eventTypes);
+            final World world = Bukkit.getWorld(worldName);
+            if (world == null) {
+                LoggerUtility.warn(this, "World not found: %s".formatted(worldName));
+                continue;
             }
+
+            final List<EventType> eventTypes = getEventTypes(section.getStringList(worldName));
+
+            worldMap.put(world, eventTypes);
         }
 
         return worldMap;

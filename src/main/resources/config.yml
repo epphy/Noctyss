@@ -2,7 +2,7 @@ settings: # General settings
   debug-level: 0 # 0 - 2
   allowed-worlds:
     # Here you choose which worlds can have which events
-    # Existing events: NIGHTMARE-NIGHT
-    world: [NIGHTMARE-NIGHT]
+    # Existing events: NIGHTMARE_NIGHT
+    world: ["NIGHTMARE_NIGHT"]
     # world-key: [events-values]
     # custom-world: [event1, event2]
