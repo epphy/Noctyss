@@ -15,6 +15,7 @@ import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.event.modules.SoundPlayer;
 import ru.vladimir.votvproduction.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.votvproduction.event.modules.notification.NotificationService;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.votvproduction.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.votvproduction.event.modules.time.MidnightLoopModifier;
 import ru.vladimir.votvproduction.event.types.EventInstance;
@@ -28,6 +29,7 @@ import java.util.Random;
 public class NightmareNightInstance implements EventInstance {
     private static final List<Module> MODULES = new ArrayList<>();
     private final JavaPlugin plugin;
+    private final PlayerNotificationService service;
     private final EventManager eventManager;
     private final PluginManager pluginManager;
     private final NightmareNightConfig config;
@@ -106,6 +108,8 @@ public class NightmareNightInstance implements EventInstance {
             MODULES.add(new NotificationService.Builder(
                     plugin,
                     pluginManager,
+                    service,
+                    EventType.NIGHTMARE_NIGHT,
                     world)
                     .addToastEndEvent(config.getEndToast().oneTime(), config.getEndToast())
                     .build()

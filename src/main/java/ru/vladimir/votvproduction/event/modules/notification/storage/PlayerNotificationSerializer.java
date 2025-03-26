@@ -7,7 +7,7 @@ import ru.vladimir.votvproduction.event.EventType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class PlayerNotificationSerializer {
+public class PlayerNotificationSerializer {
 
     Map<String, Map<String, Map<String, Set<String>>>> serialize(Map<World, Map<EventType, Map<String, Set<UUID>>>> data) {
         return data.entrySet().stream()

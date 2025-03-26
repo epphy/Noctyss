@@ -15,11 +15,6 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.*;
 
-// TODO:
-//  When is called, make sure to process one-time (aka store all players uuids via the
-//  Map<World, Map<EventType, Map<NotificationRule, UUID>>> map, where world is the event
-//  world, event type is the event type, notification rule is this, and uuid is player's id.
-
 @RequiredArgsConstructor
 final class ToastEndEvent implements NotificationRule, Listener {
     private final JavaPlugin plugin;

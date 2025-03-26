@@ -10,6 +10,7 @@ import ru.vladimir.votvproduction.config.MessageConfig;
 import ru.vladimir.votvproduction.config.NightmareNightConfig;
 import ru.vladimir.votvproduction.event.EventManager;
 import ru.vladimir.votvproduction.event.EventType;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.votvproduction.event.types.EventScheduler;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
@@ -24,6 +25,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
+    private final PlayerNotificationService service;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
     private final NightmareNightConfig config;
@@ -65,7 +67,7 @@ public final class NightmareNightScheduler implements EventScheduler {
 
             checkedWorlds.add(world);
             final NightmareNightInstance eventInstance = new NightmareNightInstance(
-                    plugin, eventManager, pluginManager, config, messageConfig, world);
+                    plugin, service, eventManager, pluginManager, config, messageConfig, world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
             LoggerUtility.info(this, "Scheduling event for world %s".formatted(world));
         }

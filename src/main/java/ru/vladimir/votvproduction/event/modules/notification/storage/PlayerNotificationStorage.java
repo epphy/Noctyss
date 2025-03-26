@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
-class PlayerNotificationStorage {
+public class PlayerNotificationStorage {
     private static final String FILE_NAME = "PlayersNotifications.json";
     private static final TypeToken<Map<String, Map<String, Map<String, Set<String>>>>> TYPE_TOKEN = new TypeToken<>(){};
     private final JavaPlugin plugin;

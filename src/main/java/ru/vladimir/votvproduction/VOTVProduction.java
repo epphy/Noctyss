@@ -5,6 +5,9 @@ import ru.vladimir.votvproduction.api.EventAPI;
 import ru.vladimir.votvproduction.api.WorldStateConfigurer;
 import ru.vladimir.votvproduction.config.*;
 import ru.vladimir.votvproduction.event.*;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationSerializer;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationStorage;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
@@ -54,7 +57,11 @@ public final class VOTVProduction extends JavaPlugin {
 
     private void loadScheduler() { // TODO
         EventManager eventManager = new EventManager(); // TODO
-        GlobalEventScheduler eventScheduler = new GlobalEventScheduler(this, getServer().getPluginManager(), configService, eventManager); // TODO
+        PlayerNotificationService service = new PlayerNotificationService( // TODO
+                new PlayerNotificationStorage(this), // TODO
+                new PlayerNotificationSerializer()); // TODO
+        service.init(); // TODO
+        GlobalEventScheduler eventScheduler = new GlobalEventScheduler(this, service, getServer().getPluginManager(), configService, eventManager); // TODO
         eventScheduler.start(); // TODO
     }
 
