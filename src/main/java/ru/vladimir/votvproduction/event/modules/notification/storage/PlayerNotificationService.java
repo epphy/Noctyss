@@ -57,6 +57,8 @@ public class PlayerNotificationService {
     }
 
     public void addNewExcludedPlayerIds(World world, EventType eventType, String rule, Set<UUID> playerIds) {
-
+        final Set<UUID> excludedPlayerIds = getDataOfWorldEventRule(world, eventType, rule);
+        excludedPlayerIds.addAll(playerIds);
+        updateStorage();
     }
 }

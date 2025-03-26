@@ -3,7 +3,6 @@ package ru.vladimir.votvproduction.event.modules.notification.storage;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import ru.vladimir.votvproduction.event.EventType;
-import ru.vladimir.votvproduction.event.modules.notification.NotificationRule;
 
 import java.util.*;
 import java.util.stream.Collectors;

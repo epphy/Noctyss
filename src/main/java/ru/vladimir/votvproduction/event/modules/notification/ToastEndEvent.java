@@ -9,11 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.votvproduction.config.notification.Toast;
+import ru.vladimir.votvproduction.event.EventType;
+import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 // TODO:
 //  When is called, make sure to process one-time (aka store all players uuids via the
@@ -23,6 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 final class ToastEndEvent implements NotificationRule, Listener {
     private final JavaPlugin plugin;
+    private final PlayerNotificationService service;
+    private final EventType eventType;
     private final World world;
     private final boolean oneTime;
     private final Toast endToast;
@@ -47,8 +49,8 @@ final class ToastEndEvent implements NotificationRule, Listener {
     private void sendNotificationAndStore() {
         final ToastNotification toast = endToast.toastNotification();
 
-        final List<UUID> excludedPlayerIds = getExcludedPlayerIds();
-        final List<UUID> newExcludedPlayerIds = new ArrayList<>();
+        final Set<UUID> excludedPlayerIds = getExcludedPlayerIds();
+        final Set<UUID> newExcludedPlayerIds = new HashSet<>();
 
         for (final Player player : world.getPlayers()) {
             final UUID playerId = player.getUniqueId();
@@ -61,11 +63,11 @@ final class ToastEndEvent implements NotificationRule, Listener {
         LoggerUtility.info(this, "Notification sent and new users were stored");
     }
 
-    private List<UUID> getExcludedPlayerIds() {
-
+    private Set<UUID> getExcludedPlayerIds() {
+        return service.getExcludedPlayersFor(world, eventType, this.getClass().getSimpleName());
     }
 
-    private void storeNewExcludedPlayerIds(List<UUID> newExcludedPlayerIds) {
-
+    private void storeNewExcludedPlayerIds(Set<UUID> newExcludedPlayerIds) {
+        service.addNewExcludedPlayerIds(world, eventType, this.getClass().getSimpleName(), newExcludedPlayerIds);
     }
 }
