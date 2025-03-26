@@ -14,7 +14,6 @@ import java.util.Random;
 
 @RequiredArgsConstructor
 public final class SoundPlayer implements Module {
-    private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final World world;
     private final Random random;
@@ -25,7 +24,7 @@ public final class SoundPlayer implements Module {
     @Override
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::playSound, DELAY, frequency).getTaskId();
+                plugin, this::playSound, frequency, frequency).getTaskId();
         LoggerUtility.info(this, "Started scheduler for world '%s'.".formatted(world));
     }
 
