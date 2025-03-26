@@ -31,21 +31,27 @@ public class PlayerNotificationService {
 
     @NotNull
     private Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(World world) {
-        if (!data.containsKey(world)) return new HashMap<>();
-        else return data.get(world);
+        if (!data.containsKey(world)) {
+            data.put(world, new HashMap<>());
+        }
+        return data.get(world);
     }
 
     @NotNull
     private Map<String, Set<UUID>> getDataOfWorldEvent(World world, EventType eventType) {
         final Map<EventType, Map<String, Set<UUID>>> eventMap = getDataOfWorld(world);
-        if (!eventMap.containsKey(eventType)) return new HashMap<>();
+        if (!eventMap.containsKey(eventType)) {
+            eventMap.put(eventType, new HashMap<>());
+        }
         return eventMap.get(eventType);
     }
 
     @NotNull
     private Set<UUID> getDataOfWorldEventRule(World world, EventType eventType, String rule) {
         final Map<String, Set<UUID>> rulePlayerIds = getDataOfWorldEvent(world, eventType);
-        if (!rulePlayerIds.containsKey(rule)) return new HashSet<>();
+        if (!rulePlayerIds.containsKey(rule)) {
+            rulePlayerIds.put(rule, new HashSet<>());
+        }
         return rulePlayerIds.get(rule);
     }
 

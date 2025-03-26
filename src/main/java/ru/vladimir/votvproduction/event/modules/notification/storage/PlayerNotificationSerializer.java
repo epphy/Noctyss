@@ -21,7 +21,7 @@ public class PlayerNotificationSerializer {
                                         eventEntry -> eventEntry.getValue().entrySet().stream()
                                                 .filter(Objects::nonNull)
                                                 .collect(Collectors.toMap(
-                                                        ruleEntry -> ruleEntry.getKey().getClass().getSimpleName(), // Rule name
+                                                        Map.Entry::getKey, // Rule name
                                                         ruleEntry -> ruleEntry.getValue().stream()
                                                                 .filter(Objects::nonNull)
                                                                 .map(UUID::toString) // Convert UUIDs to strings
