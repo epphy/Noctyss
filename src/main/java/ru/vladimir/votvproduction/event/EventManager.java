@@ -16,7 +16,7 @@ public class EventManager {
                     .formatted(eventType.name(), world.getName()));
             return true;
         } else {
-            LoggerUtility.warn(this, "Failed to start event '%s' in world '%s'"
+            LoggerUtility.info(this, "Failed to start event '%s' in world '%s'"
                     .formatted(eventType.name(), world.getName()));
             return false;
         }
@@ -31,7 +31,7 @@ public class EventManager {
                     .formatted(eventType.name(), world.getName()));
             return true;
         } else {
-            LoggerUtility.warn(this, "Failed to stop event '%s' in '%s'"
+            LoggerUtility.info(this, "Failed to stop event '%s' in '%s'"
                     .formatted(eventType.name(), world.getName()));
             return false;
         }
@@ -56,5 +56,15 @@ public class EventManager {
                     .formatted(world.getName()));
             return false;
         }
+    }
+
+    public void stopEventInAllWorlds(EventType eventType) {
+        int stopped = 0;
+        for (final World world : EventAPI.getWorldsWithAllowedEvent(eventType)) {
+            stopEvent(world, eventType);
+            stopped++;
+        }
+        LoggerUtility.info(this, "Stopped event '%s' in '%d' worlds"
+                .formatted(eventType.name(), stopped));
     }
 }

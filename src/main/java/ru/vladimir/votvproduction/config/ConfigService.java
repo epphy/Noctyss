@@ -16,6 +16,7 @@ public final class ConfigService {
     private GeneralConfig generalConfig;
     private MessageConfig messageConfig;
     private NightmareNightConfig nightmareNightConfig;
+    private SuddenNightConfig suddenNightConfig;
 
     public void init() {
         register();
@@ -43,11 +44,13 @@ public final class ConfigService {
         generalConfig = new GeneralConfig(plugin.getConfig());
         messageConfig = new MessageConfig(plugin);
         nightmareNightConfig = new NightmareNightConfig(plugin);
+        suddenNightConfig = new SuddenNightConfig();
 
         configs.add(generalConfig);
         configs.add(messageConfig);
         configs.add(nightmareNightConfig);
+        configs.add(suddenNightConfig);
 
-        LoggerUtility.info(this, "All configs have been registered: %s".formatted(configs));
+        LoggerUtility.debug(this, "All configs have been registered: %s".formatted(configs));
     }
 }

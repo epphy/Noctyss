@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum EventType {
-    NIGHTMARE_NIGHT
+    NIGHTMARE_NIGHT, SUDDEN_NIGHT
 }

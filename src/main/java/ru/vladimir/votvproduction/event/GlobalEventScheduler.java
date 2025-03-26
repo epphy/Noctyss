@@ -7,6 +7,8 @@ import ru.vladimir.votvproduction.config.ConfigService;
 import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.votvproduction.event.types.EventScheduler;
 import ru.vladimir.votvproduction.event.types.nightmarenight.NightmareNightScheduler;
+import ru.vladimir.votvproduction.event.types.suddennight.SuddenNightInstance;
+import ru.vladimir.votvproduction.event.types.suddennight.SuddenNightScheduler;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class GlobalEventScheduler implements EventScheduler {
     @Override
     public void start() {
         addNightmareNight();
+        addSuddenNight();
     }
 
     private void addNightmareNight() {
@@ -36,14 +39,28 @@ public class GlobalEventScheduler implements EventScheduler {
         LoggerUtility.info(this, "NightmareNightScheduler has been started");
     }
 
+    private void addSuddenNight() {
+        final SuddenNightScheduler scheduler = new SuddenNightScheduler();
+        EVENT_SCHEDULERS.put(EventType.SUDDEN_NIGHT, scheduler);
+        scheduler.start();
+        LoggerUtility.info(this, "SuddenNightScheduler has been started");
+    }
+
     @Override
     public void stop() {
         removeNightmareNight();
+        removeSuddenNight();
     }
 
     private void removeNightmareNight() {
         EVENT_SCHEDULERS.get(EventType.NIGHTMARE_NIGHT).stop();
         EVENT_SCHEDULERS.remove(EventType.NIGHTMARE_NIGHT);
         LoggerUtility.info(this, "NightmareNightScheduler has been stopped");
+    }
+
+    private void removeSuddenNight() {
+        EVENT_SCHEDULERS.get(EventType.SUDDEN_NIGHT).stop();
+        EVENT_SCHEDULERS.remove(EventType.SUDDEN_NIGHT);
+        LoggerUtility.info(this, "SuddenNightScheduler has been stopped");
     }
 }
