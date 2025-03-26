@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import ru.vladimir.votvproduction.event.EventType;
+import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.util.*;
 
@@ -54,8 +55,10 @@ public class PlayerNotificationService {
     }
 
     public void addNewExcludedPlayerIds(World world, EventType eventType, String rule, Set<UUID> playerIds) {
+        LoggerUtility.info(this, "Adding '%s' to excluded player ids".formatted(playerIds));
         final Set<UUID> excludedPlayerIds = getDataOfWorldEventRule(world, eventType, rule);
         excludedPlayerIds.addAll(playerIds);
         updateStorage();
+        LoggerUtility.info(this, "Added. Updated list: %s".formatted(excludedPlayerIds));
     }
 }

@@ -24,7 +24,7 @@ public final class EffectGiver implements Module {
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::giveEffects, DELAY, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler for world %s".formatted(world));
+        LoggerUtility.info(this, "Started scheduler for world %s".formatted(world.getName()));
     }
 
     private void giveEffects() {
@@ -40,9 +40,9 @@ public final class EffectGiver implements Module {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
             takeAwayEffects();
-            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world));
+            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world.getName()));
         } else {
-            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world));
+            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world.getName()));
         }
     }
 

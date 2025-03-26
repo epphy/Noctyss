@@ -33,7 +33,7 @@ public class MidnightLoopModifier implements Module {
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::processTime, frequency, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler for world '%s'".formatted(world));
+        LoggerUtility.info(this, "Started scheduler in '%s'".formatted(world.getName()));
     }
 
     private void processTime() {
@@ -64,9 +64,9 @@ public class MidnightLoopModifier implements Module {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
             GameTimeUtility.setTime(world, MORNING_TICKS_TIME);
-            LoggerUtility.info(this, "Scheduler stopped for world '%s'".formatted(world));
+            LoggerUtility.info(this, "Scheduler stopped in '%s'".formatted(world.getName()));
         } else {
-            LoggerUtility.warn(this, "Failed to stop scheduler for world '%s'".formatted(world));
+            LoggerUtility.warn(this, "Failed to stop scheduler in '%s'".formatted(world.getName()));
         }
     }
 }

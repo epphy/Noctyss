@@ -48,6 +48,8 @@ public final class NightmareNightScheduler implements EventScheduler {
 
     private void processWorlds() {
         for (final World world : worlds) {
+            LoggerUtility.info(this, "Processing world: %s");
+
             if (world == null) {
                 LoggerUtility.warn(this, "Could not find world because it's null");
                 continue;
@@ -80,12 +82,12 @@ public final class NightmareNightScheduler implements EventScheduler {
 
     @Override
     public void stop() {
-        if (taskId == -1) {
+        if (taskId != -1) {
+            Bukkit.getScheduler().cancelTask(taskId);
+            LoggerUtility.info(this, "Stopped scheduler");
+        } else {
             LoggerUtility.info(this, "Scheduler is not active");
-            return;
         }
-        Bukkit.getScheduler().cancelTask(taskId);
-        LoggerUtility.info(this, "Stopped scheduler");
     }
 
     private void cache() {

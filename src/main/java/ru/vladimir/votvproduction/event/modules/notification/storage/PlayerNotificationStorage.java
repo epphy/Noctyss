@@ -34,7 +34,7 @@ public class PlayerNotificationStorage {
         builder.setPrettyPrinting();
         final Gson gson = builder.create();
 
-        try (final FileWriter writer = new FileWriter(file, true)) {
+        try (final FileWriter writer = new FileWriter(file)) {
             writer.write(gson.toJson(playerNotifications));
         } catch (IOException e) {
             LoggerUtility.err(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));

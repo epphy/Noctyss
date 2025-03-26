@@ -47,7 +47,7 @@ public final class EventAPI {
     }
 
     public static boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
-        LoggerUtility.info("EventAPI", "Start event method was called with following data: %s, %s, %s"
+        LoggerUtility.info("EventAPI", "startEvent method has been called called with parameters: %s, %s, %s"
                 .formatted(world, eventType, eventInstance));
 
         if (world == null || eventType == null || eventInstance == null) {
@@ -67,6 +67,9 @@ public final class EventAPI {
     }
 
     public static boolean stopEvent(World world, EventType eventType) {
+        LoggerUtility.info("EventAPI", "stopEvent method has been called called with parameters: %s, %s"
+                .formatted(world, eventType));
+
         if (world == null || eventType == null) {
             LoggerUtility.warn("EventAPI",
                     "Failed to remove event. World or EventType is null: World=%s, EventType=%s"

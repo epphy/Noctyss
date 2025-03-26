@@ -41,20 +41,30 @@ public class NightmareNightInstance implements EventInstance {
     @Override
     public void start() {
         registerModules();
+        int registered = 0;
         pluginManager.callEvent(new NightmareNightStartEvent(world, true));
         for (final Module module : MODULES) {
             module.start();
+            registered++;
+            LoggerUtility.info(this, "Registered module '%s' in '%s'"
+                    .formatted(module.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All modules started for world %s".formatted(world));
+        LoggerUtility.info(this, "All modules '%d' started in %s"
+                .formatted(registered, world.getName()));
     }
 
     @Override
     public void stop() {
         pluginManager.callEvent(new NightmareNightEndEvent(world, true));
+        int unregistered = 0;
         for (final Module module : MODULES) {
             module.stop();
+            unregistered++;
+            LoggerUtility.info(this, "Unregistered module '%s' in '%s'"
+                    .formatted(module.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All modules stopped for world %s".formatted(world));
+        LoggerUtility.info(this, "All modules '%d' stopped in '%s'"
+                .formatted(unregistered, world.getName()));
     }
 
     private void registerModules() {

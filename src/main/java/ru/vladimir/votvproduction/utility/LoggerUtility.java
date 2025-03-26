@@ -32,26 +32,31 @@ public final class LoggerUtility {
 
     public static void setLevel(Level level) {
         logger.setLevel(level);
+        logger.getHandlers()[0].setLevel(level);
         info("LoggerUtility", "Logger level updated to %s".formatted(level));
     }
 
     public static void info(Object object, String information) {
-        logger.info("%s: %s".formatted(object.getClass().getSimpleName(), information));
+        logger.info("%s: %s".formatted(getSender(object), information));
     }
 
     public static void warn(Object object, String warning) {
-        logger.warning("%s: %s".formatted(object.getClass().getSimpleName(), warning));
+        logger.warning("%s: %s".formatted(getSender(object), warning));
     }
 
     public static void err(Object object, String error) {
-        logger.severe("%s: %s".formatted(object.getClass().getSimpleName(), error));
+        logger.severe("%s: %s".formatted(getSender(object), error));
     }
 
     public static void log(Object object, Level level, String message) {
-        logger.log(level, "%s: %s".formatted(object.getClass().getSimpleName(), message));
+        logger.log(level, "%s: %s".formatted(getSender(object), message));
     }
 
     public static void announce(String announcement) {
         logger.info(announcement);
+    }
+
+    private static String getSender(Object o) {
+        return (o instanceof String) ? o.toString() : o.getClass().getSimpleName();
     }
 }

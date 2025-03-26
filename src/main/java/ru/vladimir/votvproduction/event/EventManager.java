@@ -5,33 +5,40 @@ import ru.vladimir.votvproduction.api.EventAPI;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
-public final class EventManager {
+public class EventManager {
+
     public boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
+        LoggerUtility.info(this, "startEvent method has been called with parameters: %s, %s, %s"
+                .formatted(world, eventType, eventInstance));
+
         if (EventAPI.startEvent(world, eventType, eventInstance)) {
             LoggerUtility.info(this, "Event '%s' successfully started in world '%s'"
-                    .formatted(eventType, world));
+                    .formatted(eventType.name(), world.getName()));
             return true;
         } else {
             LoggerUtility.warn(this, "Failed to start event '%s' in world '%s'"
-                    .formatted(eventType, world));
+                    .formatted(eventType.name(), world.getName()));
             return false;
         }
     }
 
     public boolean stopEvent(World world, EventType eventType) {
+        LoggerUtility.info(this, "stopEvent method has been called with parameters: %s, %s"
+                .formatted(world, eventType));
+
         if (EventAPI.stopEvent(world, eventType)) {
-            LoggerUtility.info(this, "Event '%s' successfully stopped in world '%s'"
-                    .formatted(eventType, world));
+            LoggerUtility.info(this, "Event '%s' successfully stopped in '%s'"
+                    .formatted(eventType.name(), world.getName()));
             return true;
         } else {
-            LoggerUtility.warn(this, "Failed to stop event '%s' in world '%s'"
-                    .formatted(eventType, world));
+            LoggerUtility.warn(this, "Failed to stop event '%s' in '%s'"
+                    .formatted(eventType.name(), world.getName()));
             return false;
         }
     }
 
     public boolean stopAllEvents(World world) {
-        LoggerUtility.info(this, "Stopping all events for world '%s'".formatted(world));
+        LoggerUtility.info(this, "Stopping all events in world '%s'".formatted(world.getName()));
 
         boolean allEventsStopped = true;
         for (final EventType activeEvent : EventAPI.getActiveEventTypes(world)) {
@@ -42,11 +49,11 @@ public final class EventManager {
 
         if (allEventsStopped) {
             LoggerUtility.info(this, "All events were stopped successfully in world '%s'"
-                    .formatted(world));
+                    .formatted(world.getName()));
             return true;
         } else {
             LoggerUtility.info(this, "Some events failed to stop in world '%s'"
-                    .formatted(world));
+                    .formatted(world.getName()));
             return false;
         }
     }

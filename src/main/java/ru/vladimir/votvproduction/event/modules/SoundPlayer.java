@@ -25,7 +25,7 @@ public final class SoundPlayer implements Module {
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::playSound, frequency, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler for world '%s'.".formatted(world));
+        LoggerUtility.info(this, "Started scheduler for world '%s'.".formatted(world.getName()));
     }
 
     private void playSound() {
@@ -65,9 +65,9 @@ public final class SoundPlayer implements Module {
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world));
+            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world.getName()));
         } else {
-            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world));
+            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world.getName()));
         }
     }
 }
