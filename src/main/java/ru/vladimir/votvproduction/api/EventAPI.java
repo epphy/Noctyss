@@ -47,6 +47,9 @@ public final class EventAPI {
     }
 
     public static boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
+        LoggerUtility.info("EventAPI", "Start event method was called with following data: %s, %s, %s"
+                .formatted(world, eventType, eventInstance));
+
         if (world == null || eventType == null || eventInstance == null) {
             LoggerUtility.warn("EventAPI",
                     "Failed to add event. One or more arguments are null: World=%s, EventType=%s, EventInstance=%s"

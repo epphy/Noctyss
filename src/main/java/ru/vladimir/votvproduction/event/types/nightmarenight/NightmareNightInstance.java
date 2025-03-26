@@ -1,6 +1,7 @@
 package ru.vladimir.votvproduction.event.types.nightmarenight;
 
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@ToString
 @RequiredArgsConstructor
 public class NightmareNightInstance implements EventInstance {
     private static final List<Module> MODULES = new ArrayList<>();

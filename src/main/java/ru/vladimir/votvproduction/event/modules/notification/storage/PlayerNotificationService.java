@@ -5,10 +5,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import ru.vladimir.votvproduction.event.EventType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class PlayerNotificationService {
@@ -31,21 +28,21 @@ public class PlayerNotificationService {
 
     @NotNull
     private Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(World world) {
-        if (!data.containsKey(world)) return Map.of();
+        if (!data.containsKey(world)) return new HashMap<>();
         else return data.get(world);
     }
 
     @NotNull
     private Map<String, Set<UUID>> getDataOfWorldEvent(World world, EventType eventType) {
         final Map<EventType, Map<String, Set<UUID>>> eventMap = getDataOfWorld(world);
-        if (!eventMap.containsKey(eventType)) return Map.of();
+        if (!eventMap.containsKey(eventType)) return new HashMap<>();
         return eventMap.get(eventType);
     }
 
     @NotNull
     private Set<UUID> getDataOfWorldEventRule(World world, EventType eventType, String rule) {
         final Map<String, Set<UUID>> rulePlayerIds = getDataOfWorldEvent(world, eventType);
-        if (!rulePlayerIds.containsKey(rule)) return Set.of();
+        if (!rulePlayerIds.containsKey(rule)) return new HashSet<>();
         return rulePlayerIds.get(rule);
     }
 

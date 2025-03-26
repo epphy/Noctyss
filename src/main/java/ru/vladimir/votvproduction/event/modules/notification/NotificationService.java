@@ -32,6 +32,7 @@ public class NotificationService implements Module {
 
     @Override
     public void start() {
+        int registered = 0;
         for (final NotificationRule rule : notificationRules) {
             if (rule instanceof Listener) {
                 pluginManager.registerEvents((Listener) rule, plugin);
@@ -40,13 +41,18 @@ public class NotificationService implements Module {
             if (rule instanceof Controllable) {
                 ((Controllable) rule).start();
             }
+
+            registered++;
+            LoggerUtility.info(this, "Registered '%s' notification rule in '%s'"
+                    .formatted(rule.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All notification rules have been loaded for world %s"
-                .formatted(world));
+        LoggerUtility.info(this, "All notification rules '%d' registered in '%s'"
+                .formatted(registered, world.getName()));
     }
 
     @Override
     public void stop() {
+        int unregistered = 0;
         for (final NotificationRule rule : notificationRules) {
             if (rule instanceof Listener) {
                 HandlerList.unregisterAll((Listener) rule);
@@ -55,9 +61,13 @@ public class NotificationService implements Module {
             if (rule instanceof Controllable) {
                 ((Controllable) rule).stop();
             }
+
+            unregistered++;
+            LoggerUtility.info(this, "Unregistered '%s' notification rule in '%s'"
+                    .formatted(rule.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All notification rules have been unloaded for world %s"
-                .formatted(world));
+        LoggerUtility.info(this, "All notification rules '%d' unregistered in world %s"
+                .formatted(unregistered, world.getName()));
     }
 
     @Getter

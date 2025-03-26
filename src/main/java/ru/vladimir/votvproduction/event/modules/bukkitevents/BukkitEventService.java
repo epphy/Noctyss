@@ -33,9 +33,9 @@ public class BukkitEventService implements Module {
             pluginManager.registerEvents(bukkitEvent, plugin);
             registeredEventsNumber++;
             LoggerUtility.info(this, "Registered '%s' bukkit event in '%s'"
-                    .formatted(bukkitEvent.getClass().getSimpleName(), world));
+                    .formatted(bukkitEvent.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All events '%d' registered in '%s'".formatted(registeredEventsNumber, world));
+        LoggerUtility.info(this, "All events '%d' registered in '%s'".formatted(registeredEventsNumber, world.getName()));
     }
 
     @Override
@@ -45,9 +45,9 @@ public class BukkitEventService implements Module {
             HandlerList.unregisterAll(bukkitEvent);
             unregisteredEventsNumber++;
             LoggerUtility.info(this, "Unregistered '%s' bukkit event in '%s'"
-                    .formatted(bukkitEvent.getClass().getSimpleName(), world));
+                    .formatted(bukkitEvent.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All events '%d' unregistered in '%s'".formatted(unregisteredEventsNumber, world));
+        LoggerUtility.info(this, "All events '%d' unregistered in '%s'".formatted(unregisteredEventsNumber, world.getName()));
     }
 
     @Getter

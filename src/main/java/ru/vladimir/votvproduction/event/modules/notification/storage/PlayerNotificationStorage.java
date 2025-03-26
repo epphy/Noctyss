@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,12 +49,12 @@ public class PlayerNotificationStorage {
 
         try (final FileReader reader = new FileReader(file)) {
             final Map<String, Map<String, Map<String, Set<String>>>> data = gson.fromJson(reader, TYPE_TOKEN);
-            if (data == null) return Map.of();
+            if (data == null) return new HashMap<>();
             else return data;
         } catch (IOException e) {
             LoggerUtility.err(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
             e.printStackTrace();
-            return Map.of();
+            return new HashMap<>();
         }
     }
 }
