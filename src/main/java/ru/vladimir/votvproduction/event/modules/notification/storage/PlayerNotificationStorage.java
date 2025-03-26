@@ -47,7 +47,9 @@ public class PlayerNotificationStorage {
         final Gson gson = builder.create();
 
         try (final FileReader reader = new FileReader(file)) {
-            return gson.fromJson(reader, TYPE_TOKEN);
+            final Map<String, Map<String, Map<String, Set<String>>>> data = gson.fromJson(reader, TYPE_TOKEN);
+            if (data == null) return Map.of();
+            else return data;
         } catch (IOException e) {
             LoggerUtility.err(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
             e.printStackTrace();
