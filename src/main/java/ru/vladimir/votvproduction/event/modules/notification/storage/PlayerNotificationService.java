@@ -30,22 +30,33 @@ public class PlayerNotificationService {
     }
 
     @NotNull
-    public Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(World world) {
+    private Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(World world) {
         if (!data.containsKey(world)) return Map.of();
-        else return Map.copyOf(data.get(world));
+        else return data.get(world);
     }
 
     @NotNull
-    public Map<String, Set<UUID>> getDataOfWorldEvent(World world, EventType eventType) {
+    private Map<String, Set<UUID>> getDataOfWorldEvent(World world, EventType eventType) {
         final Map<EventType, Map<String, Set<UUID>>> eventMap = getDataOfWorld(world);
         if (!eventMap.containsKey(eventType)) return Map.of();
         return eventMap.get(eventType);
     }
 
     @NotNull
-    public Set<UUID> getDataOfWorldEventRule(World world, EventType eventType, String rule) {
+    private Set<UUID> getDataOfWorldEventRule(World world, EventType eventType, String rule) {
         final Map<String, Set<UUID>> rulePlayerIds = getDataOfWorldEvent(world, eventType);
         if (!rulePlayerIds.containsKey(rule)) return Set.of();
         return rulePlayerIds.get(rule);
+    }
+
+    @NotNull
+    public Set<UUID> getExcludedPlayersFor(World world, EventType eventType, String rule) {
+        final Map<String, Set<UUID>> rulePlayerIds = getDataOfWorldEvent(world, eventType);
+        if (!rulePlayerIds.containsKey(rule)) return Set.of();
+        return Set.copyOf(rulePlayerIds.get(rule));
+    }
+
+    public void addNewExcludedPlayerIds(World world, EventType eventType, String rule, Set<UUID> playerIds) {
+
     }
 }
