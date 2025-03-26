@@ -9,11 +9,12 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 import java.io.*;
 import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 class PlayerNotificationStorage {
     private static final String FILE_NAME = "PlayersNotifications.json";
-    private static final TypeToken<Map<String, Map<String, Map<String, String>>>> TYPE_TOKEN = new TypeToken<>(){};
+    private static final TypeToken<Map<String, Map<String, Map<String, Set<String>>>>> TYPE_TOKEN = new TypeToken<>(){};
     private final JavaPlugin plugin;
     private File file;
 
@@ -27,7 +28,7 @@ class PlayerNotificationStorage {
         }
     }
 
-    void store(Map<String, Map<String, Map<String, String>>> playerNotifications) {
+    void store(Map<String, Map<String, Map<String, Set<String>>>> playerNotifications) {
         final GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         final Gson gson = builder.create();
@@ -40,7 +41,7 @@ class PlayerNotificationStorage {
         }
     }
 
-    Map<String, Map<String, Map<String, String>>> retrieve() {
+    Map<String, Map<String, Map<String, Set<String>>>> retrieve() {
         final GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         final Gson gson = builder.create();
