@@ -28,26 +28,26 @@ public class BukkitEventService implements Module {
 
     @Override
     public void start() {
-        int registeredEventsNumber = 0;
+        int registered = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
             pluginManager.registerEvents(bukkitEvent, plugin);
-            registeredEventsNumber++;
+            registered++;
             LoggerUtility.info(this, "Registered '%s' bukkit event in '%s'"
                     .formatted(bukkitEvent.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All events '%d' registered in '%s'".formatted(registeredEventsNumber, world.getName()));
+        LoggerUtility.info(this, "All events '%d' registered in '%s'".formatted(registered, world.getName()));
     }
 
     @Override
     public void stop() {
-        int unregisteredEventsNumber = 0;
+        int unregistered = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
             HandlerList.unregisterAll(bukkitEvent);
-            unregisteredEventsNumber++;
+            unregistered++;
             LoggerUtility.info(this, "Unregistered '%s' bukkit event in '%s'"
                     .formatted(bukkitEvent.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All events '%d' unregistered in '%s'".formatted(unregisteredEventsNumber, world.getName()));
+        LoggerUtility.info(this, "All events '%d' unregistered in '%s'".formatted(unregistered, world.getName()));
     }
 
     @Getter

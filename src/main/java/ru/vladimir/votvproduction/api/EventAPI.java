@@ -35,19 +35,8 @@ public final class EventAPI {
     // WORLD STATE MANAGER OPERATIONS
     // ================================
 
-    public static boolean isEventAllowed(World world, EventType eventType) {
-        if (world == null || eventType == null) {
-            LoggerUtility.warn("EventAPI",
-                    "Failed to check if event is allowed. World or EventType is null: World=%s, EventType=%s"
-                    .formatted(world, eventType));
-            return false;
-        }
-
-        return worldStateManager.getWorldState(world).isEventAllowed(eventType);
-    }
-
     public static boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
-        LoggerUtility.info("EventAPI", "startEvent method has been called called with parameters: %s, %s, %s"
+        LoggerUtility.debug("EventAPI", "startEvent method has been called called with parameters: %s, %s, %s"
                 .formatted(world, eventType, eventInstance));
 
         if (world == null || eventType == null || eventInstance == null) {
@@ -67,7 +56,7 @@ public final class EventAPI {
     }
 
     public static boolean stopEvent(World world, EventType eventType) {
-        LoggerUtility.info("EventAPI", "stopEvent method has been called called with parameters: %s, %s"
+        LoggerUtility.debug("EventAPI", "stopEvent method has been called called with parameters: %s, %s"
                 .formatted(world, eventType));
 
         if (world == null || eventType == null) {

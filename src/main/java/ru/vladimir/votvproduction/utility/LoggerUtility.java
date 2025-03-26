@@ -37,6 +37,10 @@ public final class LoggerUtility {
         info("LoggerUtility", "Logger level updated to %s".formatted(level));
     }
 
+    public static void debug(Object object, String debug) {
+        logger.fine("%s: %s".formatted(getSender(object), debug));
+    }
+
     public static void info(Object object, String information) {
         logger.info("%s: %s".formatted(getSender(object), information));
     }

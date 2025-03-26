@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public final class GlobalEventScheduler implements EventScheduler {
-    private static final Map<EventType, EventScheduler> EVENT_SCHEDULERS = new HashMap<>();
+public class GlobalEventScheduler implements EventScheduler {
+    private final Map<EventType, EventScheduler> EVENT_SCHEDULERS = new HashMap<>();
     private final JavaPlugin plugin;
     private final PlayerNotificationService service;
     private final PluginManager pluginManager;
@@ -33,11 +33,17 @@ public final class GlobalEventScheduler implements EventScheduler {
                 configService.getMessageConfig(), new Random());
         EVENT_SCHEDULERS.put(EventType.NIGHTMARE_NIGHT, scheduler);
         scheduler.start();
-        LoggerUtility.info(this, "NightmareNight Scheduler has been booted");
+        LoggerUtility.info(this, "NightmareNightScheduler has been started");
     }
 
     @Override
     public void stop() {
-        // TODO: Not required yet
+        removeNightmareNight();
+    }
+
+    private void removeNightmareNight() {
+        EVENT_SCHEDULERS.get(EventType.NIGHTMARE_NIGHT).stop();
+        EVENT_SCHEDULERS.remove(EventType.NIGHTMARE_NIGHT);
+        LoggerUtility.info(this, "NightmareNightScheduler has been stopped");
     }
 }

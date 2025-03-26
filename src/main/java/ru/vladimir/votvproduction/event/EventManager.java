@@ -8,7 +8,7 @@ import ru.vladimir.votvproduction.utility.LoggerUtility;
 public class EventManager {
 
     public boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
-        LoggerUtility.info(this, "startEvent method has been called with parameters: %s, %s, %s"
+        LoggerUtility.debug(this, "startEvent method has been called with parameters: %s, %s, %s"
                 .formatted(world, eventType, eventInstance));
 
         if (EventAPI.startEvent(world, eventType, eventInstance)) {
@@ -23,7 +23,7 @@ public class EventManager {
     }
 
     public boolean stopEvent(World world, EventType eventType) {
-        LoggerUtility.info(this, "stopEvent method has been called with parameters: %s, %s"
+        LoggerUtility.debug(this, "stopEvent method has been called with parameters: %s, %s"
                 .formatted(world, eventType));
 
         if (EventAPI.stopEvent(world, eventType)) {

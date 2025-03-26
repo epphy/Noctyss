@@ -31,10 +31,10 @@ public class SpawnRateService implements Module {
         for (final SpawnRule spawnRule : spawnRules) {
             pluginManager.registerEvents(spawnRule, plugin);
             registered++;
-            LoggerUtility.info(this, "Registered '%s' in '%s'"
+            LoggerUtility.info(this, "Registered '%s' spawn rule in '%s'"
                     .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "'%d' events registered in '%s'".formatted(registered, world.getName()));
+        LoggerUtility.info(this, "Registered '%d' spawn rules in '%s'".formatted(registered, world.getName()));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SpawnRateService implements Module {
             LoggerUtility.info(this, "Unregistered '%s' spawn rule in '%s'"
                     .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "'%d' spawn rules unregistered in '%s'".formatted(unregistered, world.getName()));
+        LoggerUtility.info(this, "Unregistered '%d' spawn rules in '%s'".formatted(unregistered, world.getName()));
     }
 
     @Getter

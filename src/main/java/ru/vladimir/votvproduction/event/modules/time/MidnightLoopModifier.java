@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.votvproduction.event.Controllable;
 import ru.vladimir.votvproduction.event.EventManager;
 import ru.vladimir.votvproduction.event.EventType;
-import ru.vladimir.votvproduction.event.modules.Module;
 import ru.vladimir.votvproduction.utility.GameTimeUtility;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
 @RequiredArgsConstructor
-public class MidnightLoopModifier implements Module {
+class MidnightLoopModifier implements TimeModificationRule, Controllable {
     private static final long MORNING_TICKS_TIME = 0L;
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
     private static final long FULL_DAY_TICKS_TIME = 24000L;

@@ -18,7 +18,7 @@ import ru.vladimir.votvproduction.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.votvproduction.event.modules.notification.NotificationService;
 import ru.vladimir.votvproduction.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.votvproduction.event.modules.spawnrate.SpawnRateService;
-import ru.vladimir.votvproduction.event.modules.time.MidnightLoopModifier;
+import ru.vladimir.votvproduction.event.modules.time.TimeModifyService;
 import ru.vladimir.votvproduction.event.types.EventInstance;
 import ru.vladimir.votvproduction.utility.LoggerUtility;
 
@@ -88,14 +88,14 @@ public class NightmareNightInstance implements EventInstance {
         }
 
         if (config.isTimeEnabled()) {
-            MODULES.add(new MidnightLoopModifier(
+            MODULES.add(new TimeModifyService.Builder(
                     plugin,
-                    world,
                     eventManager,
-                    EventType.NIGHTMARE_NIGHT,
-                    config.getTimeModifyFrequency(),
-                    config.getNightLength()
-            ));
+                    world,
+                    EventType.NIGHTMARE_NIGHT)
+                    .addMidnightLoopModifier(config.getTimeModifyFrequency(), config.getNightLength())
+                    .build()
+            );
         }
 
         MODULES.add(new BukkitEventService.Builder(
