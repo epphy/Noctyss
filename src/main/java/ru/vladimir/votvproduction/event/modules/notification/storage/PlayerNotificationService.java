@@ -20,11 +20,13 @@ public class PlayerNotificationService {
     }
 
     public void updateStorage() {
+        LoggerUtility.info(this, "Serializing following data: %s".formatted(data));
         storage.store(serializer.serialize(data));
     }
 
     public void updateData() {
         data = serializer.deserialize(storage.retrieve());
+        LoggerUtility.info(this, "Data has been updated for map: %s".formatted(data));
     }
 
     @NotNull

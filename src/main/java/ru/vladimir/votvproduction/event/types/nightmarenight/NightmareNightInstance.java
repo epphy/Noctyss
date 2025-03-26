@@ -29,7 +29,7 @@ import java.util.Random;
 @ToString
 @RequiredArgsConstructor
 public class NightmareNightInstance implements EventInstance {
-    private static final List<Module> MODULES = new ArrayList<>();
+    private final List<Module> MODULES = new ArrayList<>();
     private final JavaPlugin plugin;
     private final PlayerNotificationService service;
     private final EventManager eventManager;

@@ -1,5 +1,6 @@
 package ru.vladimir.votvproduction.utility;
 
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +33,7 @@ public final class LoggerUtility {
 
     public static void setLevel(Level level) {
         logger.setLevel(level);
-        logger.getHandlers()[0].setLevel(level);
+        logger.getParent().getHandlers()[0].setLevel(level);
         info("LoggerUtility", "Logger level updated to %s".formatted(level));
     }
 

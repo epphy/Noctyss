@@ -48,8 +48,6 @@ public final class NightmareNightScheduler implements EventScheduler {
 
     private void processWorlds() {
         for (final World world : worlds) {
-            LoggerUtility.info(this, "Processing world: %s");
-
             if (world == null) {
                 LoggerUtility.warn(this, "Could not find world because it's null");
                 continue;
@@ -71,7 +69,7 @@ public final class NightmareNightScheduler implements EventScheduler {
             final NightmareNightInstance eventInstance = new NightmareNightInstance(
                     plugin, service, eventManager, pluginManager, config, messageConfig, world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
-            LoggerUtility.info(this, "Scheduling event for world %s".formatted(world.getName()));
+            LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
         }
     }
 
