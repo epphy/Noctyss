@@ -9,6 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.votvproduction.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.votvproduction.config.notification.Toast;
+import ru.vladimir.votvproduction.utility.LoggerUtility;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 // TODO:
 //  When is called, make sure to process one-time (aka store all players uuids via the
@@ -19,13 +24,48 @@ import ru.vladimir.votvproduction.config.notification.Toast;
 final class ToastEndEvent implements NotificationRule, Listener {
     private final JavaPlugin plugin;
     private final World world;
+    private final boolean oneTime;
     private final Toast endToast;
 
     @EventHandler
     public void on(NightmareNightEndEvent event) {
+        if (!event.getWorld().equals(world)) return;
+
+        if (oneTime) sendNotificationAndStore();
+        else sendNotification();
+    }
+
+    private void sendNotification() {
         final ToastNotification toast = endToast.toastNotification();
-        for (final Player player : event.getWorld().getPlayers()) {
+
+        for (final Player player : world.getPlayers()) {
             toast.send(player);
         }
+        LoggerUtility.info(this, "Notification sent");
+    }
+
+    private void sendNotificationAndStore() {
+        final ToastNotification toast = endToast.toastNotification();
+
+        final List<UUID> excludedPlayerIds = getExcludedPlayerIds();
+        final List<UUID> newExcludedPlayerIds = new ArrayList<>();
+
+        for (final Player player : world.getPlayers()) {
+            final UUID playerId = player.getUniqueId();
+            if (excludedPlayerIds.contains(playerId)) continue;
+            toast.send(player);
+            newExcludedPlayerIds.add(playerId);
+        }
+
+        storeNewExcludedPlayerIds(newExcludedPlayerIds);
+        LoggerUtility.info(this, "Notification sent and new users were stored");
+    }
+
+    private List<UUID> getExcludedPlayerIds() {
+
+    }
+
+    private void storeNewExcludedPlayerIds(List<UUID> newExcludedPlayerIds) {
+
     }
 }

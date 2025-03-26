@@ -107,7 +107,7 @@ public class NightmareNightInstance implements EventInstance {
                     plugin,
                     pluginManager,
                     world)
-                    .addToastEndEvent(config.getEndToast())
+                    .addToastEndEvent(config.getEndToast().oneTime(), config.getEndToast())
                     .build()
             );
         }
