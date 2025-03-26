@@ -1,18 +1,22 @@
 package ru.vladimir.votvproduction.event.modules.notification.storage;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class PlayerNotificationStorage {
+class PlayerNotificationStorage {
     private static final String FILE_NAME = "PlayersNotifications.json";
     private final JavaPlugin plugin;
     private File file;
 
-    public void save() {
+    void save() {
         if (file == null) {
             file = new File(plugin.getDataFolder(), FILE_NAME);
         }
@@ -22,11 +26,24 @@ public class PlayerNotificationStorage {
         }
     }
 
-    public void store(Map<String, Map<String, Map<String, String>>> playerNotifications) {
+    void storeWorld(Map<String, Map<String, Map<String, String>>> playerNotifications) {
+        final GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+    }
+
+    void storeEventType(String worldName, Map<String, Map<String, String>> playerNotifications) {
 
     }
 
-    public Map<String, Map<String, Map<String, String>>> retrieve() {
+    void storeNotificationRule(String worldName, String eventTypeName, Map<String, String> playerNotifications) {
+
+    }
+
+    void storePlayerIds(String worldName, String eventTypeName, String notificationRuleName, List<String> playerIds) {
+
+    }
+
+    Map<String, Map<String, Map<String, String>>> retrieve() {
 
     }
 }
