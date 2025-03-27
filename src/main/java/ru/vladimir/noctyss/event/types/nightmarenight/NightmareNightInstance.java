@@ -123,7 +123,7 @@ public class NightmareNightInstance implements EventInstance {
                     service,
                     EventType.NIGHTMARE_NIGHT,
                     world)
-                    .addToastEndEvent(config.getEndToast().oneTime(), config.getEndToast())
+                    .addToastEndEvent(config.isEndToastOneTime(), config.getEndToast())
                     .build()
             );
         }

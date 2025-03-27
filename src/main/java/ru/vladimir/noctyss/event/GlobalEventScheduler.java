@@ -39,7 +39,8 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void addSuddenNight() {
-        final SuddenNightScheduler scheduler = new SuddenNightScheduler();
+        final SuddenNightScheduler scheduler = new SuddenNightScheduler(plugin, configService.getSuddenNightConfig(),
+                eventManager, new Random());
         EVENT_SCHEDULERS.put(EventType.SUDDEN_NIGHT, scheduler);
         scheduler.start();
         LoggerUtility.info(this, "SuddenNightScheduler has been started");

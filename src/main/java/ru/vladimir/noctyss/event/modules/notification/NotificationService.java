@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.modules.notification;
 
+import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
@@ -7,7 +8,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.vladimir.noctyss.config.notification.Toast;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
@@ -80,8 +80,8 @@ public class NotificationService implements Module {
         private final World world;
         private final List<NotificationRule> notificationRules = new ArrayList<>();
 
-        public Builder addToastEndEvent(boolean oneTime, Toast endToast) {
-            notificationRules.add(new ToastEndEvent(plugin, service, eventType, world, oneTime, endToast));
+        public Builder addToastEndEvent(boolean oneTime, ToastNotification endToast) {
+            notificationRules.add(new NightmareNightToastEndEvent(service, eventType, world, oneTime, endToast));
             return this;
         }
 

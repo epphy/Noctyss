@@ -29,7 +29,6 @@ settings:
   notification:
     enabled: true
     end:
-      enabled: true
       one-time: true # Players receive it once in one world
       frame: TASK
       icon: COAL_BLOCK

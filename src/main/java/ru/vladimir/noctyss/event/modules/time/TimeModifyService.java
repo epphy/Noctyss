@@ -72,6 +72,12 @@ public class TimeModifyService implements Module {
             return this;
         }
 
+        public Builder addAbruptNight(long frequency, long nightLength) {
+            final AbruptNight abruptNight = new AbruptNight(plugin, eventManager, eventType, world, nightLength, frequency);
+            rules.add(abruptNight);
+            return this;
+        }
+
         public TimeModifyService build() {
             return new TimeModifyService(this);
         }

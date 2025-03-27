@@ -18,7 +18,7 @@ public record WorldStateConfigurer(GeneralConfig generalConfig) {
             final World world = entry.getKey();
             final List<EventType> allowedEvents = entry.getValue();
 
-            worldStates.put(world, new WorldState(world, new HashMap<>(), allowedEvents));
+            worldStates.put(world, new WorldState(world, new HashMap<>(), new HashMap<>(), allowedEvents));
         }
 
         return new WorldStateManager(worldStates);

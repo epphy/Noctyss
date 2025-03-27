@@ -57,4 +57,8 @@ public class GameTimeUtility {
         final long updatedTime = dayNumber * DAY_DURATION_TICKS + newTime;
         Bukkit.getScheduler().runTask(plugin, () -> world.setFullTime(updatedTime));
     }
+
+    public static long getDay(World world) {
+        return world.getFullTime() / DAY_DURATION_TICKS;
+    }
 }

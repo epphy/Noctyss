@@ -16,20 +16,25 @@
 #
 # Everything is measured in ticks unless said otherwise
 settings:
-  event-chance: 0.5 # Measured in percents. 0 - 1.0
+  enabled: true
+  event-chance: 0.05 # Measured in percents. 0 - 1.0
   check-frequency: 3000
-  cooldown: 10 # Measured in days
+  cooldown-in-days: 10 # After how many days the event may occur again
 
   time:
     night-length: 2400
+    time-update-frequency: 50
 
   effect:
     fade-effect: true # Applies darkness before
+
+  sound:
+    silence: true # If true, no sounds will players hear; atmospheric ambience otherwise
 
   notification:
     end:
       enabled: true
       one-time: true
-      frame: TASK
+      frame: task # task, goal, challenge
       icon: CLOCK
       text: "Did it seem to me?"

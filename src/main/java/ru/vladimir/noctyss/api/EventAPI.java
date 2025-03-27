@@ -4,9 +4,11 @@ import lombok.ToString;
 import org.bukkit.World;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
+import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The EventAPI class provides a centralized interface for managing events within
@@ -66,9 +68,10 @@ public final class EventAPI {
             return false;
         }
 
+        final long day = GameTimeUtility.getDay(world);
         final WorldState worldState = worldStateManager.getWorldState(world);
         final EventInstance eventInstance = worldState.getActiveEvent(eventType);
-        if (worldState.removeActiveEvent(eventType)) {
+        if (worldState.removeActiveEvent(eventType, day)) {
             eventInstance.stop();
             return true;
         }
@@ -91,7 +94,11 @@ public final class EventAPI {
         return worldStateManager.getWorldState(world).getActiveEventTypes();
     }
 
-    public static List<World> getWorldsWithAllowedEvent(EventType eventType) {
+    public static Set<World> getWorldsWithAllowedEvent(EventType eventType) {
         return worldStateManager.getWorldsWithAllowedEvent(eventType);
+    }
+
+    public static long getLastDayTheEventWas(World world, EventType eventType) {
+        return worldStateManager.getWorldState(world).getDayOfLastTimeEvent(eventType);
     }
 }

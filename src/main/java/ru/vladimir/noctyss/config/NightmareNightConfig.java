@@ -12,7 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.Nullable;
-import ru.vladimir.noctyss.config.notification.Toast;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.io.File;
@@ -65,7 +64,8 @@ public final class NightmareNightConfig implements AbstractConfig {
 
     // Notification
     private boolean notificationsEnabled;
-    private Toast endToast;
+    private boolean isEndToastOneTime;
+    private ToastNotification endToast;
 
     @Override
     public void load() {
@@ -150,13 +150,12 @@ public final class NightmareNightConfig implements AbstractConfig {
 
     private void parseNotificationSettings() {
         notificationsEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
+        isEndToastOneTime = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "end.one-time", true);
         endToast = getToast();
     }
 
     @Nullable
-    private Toast getToast() {
-        final boolean enabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
-        final boolean oneTime = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "one-time", true);
+    private ToastNotification getToast() {
         final AdvancementDisplay.AdvancementFrame frame = getFrame(
                 fileConfig.getString(NOTIFICATION_SETTINGS + "end.frame", "TASK"));
         final Material icon = getIcon(
@@ -169,7 +168,7 @@ public final class NightmareNightConfig implements AbstractConfig {
             return null;
         }
 
-        return new Toast(oneTime, new ToastNotification(icon, text, frame));
+        return new ToastNotification(icon, text, frame);
     }
 
     @Nullable

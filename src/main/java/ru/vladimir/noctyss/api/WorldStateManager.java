@@ -4,10 +4,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.event.EventType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Manages the states of multiple {@code World} instances and provides access
@@ -22,8 +19,8 @@ import java.util.Map;
 record WorldStateManager(Map<World, WorldState> worldStates) {
 
     @NotNull
-    public List<World> getWorldsWithAllowedEvent(EventType eventType) {
-        final List<World> worlds = new ArrayList<>();
+    public Set<World> getWorldsWithAllowedEvent(EventType eventType) {
+        final Set<World> worlds = new HashSet<>();
         for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
             if (entry.getValue().isEventAllowed(eventType)) {
                 worlds.add(entry.getKey());

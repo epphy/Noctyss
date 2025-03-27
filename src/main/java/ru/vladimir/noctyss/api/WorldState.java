@@ -27,7 +27,7 @@ import java.util.Map;
  * @param activeEvents    A map tracking currently active events by their {@code EventType}.
  * @param allowedEvents   A list of {@code EventType} that can be triggered in the world.
  */
-record WorldState(World world, Map<EventType, EventInstance> activeEvents, List<EventType> allowedEvents) {
+record WorldState(World world, Map<EventType, EventInstance> activeEvents, Map<EventType, Long> lastEvent, List<EventType> allowedEvents) {
 
     // ================================
     // ACTIVE EVENTS
@@ -39,9 +39,10 @@ record WorldState(World world, Map<EventType, EventInstance> activeEvents, List<
         return true;
     }
 
-    boolean removeActiveEvent(EventType eventType) {
+    boolean removeActiveEvent(EventType eventType, long day) {
         if (!isEventActive(eventType) || !isEventAllowed(eventType)) return false;
         activeEvents.remove(eventType);
+        updateLastEvent(eventType, day);
         return true;
     }
 
@@ -67,6 +68,18 @@ record WorldState(World world, Map<EventType, EventInstance> activeEvents, List<
     @Override @NotNull
     public Map<EventType, EventInstance> activeEvents() {
         return Map.copyOf(activeEvents);
+    }
+
+    // ================================
+    // LAST EVENTS
+    // ================================
+
+    private void updateLastEvent(EventType eventType, long day) {
+        lastEvent.put(eventType, day);
+    }
+
+    public long getDayOfLastTimeEvent(EventType eventType) {
+        return (lastEvent.containsKey(eventType)) ? lastEvent.get(eventType) : -1;
     }
 
     // ================================

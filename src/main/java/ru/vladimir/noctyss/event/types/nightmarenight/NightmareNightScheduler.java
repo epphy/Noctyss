@@ -16,7 +16,6 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -32,7 +31,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     private final MessageConfig messageConfig;
     private final Random random;
     private final Set<World> checkedWorlds = new HashSet<>();
-    private List<World> worlds;
+    private Set<World> worlds;
     private int eventChance;
     private int taskId = -1;
 
