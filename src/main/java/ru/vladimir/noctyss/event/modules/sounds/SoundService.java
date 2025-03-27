@@ -97,7 +97,7 @@ public class SoundService implements Module {
         private final List<SoundManager> soundManagers = new ArrayList<>();
 
         public Builder addSoundMuter() {
-            final SoundMuter soundManager = new SoundMuter(world);
+            final SoundMuter soundManager = new SoundMuter(plugin, world);
             soundManagers.add(soundManager);
             return this;
         }

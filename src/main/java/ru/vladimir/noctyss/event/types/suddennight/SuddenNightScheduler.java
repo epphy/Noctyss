@@ -41,6 +41,9 @@ public final class SuddenNightScheduler implements EventScheduler {
             cache();
             taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                     plugin, this::processWorlds, DELAY, checkFrequencyTicks).getTaskId();
+            LoggerUtility.info(this, "Started");
+        } else {
+            LoggerUtility.info(this, "Event is disabled");
         }
     }
 
@@ -66,13 +69,14 @@ public final class SuddenNightScheduler implements EventScheduler {
     private boolean isCooldown(World world) {
         final long currentDay = GameTimeUtility.getDay(world);
         final long lastTimeDayEvent = EventAPI.getLastDayTheEventWas(world, eventType);
-        return (currentDay - lastTimeDayEvent) > cooldownDays;
+        return !((currentDay - lastTimeDayEvent) >= cooldownDays);
     }
 
     @Override
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
+            LoggerUtility.info(this, "Stopped");
         }
     }
 
@@ -81,5 +85,16 @@ public final class SuddenNightScheduler implements EventScheduler {
         checkFrequencyTicks = config.getCheckFrequencyTicks();
         eventChance = config.getEventChance();
         cooldownDays = config.getCooldownDays();
+    }
+
+    @Override
+    public String toString() {
+        return "SuddenNightScheduler{" +
+                "taskId=" + taskId +
+                ", cooldownDays=" + cooldownDays +
+                ", eventChance=" + eventChance +
+                ", checkFrequencyTicks=" + checkFrequencyTicks +
+                ", worlds=" + worlds +
+                '}';
     }
 }
