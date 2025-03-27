@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.config;
 
+import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

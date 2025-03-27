@@ -36,9 +36,14 @@ public class GameTimeUtility {
         }
     }
 
+    public static boolean isDay(World world) {
+        final long worldDayTime = world.getTime();
+        return worldDayTime <= 10000L;
+    }
+
     public static boolean isNight(World world) {
         final long worldDayTime = world.getTime();
-        return worldDayTime >= NIGHT_START_TICKS_TIME && worldDayTime <= NIGHT_END_TICKS_TIME;
+        return worldDayTime >= NIGHT_START_TICKS_TIME;
     }
 
     public static boolean isMidnight(World world) {
