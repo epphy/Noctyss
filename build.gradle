@@ -19,9 +19,13 @@ repositories {
         name = "jitpack"
         url "https://jitpack.io/"
     }
+    maven {
+        url "https://repo.dmulloy2.net/repository/public/"
+    }
 }
 
 dependencies {
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.3.0'
     compileOnly("com.github.ZockerAxel:CrazyAdvancementsAPI:2.1.21")
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
