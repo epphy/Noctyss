@@ -10,7 +10,7 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 
 @RequiredArgsConstructor
-public class AbruptNight implements TimeModificationRule, Controllable {
+public class SmoothSuddenNight implements TimeModificationRule, Controllable {
     private static final long MIDNIGHT_TIME = 18000L;
     private final JavaPlugin plugin;
     private final EventManager eventManager;
@@ -22,9 +22,12 @@ public class AbruptNight implements TimeModificationRule, Controllable {
     private long elapsedTime;
     private int taskId = -1;
 
+
+
     @Override
     public void start() {
         originalTime = world.getTime();
+        GameTimeUtility.setTimeDynamically(world, MIDNIGHT_TIME, frequency);
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously
                 (plugin, this::processTime, frequency, frequency).getTaskId();
     }
@@ -44,7 +47,7 @@ public class AbruptNight implements TimeModificationRule, Controllable {
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            GameTimeUtility.setTime(world, originalTime);
+            GameTimeUtility.setTimeDynamically(world, originalTime, frequency);
         }
     }
 }

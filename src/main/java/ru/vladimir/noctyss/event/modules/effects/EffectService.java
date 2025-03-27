@@ -84,7 +84,7 @@ public class EffectService implements Module {
         private final List<EffectManager> effectManagers = new ArrayList<>();
 
         public Builder addDarknessAtStartProvider(int duration) {
-            final DarknessAtStartProvider effectManager = new DarknessAtStartProvider(plugin, world, duration);
+            final SmoothDarknessTransition effectManager = new SmoothDarknessTransition(plugin, world, duration);
             effectManagers.add(effectManager);
             return this;
         }

@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 import ru.vladimir.noctyss.event.Controllable;
 
 @RequiredArgsConstructor
-final class DarknessAtStartProvider implements EffectManager, Controllable {
+final class SmoothDarknessTransition implements EffectManager, Controllable {
     private static final int EXTRA_DELAY = 60;
     private final JavaPlugin plugin;
     private final World world;
@@ -18,15 +18,19 @@ final class DarknessAtStartProvider implements EffectManager, Controllable {
 
     @Override
     public void start() {
+        giveEffect();
+    }
+
+    @Override
+    public void stop() {
+        giveEffect();
+    }
+
+    private void giveEffect() {
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () ->
                     player.addPotionEffect(new PotionEffect(
                             PotionEffectType.DARKNESS, duration + EXTRA_DELAY, 0)));
         }
-    }
-
-    @Override
-    public void stop() {
-        // Stop logic is not expected
     }
 }

@@ -73,8 +73,8 @@ public class TimeModifyService implements Module {
         }
 
         public Builder addAbruptNight(long frequency, long nightLength) {
-            final AbruptNight abruptNight = new AbruptNight(plugin, eventManager, eventType, world, nightLength, frequency);
-            rules.add(abruptNight);
+            final SmoothSuddenNight smoothSuddenNight = new SmoothSuddenNight(plugin, eventManager, eventType, world, nightLength, frequency);
+            rules.add(smoothSuddenNight);
             return this;
         }
 

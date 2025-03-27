@@ -69,7 +69,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     private boolean isCooldown(World world) {
         final long currentDay = GameTimeUtility.getDay(world);
         final long lastTimeDayEvent = EventAPI.getLastDayTheEventWas(world, eventType);
-        return !((currentDay - lastTimeDayEvent) >= cooldownDays);
+        return (currentDay - lastTimeDayEvent) < cooldownDays;
     }
 
     @Override

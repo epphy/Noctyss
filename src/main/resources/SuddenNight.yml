@@ -1,17 +1,3 @@
-# Event may spawn between 0 and 10,000 ticks of a day.
-# When it does spawn, based on the config, we may apply
-# the darkness effect on players before abruptly setting
-# time to midnight. Furthermore, we start thunder without
-# rain. Event lasts as long as is stated. All sounds stop too.
-#
-# During the event, we either have absolute silence or
-# some nether-theme ambience. Light will dim. No new entities
-# spawn during this event. While in other worlds everything
-# functions as usual.
-#
-# At event stop, we play some rewind sound and set time back
-# to where it was before the event started.
-
 # Sudden Night event settings
 #
 # Everything is measured in ticks unless said otherwise
