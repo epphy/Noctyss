@@ -29,12 +29,12 @@ settings:
     fade-effect: true # Applies darkness before
 
   sound:
-    silence: true # If true, no sounds will players hear; atmospheric ambience otherwise
+    music: true # If true, an atmospheric music will play; absolute silence otherwise
 
   notification:
     end:
       enabled: true
       one-time: true
       frame: task # task, goal, challenge
-      icon: CLOCK
+      icon: clock
       text: "Did it seem to me?"

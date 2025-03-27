@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.comphenix.protocol:ProtocolLib:5.3.0'
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
     compileOnly("com.github.ZockerAxel:CrazyAdvancementsAPI:2.1.21")
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")

@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.types.suddennight;
 
+import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
@@ -13,6 +14,7 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.effects.EffectService;
+import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
@@ -26,6 +28,7 @@ public class SuddenNightInstance implements EventInstance {
     private final Set<Module> modules = new HashSet<>();
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
+    private final ProtocolManager protocolManager;
     private final EventManager eventManager;
     private final SuddenNightConfig config;
     private final MessageConfig messageConfig;
@@ -94,5 +97,20 @@ public class SuddenNightInstance implements EventInstance {
                             .build()
             );
         }
+
+        final SoundService.Builder soundServiceBuilder = new SoundService.Builder(
+                plugin,
+                pluginManager,
+                protocolManager,
+                world,
+                eventType
+        );
+
+        soundServiceBuilder.addSoundMuter();
+        if (config.isMusicEnabled()) {
+
+        }
+
+        modules.add(soundServiceBuilder.build());
     }
 }

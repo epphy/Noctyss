@@ -1,5 +1,8 @@
 package ru.vladimir.noctyss;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.api.WorldStateConfigurer;
@@ -61,7 +64,10 @@ public final class Noctyss extends JavaPlugin {
                 new PlayerNotificationStorage(this), // TODO
                 new PlayerNotificationSerializer()); // TODO
         service.init(); // TODO
-        GlobalEventScheduler eventScheduler = new GlobalEventScheduler(this, service, getServer().getPluginManager(), configService, eventManager); // TODO
+        PluginManager pluginManager = getServer().getPluginManager(); // TODO
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager(); // TODO
+        GlobalEventScheduler eventScheduler = new GlobalEventScheduler( // TODO
+                this, service, pluginManager, protocolManager, configService, eventManager); // TODO
         eventScheduler.start(); // TODO
     }
 

@@ -21,6 +21,7 @@ public final class SuddenNightConfig implements AbstractConfig {
     private static final String SETTINGS = "settings.";
     private static final String TIME_SETTINGS = SETTINGS + "time.";
     private static final String EFFECT_SETTINGS = SETTINGS + "effect.";
+    private static final String SOUND_SETTINGS = SETTINGS + "sound.";
     private static final String NOTIFICATION_SETTINGS = SETTINGS + "notification.";
     private final JavaPlugin plugin;
     private File file;
@@ -32,6 +33,7 @@ public final class SuddenNightConfig implements AbstractConfig {
     private long nightLength;
     private long timeUpdateFrequencyTicks;
     private boolean isFadeEffectEnabled;
+    private boolean isMusicEnabled;
     private boolean isEndToastEnabled;
     private boolean isEndToastOneTime;
     private ToastNotification endToast;
@@ -58,6 +60,7 @@ public final class SuddenNightConfig implements AbstractConfig {
         parseGeneral();
         parseTime();
         parseEffect();
+        parseSound();
         parseNotification();
     }
 
@@ -75,6 +78,10 @@ public final class SuddenNightConfig implements AbstractConfig {
 
     private void parseEffect() {
         isFadeEffectEnabled = fileConfig.getBoolean(EFFECT_SETTINGS + "fade-effect", true);
+    }
+
+    private void parseSound() {
+        isMusicEnabled = fileConfig.getBoolean(SOUND_SETTINGS + "music", true);
     }
 
     private void parseNotification() {

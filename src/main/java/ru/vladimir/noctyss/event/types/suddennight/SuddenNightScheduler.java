@@ -1,10 +1,13 @@
 package ru.vladimir.noctyss.event.types.suddennight;
 
+import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
+import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.config.SuddenNightConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
@@ -20,7 +23,10 @@ public final class SuddenNightScheduler implements EventScheduler {
     private static final EventType eventType = EventType.SUDDEN_NIGHT;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
+    private final ProtocolManager protocolManager;
     private final SuddenNightConfig config;
+    private final MessageConfig messageConfig;
     private final EventManager eventManager;
     private final Random random;
     private Set<World> worlds;
@@ -46,7 +52,8 @@ public final class SuddenNightScheduler implements EventScheduler {
             if (!isPassingChance()) continue;
             if (isCooldown(world)) continue;
 
-            final SuddenNightInstance instance = new SuddenNightInstance();
+            final SuddenNightInstance instance = new SuddenNightInstance(
+                    plugin, pluginManager, protocolManager, eventManager, config, messageConfig, world);
             eventManager.startEvent(world, eventType, instance);
             LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
         }

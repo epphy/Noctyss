@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event;
 
+import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +21,7 @@ public class GlobalEventScheduler implements EventScheduler {
     private final JavaPlugin plugin;
     private final PlayerNotificationService service;
     private final PluginManager pluginManager;
+    private final ProtocolManager protocolManager;
     private final ConfigService configService;
     private final EventManager eventManager;
 
@@ -39,8 +41,9 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void addSuddenNight() {
-        final SuddenNightScheduler scheduler = new SuddenNightScheduler(plugin, configService.getSuddenNightConfig(),
-                eventManager, new Random());
+        final SuddenNightScheduler scheduler = new SuddenNightScheduler(
+                plugin, pluginManager, protocolManager, configService.getSuddenNightConfig(),
+                configService.getMessageConfig(), eventManager, new Random());
         EVENT_SCHEDULERS.put(EventType.SUDDEN_NIGHT, scheduler);
         scheduler.start();
         LoggerUtility.info(this, "SuddenNightScheduler has been started");

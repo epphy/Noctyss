@@ -44,7 +44,7 @@ record WorldStateManager(Map<World, WorldState> worldStates) {
     @NotNull
     WorldState getWorldState(World world) {
         if (!hasWorldState(world)) {
-            worldStates.put(world, new WorldState(world, new HashMap<>(), new ArrayList<>()));
+            worldStates.put(world, new WorldState(world, new HashMap<>(), new HashMap<>(), new ArrayList<>()));
         }
         return worldStates.get(world);
     }
