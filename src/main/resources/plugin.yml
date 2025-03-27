@@ -1,5 +1,5 @@
-name: VOTVProduction
-version: '1.0.0'
+name: Noctyss
+version: '1.0.1'
 main: ru.vladimir.votvproduction.VOTVProduction
 api-version: '1.21'
 prefix: VOTVProduction

@@ -1,0 +1,11 @@
+settings:
+  check-frequency: 2000 # How often it will try to spawn the event
+  night-length: 2400
+
+  effects:
+    give-frequency: 200
+    effects: []
+
+  sounds:
+    play-frequency: 600
+    sounds: ["ambient.cave"]
