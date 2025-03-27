@@ -1,16 +1,16 @@
 name: Noctyss
 version: '1.0.1'
-main: ru.vladimir.votvproduction.VOTVProduction
+main: ru.vladimir.noctyss.Noctyss
 api-version: '1.21'
-prefix: VOTVProduction
+prefix: Noctyss
 author: Ephy
-description: VOTVProduction is a modular, event-driven PaperMC plugin that introduces dynamic, unpredictable gameplay experiences based on the Voices of the Void game. It provides a flexible API, optimized performance, and an extensible framework for creating and managing custom events.
+description: Noctyss - is a new plugin which focuses on delivering unpredictable gaming experience for your players, and adds something that fits Minecraft really well - horror.
 website: https://github.com/epphy
 
 depend:
   - CrazyAdvancementsAPI
 
 commands:
-  votv:
-    usage: /votv [start/stop/list/debug] <event> <world>
-    description: Main command to manage all events of VOTVProduction.
+  noctyss:
+    usage: /noctyss [start/stop/list/debug] <event> <world>
+    description: Main command to manage all events of Noctyss.
