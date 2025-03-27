@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.modules.sounds;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketListener;
 import lombok.Getter;
@@ -97,7 +98,9 @@ public class SoundService implements Module {
         private final List<SoundManager> soundManagers = new ArrayList<>();
 
         public Builder addSoundMuter() {
-            final SoundMuter soundManager = new SoundMuter(plugin, world);
+            final PacketType[] soundPackets = new PacketType[]
+                    {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
+            final SoundMuter soundManager = new SoundMuter(plugin, world, soundPackets);
             soundManagers.add(soundManager);
             return this;
         }
