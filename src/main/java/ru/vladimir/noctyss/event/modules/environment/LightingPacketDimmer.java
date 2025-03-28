@@ -53,19 +53,21 @@ final class LightingPacketDimmer extends PacketAdapter implements EnvironmentMod
 
         Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
             LoggerUtility.info(this, "First test");
+            event.getPlayer().sendMessage("First test!");
             lightData.setSkyYMask(new BitSet(0));
             lightData.setBlockYMask(new BitSet(0));
-        }, 200L);
+        }, 600L);
 
         Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
             LoggerUtility.info(this, "Last test!");
+            event.getPlayer().sendMessage("Last test!");
             lightData.setSkyYMask(new BitSet(100));
             lightData.setBlockYMask(new BitSet(100));
         }, 600L);
 
-        LoggerUtility.info(this, "Setting back!");
-
         Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
+            LoggerUtility.info(this, "Setting back!");
+            event.getPlayer().sendMessage("Setting back!");
             lightData.setSkyYMask(a);
             lightData.setBlockYMask(b);
         }, 600L);
