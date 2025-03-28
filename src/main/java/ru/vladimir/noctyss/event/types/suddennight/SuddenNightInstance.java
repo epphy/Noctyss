@@ -14,6 +14,7 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.effects.EffectService;
+import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
@@ -112,6 +113,17 @@ public class SuddenNightInstance implements EventInstance {
                         pluginManager,
                         world)
                         .addNoSpawnRate()
+                        .build()
+        );
+
+        modules.add(
+                new EnvironmentService.Builder(
+                        plugin,
+                        pluginManager,
+                        protocolManager,
+                        world,
+                        eventType)
+                        .addLightDimmer()
                         .build()
         );
     }

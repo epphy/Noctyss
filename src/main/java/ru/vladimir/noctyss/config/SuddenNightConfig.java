@@ -106,7 +106,7 @@ public final class SuddenNightConfig implements AbstractConfig {
     }
 
     private boolean isAllowedSound(String soundName) {
-        return soundName.startsWith("minecraft:music_nether");
+        return soundName.startsWith("minecraft:music.nether");
     }
 
     private void loadDisallowedSounds(Registry<@NotNull Sound> soundRegistry) {
@@ -128,7 +128,7 @@ public final class SuddenNightConfig implements AbstractConfig {
 
     private boolean isDisallowedSound(String soundName) {
         return soundName.startsWith("minecraft:music_disc") ||
-                soundName.startsWith("minecraft:music_overworld");
+                soundName.startsWith("minecraft:music.overworld");
     }
 
         private void loadHardcodedSounds() {

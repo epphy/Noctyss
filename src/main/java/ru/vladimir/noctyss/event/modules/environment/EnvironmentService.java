@@ -1,5 +1,8 @@
 package ru.vladimir.noctyss.event.modules.environment;
 
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketListener;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
@@ -18,6 +21,7 @@ import java.util.List;
 public class EnvironmentService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
+    private final ProtocolManager protocolManager;
     private final World world;
     private final EventType eventType;
     private final List<EnvironmentModifier> modifiers;
@@ -25,6 +29,7 @@ public class EnvironmentService implements Module {
     private EnvironmentService(Builder builder) {
         this.plugin = builder.getPlugin();
         this.pluginManager = builder.getPluginManager();
+        this.protocolManager = builder.getProtocolManager();
         this.world = builder.getWorld();
         this.eventType = builder.getEventType();
         this.modifiers = builder.getModifiers();
@@ -41,6 +46,10 @@ public class EnvironmentService implements Module {
 
             if (modifier instanceof Listener) {
                 pluginManager.registerEvents((Listener) modifier, plugin);
+            }
+
+            if (modifier instanceof PacketAdapter) {
+                protocolManager.addPacketListener((PacketListener) modifier);
             }
 
             started++;
@@ -65,6 +74,10 @@ public class EnvironmentService implements Module {
                 HandlerList.unregisterAll((Listener) modifier);
             }
 
+            if (modifier instanceof PacketAdapter) {
+                protocolManager.removePacketListener((PacketListener) modifier);
+            }
+
             stopped++;
             LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
                     .formatted(modifier.getClass().getSimpleName(), world.getName(), eventType.name()));
@@ -79,6 +92,7 @@ public class EnvironmentService implements Module {
     public static class Builder {
         private final JavaPlugin plugin;
         private final PluginManager pluginManager;
+        private final ProtocolManager protocolManager;
         private final World world;
         private final EventType eventType;
         private final List<EnvironmentModifier> modifiers = new ArrayList<>();
