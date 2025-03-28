@@ -16,22 +16,34 @@ import java.util.Random;
 @RequiredArgsConstructor
 final class AmbientSoundScheduler implements SoundManager, Controllable {
     private final JavaPlugin plugin;
-    private final long[] delay;
-    private final long[] frequency;
+    private final long[] delayRange;
+    private final long[] frequencyRange;
     private final World world;
     private final EventType eventType;
     private final List<Sound> sounds;
     private final Random random;
+    private long delay;
+    private long frequency;
     private int taskId = -1;
 
     @Override
     public void start() {
+        setSchedulerParams();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::playAmbient, delay, frequency).getTaskId();
     }
 
     private void setSchedulerParams() {
+        delay = getDelay();
+        frequency = getFrequency();
+    }
 
+    private long getDelay() {
+        return random.nextLong(delayRange[0], delayRange[1]);
+    }
+
+    public long getFrequency() {
+        return random.nextLong(frequencyRange[0], frequencyRange[1]);
     }
 
     private void playAmbient() {

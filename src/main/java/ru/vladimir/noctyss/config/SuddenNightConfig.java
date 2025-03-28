@@ -33,13 +33,13 @@ public final class SuddenNightConfig implements AbstractConfig {
     private File file;
     private FileConfiguration fileConfig;
     private final long[] ambientPlayFrequencyTicks = new long[] {2400L, 3600L};
-    private final long[] ambientPlayDelayTicks = new long[] {};
+    private final long[] ambientPlayDelayTicks = new long[] {200L, 1200L};
     private final List<Sound> allowedSounds = new ArrayList<>();
     private final Set<Sound> disallowedSounds = new HashSet<>();
     private final Sound rewindSound = Sound.UI_TOAST_IN;
     private final long ambientStopFrequency = 20L;
     private final long nightTimeModifyFrequency = 100L;
-    private final long[] nightLength;
+    private final long[] nightLength = new long[] {2400L, 8400L};
     private boolean isEventEnabled;
     private double eventChance;
     private long checkFrequencyTicks;
@@ -77,17 +77,44 @@ public final class SuddenNightConfig implements AbstractConfig {
         parseNotification();
     }
 
+//    INTERNAL
+
     private void loadInternalSettings() {
-        loadDisallowedSounds();
+        final Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+        loadAllowedSounds(soundRegistry);
+        loadDisallowedSounds(soundRegistry);
+
+        // TODO
+        LoggerUtility.info(this, "EXAMPLE: " + soundRegistry.getKey(Sound.MUSIC_NETHER_NETHER_WASTES));
+        LoggerUtility.info(this, "");
+        LoggerUtility.info(this, "Allowed: %s".formatted(allowedSounds));
+        LoggerUtility.info(this, "");
+        LoggerUtility.info(this, "Disallowed: %s".formatted(disallowedSounds));
     }
 
-    private void loadDisallowedSounds() {
-        loadSoundsFromRegistry();
+    private void loadAllowedSounds(Registry<@NotNull Sound> soundRegistry) {
+        allowedSounds.addAll(soundRegistry.stream()
+                .map(soundRegistry::getKey)
+                .filter(Objects::nonNull)
+                .map(NamespacedKey::toString)
+                .filter(this::isAllowedSound)
+                .map(NamespacedKey::fromString)
+                .filter(Objects::nonNull)
+                .map(soundRegistry::get)
+                .collect(Collectors.toSet())
+        );
+    }
+
+    private boolean isAllowedSound(String soundName) {
+        return soundName.startsWith("minecraft:music_nether");
+    }
+
+    private void loadDisallowedSounds(Registry<@NotNull Sound> soundRegistry) {
+        loadSoundsFromRegistry(soundRegistry);
         loadHardcodedSounds();
     }
 
-    private void loadSoundsFromRegistry() {
-        final Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+    private void loadSoundsFromRegistry(Registry<@NotNull Sound> soundRegistry) {
         disallowedSounds.addAll(soundRegistry.stream()
                 .map(soundRegistry::getKey)
                 .filter(Objects::nonNull)
@@ -109,6 +136,8 @@ public final class SuddenNightConfig implements AbstractConfig {
                 Sound.MUSIC_CREATIVE, Sound.MUSIC_GAME, Sound.MUSIC_CREDITS, Sound.MUSIC_DRAGON,
                 Sound.MUSIC_END, Sound.MUSIC_MENU, Sound.MUSIC_UNDER_WATER));
     }
+
+//    EXTERNAL
 
     private void parseGeneral() {
         isEventEnabled = fileConfig.getBoolean(SETTINGS + "enabled", true);
