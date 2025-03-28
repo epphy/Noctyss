@@ -105,6 +105,12 @@ public class SoundService implements Module {
             return this;
         }
 
+        public Builder addAmbiencePlayer() {
+            final AmbiencePlayer soundManager = new AmbiencePlayer();
+            soundManagers.add(soundManager);
+            return this;
+        }
+
         public SoundService build() {
             return new SoundService(this);
         }

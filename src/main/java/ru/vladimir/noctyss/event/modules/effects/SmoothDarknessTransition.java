@@ -30,7 +30,7 @@ final class SmoothDarknessTransition implements EffectManager, Controllable {
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () ->
                     player.addPotionEffect(new PotionEffect(
-                            PotionEffectType.DARKNESS, duration + EXTRA_DELAY, 0)));
+                            PotionEffectType.DARKNESS, duration + EXTRA_DELAY, 0, false, false)));
         }
     }
 }

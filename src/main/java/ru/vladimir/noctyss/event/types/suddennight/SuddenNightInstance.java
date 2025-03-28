@@ -107,6 +107,8 @@ public class SuddenNightInstance implements EventInstance {
         );
 
         soundServiceBuilder.addSoundMuter();
+        soundServiceBuilder.addAmbiencePlayer();
+
         if (config.isMusicEnabled()) {
 
         }

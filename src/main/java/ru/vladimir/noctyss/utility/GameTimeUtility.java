@@ -68,6 +68,7 @@ public class GameTimeUtility {
         final AtomicLong elapsedTime = new AtomicLong();
         final AtomicLong timeChange = new AtomicLong();
         final AtomicInteger taskId = new AtomicInteger();
+
         taskId.set(Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             setTime(world, worldTime + timeChange.addAndGet(timeChangeChange));
             if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= time) {
