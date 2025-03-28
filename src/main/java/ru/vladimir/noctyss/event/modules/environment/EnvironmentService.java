@@ -98,7 +98,7 @@ public class EnvironmentService implements Module {
         private final List<EnvironmentModifier> modifiers = new ArrayList<>();
 
         public Builder addLightDimmer() {
-            modifiers.add(new LightDimmer(plugin, world));
+            modifiers.add(new LightingPacketDimmer(plugin, world));
             return this;
         }
 

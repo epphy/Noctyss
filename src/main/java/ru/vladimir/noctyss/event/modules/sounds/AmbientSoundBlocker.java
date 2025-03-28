@@ -38,6 +38,7 @@ class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Control
 
     @Override
     public void start() {
+        stopAllSounds();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::stopAllSounds, DELAY, stopFrequency).getTaskId();
     }

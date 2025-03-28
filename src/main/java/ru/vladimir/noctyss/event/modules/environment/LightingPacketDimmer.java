@@ -12,14 +12,15 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
+import java.util.BitSet;
 import java.util.List;
 
-final class LightDimmer extends PacketAdapter implements EnvironmentModifier {
+final class LightingPacketDimmer extends PacketAdapter implements EnvironmentModifier {
     private static final PacketType packetType = PacketType.Play.Server.LIGHT_UPDATE;
     private final JavaPlugin plugin;
     private final World world;
 
-    LightDimmer(Plugin plugin, World world, PacketType... types) {
+    LightingPacketDimmer(Plugin plugin, World world, PacketType... types) {
         super(plugin, packetType);
         this.plugin = (JavaPlugin) plugin;
         this.world = world;
@@ -41,12 +42,10 @@ final class LightDimmer extends PacketAdapter implements EnvironmentModifier {
 
     private void dimLight(PacketEvent event) {
         final PacketContainer packet = event.getPacket();
-        final StructureModifier<WrappedLevelChunkData.LightData> lightDataStructureModifier = packet.getLightUpdateData();
-        final List<WrappedLevelChunkData.LightData> lightDataList = lightDataStructureModifier.getValues();
         final WrappedLevelChunkData.LightData lightData = packet.getLightUpdateData().read(0);
 
-        LoggerUtility.info(this, "Size: %d".formatted(lightDataList.size()));
-        LoggerUtility.info(this, "");
+        final BitSet a = lightData.getBlockYMask();
+        final BitSet b = lightData.getSkyYMask();
 
         LoggerUtility.info(this, "{SkyYMask=%s, BlockYMask=%s, EmptySkyYMask=%s, EmptyBlockYMask=%s, SkyUpdates=%s, BlockUpdates=%s}"
                 .formatted(lightData.getSkyYMask(), lightData.getBlockYMask(), lightData.getEmptySkyYMask(), lightData.getEmptyBlockYMask(),
@@ -56,8 +55,30 @@ final class LightDimmer extends PacketAdapter implements EnvironmentModifier {
         LoggerUtility.info(this, "TEST TIME!");
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            //
+            lightData.setSkyYMask(new BitSet(0));
+            lightData.setBlockYMask(new BitSet(0));
         }, 200L);
+
+        LoggerUtility.info(this, "One more test!");
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            lightData.setSkyYMask(new BitSet(-100));
+            lightData.setBlockYMask(new BitSet(-100));
+        }, 600);
+
+        LoggerUtility.info(this, "Last test!");
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            lightData.setSkyYMask(new BitSet(100));
+            lightData.setBlockYMask(new BitSet(100));
+        }, 600L);
+
+        LoggerUtility.info(this, "Setting back!");
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            lightData.setSkyYMask(a);
+            lightData.setBlockYMask(b);
+        }, 600L);
     }
 
     private boolean isWrongWorld(PacketEvent event) {
