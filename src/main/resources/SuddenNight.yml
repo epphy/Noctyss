@@ -7,13 +7,6 @@ settings:
   check-frequency: 3000
   cooldown-in-days: 10 # After how many days the event may occur again
 
-  time:
-    night-length: 2400
-    time-update-frequency: 50
-
-  effect:
-    fade-effect: true # Applies darkness before
-
   sound:
     music: true # If true, an atmospheric music will play; absolute silence otherwise
 

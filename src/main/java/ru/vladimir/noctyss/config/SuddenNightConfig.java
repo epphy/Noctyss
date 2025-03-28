@@ -28,23 +28,23 @@ import java.util.stream.Collectors;
 public final class SuddenNightConfig implements AbstractConfig {
     private static final String FILE_NAME = "SuddenNight.yml";
     private static final String SETTINGS = "settings.";
-    private static final String TIME_SETTINGS = SETTINGS + "time.";
     private static final String EFFECT_SETTINGS = SETTINGS + "effect.";
     private static final String SOUND_SETTINGS = SETTINGS + "sound.";
     private static final String NOTIFICATION_SETTINGS = SETTINGS + "notification.";
     private final JavaPlugin plugin;
     private File file;
     private FileConfiguration fileConfig;
-    private final long ambientPlayFrequencyTicks =
+    private final long[] ambientPlayFrequencyTicks = new long[] {2400L, 3600L};
+    private final long[] ambientPlayDelayTicks = new long[] {};
+    private final Set<Sound> allowedSounds = new HashSet<>();
     private final Set<Sound> disallowedSounds = new HashSet<>();
     private final Sound rewindSound = Sound.UI_TOAST_IN;
     private final long ambientStopFrequency = 20L;
+    private final long[] nightLength;
     private boolean isEventEnabled;
     private double eventChance;
     private long checkFrequencyTicks;
     private long cooldownDays;
-    private long nightLength;
-    private long timeUpdateFrequencyTicks;
     private boolean isFadeEffectEnabled;
     private boolean isMusicEnabled;
     private boolean isEndToastEnabled;
@@ -73,7 +73,6 @@ public final class SuddenNightConfig implements AbstractConfig {
         loadInternalSettings();
 
         parseGeneral();
-        parseTime();
         parseEffect();
         parseSound();
         parseNotification();
@@ -117,11 +116,6 @@ public final class SuddenNightConfig implements AbstractConfig {
         eventChance = fileConfig.getDouble(SETTINGS + "event-chance", 0.05);
         checkFrequencyTicks = fileConfig.getInt(SETTINGS + "check-frequency", 3000);
         cooldownDays = fileConfig.getInt(SETTINGS + "cooldown-in-days", 10);
-    }
-
-    private void parseTime() {
-        nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 2400);
-        timeUpdateFrequencyTicks = fileConfig.getInt(TIME_SETTINGS + "time-update-frequency", 50);
     }
 
     private void parseEffect() {
