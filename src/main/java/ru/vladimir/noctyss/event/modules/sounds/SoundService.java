@@ -18,6 +18,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class SoundService implements Module {
@@ -108,8 +109,9 @@ public class SoundService implements Module {
             return this;
         }
 
-        public Builder addAmbiencePlayer() {
-            final AmbiencePlayer soundManager = new AmbiencePlayer();
+        public Builder addAmbiencePlayer(long delay, long frequency, List<Sound> sounds, Random random) {
+            final AmbientSoundScheduler soundManager = new AmbientSoundScheduler(
+                    plugin, delay, frequency, world, eventType, sounds, random);
             soundManagers.add(soundManager);
             return this;
         }

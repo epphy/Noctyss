@@ -35,6 +35,7 @@ public final class SuddenNightConfig implements AbstractConfig {
     private final JavaPlugin plugin;
     private File file;
     private FileConfiguration fileConfig;
+    private final long ambientPlayFrequencyTicks =
     private final Set<Sound> disallowedSounds = new HashSet<>();
     private final Sound rewindSound = Sound.UI_TOAST_IN;
     private final long ambientStopFrequency = 20L;

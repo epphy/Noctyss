@@ -7,17 +7,19 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
+import ru.vladimir.noctyss.event.EventType;
+import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @RequiredArgsConstructor
-final class AmbiencePlayer implements SoundManager, Controllable {
+final class AmbientSoundScheduler implements SoundManager, Controllable {
     private final JavaPlugin plugin;
     private final long delay;
     private final long frequency;
     private final World world;
+    private final EventType eventType;
     private final List<Sound> sounds;
     private final Random random;
     private int taskId = -1;
@@ -25,15 +27,21 @@ final class AmbiencePlayer implements SoundManager, Controllable {
     @Override
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::playAmbience, delay, frequency).getTaskId();
+                plugin, this::playAmbient, delay, frequency).getTaskId();
     }
 
-    private void playAmbience() {
+    private void playAmbient() {
         final Sound sound = getSound();
         if (sound == null) {
-
+            LoggerUtility.warn(this, "Failed to play an ambience for players in '%s' for '%s'"
+                    .formatted(world.getName(), eventType.name()));
+            return;
         }
 
+        for (final Player player : world.getPlayers()) {
+            Bukkit.getScheduler().runTask(plugin, () ->
+                    player.playSound(player, sound, 1.0f, 1.0f));
+        }
     }
 
     private Sound getSound() {
@@ -46,11 +54,11 @@ final class AmbiencePlayer implements SoundManager, Controllable {
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            stopAmbience();
+            stopAmbient();
         }
     }
 
-    private void stopAmbience() {
+    private void stopAmbient() {
         for (final Player player : world.getPlayers()) {
             for (final Sound sound : sounds) {
                 Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(sound));
