@@ -27,13 +27,7 @@ final class LightingPacketDimmer extends PacketAdapter implements EnvironmentMod
     public void onPacketSending(PacketEvent event) {
         if (isWrongWorld(event)) return;
         LoggerUtility.info(this, "Sent");
-        dimLight(event);
-    }
-
-    @Override
-    public void onPacketReceiving(PacketEvent event) {
-        if (isWrongWorld(event)) return;
-        LoggerUtility.info(this, "Received");
+        event.getPlayer().sendMessage("Sent");
         dimLight(event);
     }
 
@@ -63,14 +57,14 @@ final class LightingPacketDimmer extends PacketAdapter implements EnvironmentMod
             event.getPlayer().sendMessage("Last test!");
             lightData.setSkyYMask(new BitSet(100));
             lightData.setBlockYMask(new BitSet(100));
-        }, 600L);
+        }, 1200L);
 
         Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
             LoggerUtility.info(this, "Setting back!");
             event.getPlayer().sendMessage("Setting back!");
             lightData.setSkyYMask(a);
             lightData.setBlockYMask(b);
-        }, 600L);
+        }, 1800L);
     }
 
     private boolean isWrongWorld(PacketEvent event) {

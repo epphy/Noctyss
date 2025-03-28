@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.event.modules.sounds;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -32,6 +33,12 @@ class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Control
     @Override
     public void onPacketSending(PacketEvent event) {
         if (!event.getPlayer().getWorld().equals(world)) return;
+
+        if (event.getPacket().getSoundCategories().read(0) == EnumWrappers.SoundCategory.MUSIC) {
+            final Sound sound = event.getPacket().getSoundEffects().read(0);
+            LoggerUtility.info(this, "Following sound called: " + sound);
+            if (!disallowedSounds.contains(sound)) return;
+        }
         event.setCancelled(true);
         stopDisallowedSounds();
     }

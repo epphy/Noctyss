@@ -54,6 +54,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
             return;
         }
 
+        LoggerUtility.info(this, "Scheduling sound '%s'".formatted(sound));
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
