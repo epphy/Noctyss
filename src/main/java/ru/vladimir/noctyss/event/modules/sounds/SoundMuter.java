@@ -8,10 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-public class SoundMuter extends PacketAdapter implements SoundManager {
+// Todo
+class SoundMuter extends PacketAdapter implements SoundManager {
     private final World world;
 
-    public SoundMuter(Plugin plugin, World world, PacketType... types) {
+    SoundMuter(Plugin plugin, World world, PacketType... types) {
         super(plugin, types);
         this.world = world;
     }
