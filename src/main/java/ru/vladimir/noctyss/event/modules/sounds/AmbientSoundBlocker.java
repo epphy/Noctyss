@@ -5,52 +5,48 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.NotePlayEvent;
 import org.bukkit.plugin.Plugin;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-class SoundMuter extends PacketAdapter implements SoundManager, Listener, Controllable {
+import java.util.Set;
+
+class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Controllable {
     private static final long DELAY = 0L;
-    private static final long FREQUENCY = 20L;
     private final World world;
+    private final Set<Sound> disallowedSounds;
+    private final Sound rewindSound;
+    private final long stopFrequency;
     private int taskId = -1;
 
-    SoundMuter(Plugin plugin, World world, PacketType... types) {
+    AmbientSoundBlocker(Plugin plugin, World world, Set<Sound> disallowedSounds, Sound rewindSound, long stopFrequency, PacketType... types) {
         super(plugin, types);
         this.world = world;
+        this.disallowedSounds = disallowedSounds;
+        this.rewindSound = rewindSound;
+        this.stopFrequency = stopFrequency;
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        LoggerUtility.info(this, "Packet has been sent");
         if (!event.getPlayer().getWorld().equals(world)) return;
         event.setCancelled(true);
-        stopAllSounds();
-    }
-
-    @EventHandler
-    private void on(NotePlayEvent event) {
-        if (!event.getBlock().getWorld().equals(world)) return;
         stopAllSounds();
     }
 
     @Override
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::stopAllSounds, DELAY, FREQUENCY).getTaskId();
+                plugin, this::stopAllSounds, DELAY, stopFrequency).getTaskId();
     }
 
     private void stopAllSounds() {
-        LoggerUtility.info(this, "Stopping all sounds");
         for (final Player player : world.getPlayers()) {
-            player.stopSound(SoundCategory.MUSIC);
-            player.stopSound(SoundCategory.RECORDS);
+            for (final Sound disallowedSound : disallowedSounds) {
+                Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(disallowedSound));
+            }
         }
     }
 
@@ -65,7 +61,7 @@ class SoundMuter extends PacketAdapter implements SoundManager, Listener, Contro
 
     private void playRewindSound() {
         for (final Player player : world.getPlayers()) {
-            player.playSound(player, Sound.UI_TOAST_IN, 1.0f, 1.0f);
+            player.playSound(player, rewindSound, 1.0f, 1.0f);
         }
     }
 }

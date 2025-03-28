@@ -2,9 +2,14 @@ package ru.vladimir.noctyss.config;
 
 import eu.endercentral.crazy_advancements.advancement.AdvancementDisplay;
 import eu.endercentral.crazy_advancements.advancement.ToastNotification;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -26,6 +35,9 @@ public final class SuddenNightConfig implements AbstractConfig {
     private final JavaPlugin plugin;
     private File file;
     private FileConfiguration fileConfig;
+    private final Set<Sound> disallowedSounds = new HashSet<>();
+    private final Sound rewindSound = Sound.UI_TOAST_IN;
+    private final long ambientStopFrequency = 20L;
     private boolean isEventEnabled;
     private double eventChance;
     private long checkFrequencyTicks;
@@ -57,11 +69,46 @@ public final class SuddenNightConfig implements AbstractConfig {
     }
 
     private void parse() {
+        loadInternalSettings();
+
         parseGeneral();
         parseTime();
         parseEffect();
         parseSound();
         parseNotification();
+    }
+
+    private void loadInternalSettings() {
+        loadDisallowedSounds();
+    }
+
+    private void loadDisallowedSounds() {
+        loadSoundsFromRegistry();
+        loadHardcodedSounds();
+    }
+
+    private void loadSoundsFromRegistry() {
+        final Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+        disallowedSounds.addAll(soundRegistry.stream()
+                .map(soundRegistry::getKey)
+                .filter(Objects::nonNull)
+                .map(NamespacedKey::toString)
+                .filter(this::isDisallowedSound)
+                .map(NamespacedKey::fromString)
+                .filter(Objects::nonNull)
+                .map(soundRegistry::get)
+                .collect(Collectors.toSet()));
+    }
+
+    private boolean isDisallowedSound(String soundName) {
+        return soundName.startsWith("minecraft:music_disc") ||
+                soundName.startsWith("minecraft:music_overworld");
+    }
+
+        private void loadHardcodedSounds() {
+        disallowedSounds.addAll(Set.of(
+                Sound.MUSIC_CREATIVE, Sound.MUSIC_GAME, Sound.MUSIC_CREDITS, Sound.MUSIC_DRAGON,
+                Sound.MUSIC_END, Sound.MUSIC_MENU, Sound.MUSIC_UNDER_WATER));
     }
 
     private void parseGeneral() {

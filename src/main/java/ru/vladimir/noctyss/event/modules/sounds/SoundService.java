@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketListener;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -17,6 +18,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SoundService implements Module {
     private final JavaPlugin plugin;
@@ -97,10 +99,11 @@ public class SoundService implements Module {
         private final EventType eventType;
         private final List<SoundManager> soundManagers = new ArrayList<>();
 
-        public Builder addSoundMuter() {
+        public Builder addSoundMuter(Set<Sound> disallowedSounds, Sound rewindSound, long frequency) {
             final PacketType[] soundPackets = new PacketType[]
                     {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
-            final SoundMuter soundManager = new SoundMuter(plugin, world, soundPackets);
+            final AmbientSoundBlocker soundManager = new AmbientSoundBlocker(
+                    plugin, world, disallowedSounds, rewindSound, frequency, soundPackets);
             soundManagers.add(soundManager);
             return this;
         }
