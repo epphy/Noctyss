@@ -12,6 +12,8 @@ import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 
+import java.util.Random;
+
 @RequiredArgsConstructor
 public class AbruptNight implements TimeModificationRule, Controllable, Listener {
     private static final long DELAY = 0L;
@@ -20,18 +22,25 @@ public class AbruptNight implements TimeModificationRule, Controllable, Listener
     private final EventManager eventManager;
     private final EventType eventType;
     private final World world;
-    private final long nightLength;
+    private final long[] nightLengthRange;
     private final long frequency;
+    private final Random random;
     private long originalWorldTime;
+    private long nightLength;
     private long elapsedTime;
     private int taskId = -1;
 
     @Override
     public void start() {
+        setNightLength();
         originalWorldTime = world.getTime();
         world.setStorm(false);
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously
                 (plugin, this::processTime, DELAY, frequency).getTaskId();
+    }
+
+    private void setNightLength() {
+        nightLength = random.nextLong(nightLengthRange[0], nightLengthRange[1]);
     }
 
     private void processTime() {

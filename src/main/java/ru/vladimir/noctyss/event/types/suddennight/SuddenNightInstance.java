@@ -20,6 +20,7 @@ import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -82,21 +83,9 @@ public class SuddenNightInstance implements EventInstance {
                         eventManager,
                         world,
                         eventType)
-                        .addAbruptNight(config.getTimeUpdateFrequencyTicks(), config.getNightLength())
+                        .addAbruptNight(config.getNightTimeModifyFrequency(), config.getNightLength(), new Random())
                         .build()
         );
-
-        if (config.isFadeEffectEnabled()) {
-            modules.add(
-                    new EffectService.Builder(
-                            plugin,
-                            pluginManager,
-                            world,
-                            eventType)
-                            .addDarknessAtStartProvider((int) config.getTimeUpdateFrequencyTicks())
-                            .build()
-            );
-        }
 
         final SoundService.Builder soundServiceBuilder = new SoundService.Builder(
                 plugin,
@@ -110,7 +99,8 @@ public class SuddenNightInstance implements EventInstance {
                 config.getDisallowedSounds(), config.getRewindSound(), config.getAmbientStopFrequency());
 
         if (config.isMusicEnabled()) {
-            soundServiceBuilder.addAmbiencePlayer();
+            soundServiceBuilder.addAmbiencePlayer(
+                    config.getAmbientPlayDelayTicks(), config.getAmbientPlayFrequencyTicks(), config.getAllowedSounds(), new Random());
         }
 
         modules.add(soundServiceBuilder.build());

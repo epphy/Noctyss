@@ -18,9 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -36,10 +34,11 @@ public final class SuddenNightConfig implements AbstractConfig {
     private FileConfiguration fileConfig;
     private final long[] ambientPlayFrequencyTicks = new long[] {2400L, 3600L};
     private final long[] ambientPlayDelayTicks = new long[] {};
-    private final Set<Sound> allowedSounds = new HashSet<>();
+    private final List<Sound> allowedSounds = new ArrayList<>();
     private final Set<Sound> disallowedSounds = new HashSet<>();
     private final Sound rewindSound = Sound.UI_TOAST_IN;
     private final long ambientStopFrequency = 20L;
+    private final long nightTimeModifyFrequency = 100L;
     private final long[] nightLength;
     private boolean isEventEnabled;
     private double eventChance;

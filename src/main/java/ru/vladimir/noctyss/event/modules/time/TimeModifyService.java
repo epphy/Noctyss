@@ -12,6 +12,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TimeModifyService implements Module {
     private final List<TimeModificationRule> rules;
@@ -72,8 +73,8 @@ public class TimeModifyService implements Module {
             return this;
         }
 
-        public Builder addAbruptNight(long frequency, long nightLength) {
-            final AbruptNight abruptNight = new AbruptNight(plugin, eventManager, eventType, world, nightLength, frequency);
+        public Builder addAbruptNight(long frequency, long[] nightLength, Random random) {
+            final AbruptNight abruptNight = new AbruptNight(plugin, eventManager, eventType, world, nightLength, frequency, random);
             rules.add(abruptNight);
             return this;
         }

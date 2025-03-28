@@ -109,7 +109,7 @@ public class SoundService implements Module {
             return this;
         }
 
-        public Builder addAmbiencePlayer(long delay, long frequency, List<Sound> sounds, Random random) {
+        public Builder addAmbiencePlayer(long[] delay, long[] frequency, List<Sound> sounds, Random random) {
             final AmbientSoundScheduler soundManager = new AmbientSoundScheduler(
                     plugin, delay, frequency, world, eventType, sounds, random);
             soundManagers.add(soundManager);
