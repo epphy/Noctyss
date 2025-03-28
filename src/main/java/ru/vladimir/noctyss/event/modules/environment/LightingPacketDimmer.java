@@ -4,25 +4,22 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedLevelChunkData;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.BitSet;
-import java.util.List;
 
 final class LightingPacketDimmer extends PacketAdapter implements EnvironmentModifier {
     private static final PacketType packetType = PacketType.Play.Server.LIGHT_UPDATE;
-    private final JavaPlugin plugin;
+    private final JavaPlugin pluginInstance;
     private final World world;
 
-    LightingPacketDimmer(Plugin plugin, World world, PacketType... types) {
-        super(plugin, packetType);
-        this.plugin = (JavaPlugin) plugin;
+    LightingPacketDimmer(JavaPlugin pluginInstance, World world) {
+        super(pluginInstance, packetType);
+        this.pluginInstance = pluginInstance;
         this.world = world;
     }
 
@@ -54,28 +51,21 @@ final class LightingPacketDimmer extends PacketAdapter implements EnvironmentMod
         LoggerUtility.info(this, "");
         LoggerUtility.info(this, "TEST TIME!");
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
+            LoggerUtility.info(this, "First test");
             lightData.setSkyYMask(new BitSet(0));
             lightData.setBlockYMask(new BitSet(0));
         }, 200L);
 
-        LoggerUtility.info(this, "One more test!");
-
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            lightData.setSkyYMask(new BitSet(-100));
-            lightData.setBlockYMask(new BitSet(-100));
-        }, 600);
-
-        LoggerUtility.info(this, "Last test!");
-
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
+            LoggerUtility.info(this, "Last test!");
             lightData.setSkyYMask(new BitSet(100));
             lightData.setBlockYMask(new BitSet(100));
         }, 600L);
 
         LoggerUtility.info(this, "Setting back!");
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(pluginInstance, () -> {
             lightData.setSkyYMask(a);
             lightData.setBlockYMask(b);
         }, 600L);

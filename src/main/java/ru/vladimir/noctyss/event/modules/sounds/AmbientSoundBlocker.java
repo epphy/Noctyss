@@ -33,17 +33,23 @@ class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Control
     public void onPacketSending(PacketEvent event) {
         if (!event.getPlayer().getWorld().equals(world)) return;
         event.setCancelled(true);
-        stopAllSounds();
+        stopDisallowedSounds();
     }
 
     @Override
     public void start() {
         stopAllSounds();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::stopAllSounds, DELAY, stopFrequency).getTaskId();
+                plugin, this::stopDisallowedSounds, DELAY, stopFrequency).getTaskId();
     }
 
     private void stopAllSounds() {
+        LoggerUtility.info(this, "Stopping all sounds");
+        world.getPlayers().forEach(Player::stopAllSounds);
+    }
+
+    private void stopDisallowedSounds() {
+        LoggerUtility.info(this, "Stopping disallowed sounds");
         for (final Player player : world.getPlayers()) {
             for (final Sound disallowedSound : disallowedSounds) {
                 Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(disallowedSound));
@@ -55,6 +61,7 @@ class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Control
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
+            stopAllSounds();
             playRewindSound();
             LoggerUtility.info(this, "Stopped");
         }
