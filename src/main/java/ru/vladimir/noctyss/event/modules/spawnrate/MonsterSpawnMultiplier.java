@@ -7,10 +7,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 @RequiredArgsConstructor
-final class MonsterSpawnMultiplier implements SpawnRule {
+final class MonsterSpawnMultiplier implements SpawnRule, Listener {
     private final World world;
     private final int multiplier;
     private int modifiedMultiplier;

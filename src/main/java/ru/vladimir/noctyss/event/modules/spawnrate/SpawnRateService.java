@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -29,7 +31,15 @@ public class SpawnRateService implements Module {
     public void start() {
         int registered = 0;
         for (final SpawnRule spawnRule : spawnRules) {
-            pluginManager.registerEvents(spawnRule, plugin);
+
+            if (spawnRule instanceof Controllable) {
+                ((Controllable) spawnRule).start();
+            }
+
+            if (spawnRule instanceof Listener) {
+                pluginManager.registerEvents((Listener) spawnRule, plugin);
+            }
+
             registered++;
             LoggerUtility.info(this, "Registered '%s' spawn rule in '%s'"
                     .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
@@ -41,7 +51,15 @@ public class SpawnRateService implements Module {
     public void stop() {
         int unregistered = 0;
         for (final SpawnRule spawnRule : spawnRules) {
-            HandlerList.unregisterAll(spawnRule);
+
+            if (spawnRule instanceof Controllable) {
+                ((Controllable) spawnRule).stop();
+            }
+
+            if (spawnRule instanceof Listener) {
+                HandlerList.unregisterAll((Listener) spawnRule);
+            }
+
             unregistered++;
             LoggerUtility.info(this, "Unregistered '%s' spawn rule in '%s'"
                     .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
@@ -61,6 +79,11 @@ public class SpawnRateService implements Module {
             MonsterSpawnMultiplier spawnRule = new MonsterSpawnMultiplier(world, multiplier);
             spawnRule.init();
             spawnRules.add(spawnRule);
+            return this;
+        }
+
+        public Builder addNoSpawnRate() {
+            spawnRules.add(new NoNaturalSpawnRate(world));
             return this;
         }
 
