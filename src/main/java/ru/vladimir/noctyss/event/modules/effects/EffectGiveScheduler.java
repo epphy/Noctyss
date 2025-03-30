@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.vladimir.noctyss.event.Controllable;
-import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 

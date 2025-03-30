@@ -11,7 +11,7 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 @RequiredArgsConstructor
-class MidnightLoopModifier implements TimeModificationRule, Controllable {
+final class MidnightLoopModifier implements TimeModificationRule, Controllable {
     private static final long MORNING_TICKS_TIME = 0L;
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
     private static final long FULL_DAY_TICKS_TIME = 24000L;

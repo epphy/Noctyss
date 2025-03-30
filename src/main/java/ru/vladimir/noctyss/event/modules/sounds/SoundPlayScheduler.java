@@ -40,7 +40,6 @@ final class SoundPlayScheduler implements SoundManager, Controllable {
 
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () -> {
-                player.stopAllSounds();
                 player.playSound(player, sound, randomVolume, randomPitch);
             });
         }

@@ -14,7 +14,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.Set;
 
-class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Controllable {
+final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Controllable {
     private static final long DELAY = 0L;
     private final World world;
     private final Set<Sound> disallowedSounds;

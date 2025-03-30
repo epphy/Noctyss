@@ -16,7 +16,7 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class AbruptNight implements TimeModificationRule, Controllable, Listener {
+final class AbruptNight implements TimeModificationRule, Controllable, Listener {
     private static final long DELAY = 0L;
     private static final long MIDNIGHT_TIME = 18000L;
     private final JavaPlugin plugin;
