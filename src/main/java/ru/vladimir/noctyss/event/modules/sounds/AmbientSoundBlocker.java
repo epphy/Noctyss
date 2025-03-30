@@ -36,18 +36,11 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        final Player player = event.getPlayer();
-        if (player == null) return;
-
-        if (!player.getWorld().equals(world)) return;
-        player.sendMessage("Sent new sound packet");
+        if (!event.getPlayer().getWorld().equals(world)) return;
 
         final PacketContainer packet = event.getPacket();
         final Sound sound = packet.getSoundEffects().read(0);
-        if (sound == null || allowedSounds.contains(sound)) {
-            player.sendMessage("The sent sound is allowed: %s".formatted(sound));
-            return;
-        }
+        if (sound == null || allowedSounds.contains(sound)) return;
 
         event.setCancelled(true);
         stopDisallowedSounds();
@@ -57,19 +50,21 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     public void start() {
         stopAllSounds();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::stopDisallowedSounds, DELAY, stopFrequency).getTaskId();
+                plugin, this::stopDisallowedSounds, DELAY, 600L).getTaskId();
     }
 
     private void stopAllSounds() {
-        LoggerUtility.info(this, "Stopping all sounds");
-        Bukkit.getScheduler().runTask(plugin, () -> world.getPlayers().forEach(Player::stopAllSounds));
+        Bukkit.getScheduler().runTask(plugin, () ->
+                world.getPlayers().forEach(Player::stopAllSounds));
     }
 
     private void stopDisallowedSounds() {
-        LoggerUtility.info(this, "Stopping disallowed sounds");
         for (final Player player : world.getPlayers()) {
+            LoggerUtility.info(this, "Stopping sounds for player: %s".formatted(player.getName()));
             for (final Sound disallowedSound : disallowedSounds) {
-                Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(disallowedSound));
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        player.stopSound(disallowedSound));
+                LoggerUtility.info(this, "Stopping sound: %s".formatted(disallowedSound));
             }
         }
     }
