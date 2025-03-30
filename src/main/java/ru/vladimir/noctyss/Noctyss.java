@@ -41,8 +41,7 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void loadConfig() {
-        configService = new ConfigService(this);
-        configService.init();
+        ConfigService.init(this);
     }
 
     private void configureLogger() {

@@ -29,7 +29,7 @@ import java.util.Random;
 @ToString
 @RequiredArgsConstructor
 public class NightmareNightInstance implements EventInstance {
-    private final List<Module> MODULES = new ArrayList<>();
+    private final List<Module> modules = new ArrayList<>();
     private final JavaPlugin plugin;
     private final PlayerNotificationService service;
     private final EventManager eventManager;
@@ -43,7 +43,7 @@ public class NightmareNightInstance implements EventInstance {
         registerModules();
         int registered = 0;
         pluginManager.callEvent(new NightmareNightStartEvent(world, true));
-        for (final Module module : MODULES) {
+        for (final Module module : modules) {
             module.start();
             registered++;
             LoggerUtility.info(this, "Registered module '%s' in '%s'"
@@ -57,7 +57,7 @@ public class NightmareNightInstance implements EventInstance {
     public void stop() {
         pluginManager.callEvent(new NightmareNightEndEvent(world, true));
         int unregistered = 0;
-        for (final Module module : MODULES) {
+        for (final Module module : modules) {
             module.stop();
             unregistered++;
             LoggerUtility.info(this, "Unregistered module '%s' in '%s'"
@@ -69,7 +69,7 @@ public class NightmareNightInstance implements EventInstance {
 
     private void registerModules() {
         if (config.isEffectEnabled()) {
-            MODULES.add(new EffectGiver(
+            modules.add(new EffectGiver(
                     plugin,
                     world,
                     config.getEffects(),
@@ -78,7 +78,7 @@ public class NightmareNightInstance implements EventInstance {
         }
 
         if (config.isSoundEnabled()) {
-            MODULES.add(new SoundPlayer(
+            modules.add(new SoundPlayer(
                     plugin,
                     world,
                     new Random(),
@@ -88,7 +88,7 @@ public class NightmareNightInstance implements EventInstance {
         }
 
         if (config.isTimeEnabled()) {
-            MODULES.add(new TimeModifyService.Builder(
+            modules.add(new TimeModifyService.Builder(
                     plugin,
                     eventManager,
                     world,
@@ -98,7 +98,7 @@ public class NightmareNightInstance implements EventInstance {
             );
         }
 
-        MODULES.add(new BukkitEventService.Builder(
+        modules.add(new BukkitEventService.Builder(
                 plugin,
                 pluginManager,
                 world)
@@ -107,7 +107,7 @@ public class NightmareNightInstance implements EventInstance {
         );
 
         if (config.isSpawnRateEnabled()) {
-            MODULES.add(new SpawnRateService.Builder(
+            modules.add(new SpawnRateService.Builder(
                     plugin,
                     pluginManager,
                     world)
@@ -117,7 +117,7 @@ public class NightmareNightInstance implements EventInstance {
         }
 
         if (config.isNotificationsEnabled()) {
-            MODULES.add(new NotificationService.Builder(
+            modules.add(new NotificationService.Builder(
                     plugin,
                     pluginManager,
                     service,

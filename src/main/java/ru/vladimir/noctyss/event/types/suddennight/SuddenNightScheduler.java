@@ -20,8 +20,8 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public final class SuddenNightScheduler implements EventScheduler {
-    private static final EventType eventType = EventType.SUDDEN_NIGHT;
-    private static final long DELAY = 0L;
+    private final EventType eventType = EventType.SUDDEN_NIGHT;
+    private final long delay = 0L;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
@@ -37,14 +37,10 @@ public final class SuddenNightScheduler implements EventScheduler {
 
     @Override
     public void start() {
-        if (config.isEventEnabled()) {
-            cache();
-            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                    plugin, this::processWorlds, DELAY, checkFrequencyTicks).getTaskId();
-            LoggerUtility.info(this, "Started");
-        } else {
-            LoggerUtility.info(this, "Event is disabled");
-        }
+        cache();
+        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+                plugin, this::processWorlds, delay, checkFrequencyTicks).getTaskId();
+        LoggerUtility.info(this, "Started");
     }
 
     private void processWorlds() {

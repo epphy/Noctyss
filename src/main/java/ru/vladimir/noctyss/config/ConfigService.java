@@ -1,56 +1,58 @@
 package ru.vladimir.noctyss.config;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
-@RequiredArgsConstructor
-public final class ConfigService {
-    private final JavaPlugin plugin;
-    private final List<AbstractConfig> configs = new ArrayList<>();
+@UtilityClass
+public class ConfigService {
+    private static final String CLASS_NAME = "ConfigService";
+    private static final ConfigService INSTANCE = new ConfigService();
+    private static final Map<String, AbstractConfig> CONFIGS = new HashMap<>();
     private GeneralConfig generalConfig;
     private MessageConfig messageConfig;
     private NightmareNightConfig nightmareNightConfig;
     private SuddenNightConfig suddenNightConfig;
 
-    public void init() {
-        register();
+    public static void init(JavaPlugin plugin) {
+        register(plugin);
         load();
-        LoggerUtility.info(this, "ConfigService has been initialised");
     }
 
-    public void load() {
-        for (AbstractConfig config : configs) {
-            config.load();
-        }
-        LoggerUtility.info(this, "All configs have been loaded");
-    }
-
-    public void reload() {
-        for (AbstractConfig config : configs) {
-            config.reload();
-        }
-        LoggerUtility.info(this, "All configs have been reloaded");
-    }
-
-    private void register() {
-        plugin.saveDefaultConfig();
-
+    private static void register(JavaPlugin plugin) {
         generalConfig = new GeneralConfig(plugin.getConfig());
         messageConfig = new MessageConfig(plugin);
         nightmareNightConfig = new NightmareNightConfig(plugin);
         suddenNightConfig = new SuddenNightConfig(plugin);
 
-        configs.add(generalConfig);
-        configs.add(messageConfig);
-        configs.add(nightmareNightConfig);
-        configs.add(suddenNightConfig);
+        CONFIGS.put("General", generalConfig);
+        CONFIGS.put("Message", messageConfig);
+        CONFIGS.put("NightmareNight", nightmareNightConfig);
+        CONFIGS.put("SuddenNight", suddenNightConfig);
 
-        LoggerUtility.debug(this, "All configs have been registered: %s".formatted(configs));
+        LoggerUtility.info(CLASS_NAME, "All configs have been registered");
+    }
+
+    private static void load() {
+        for (final Map.Entry<String, AbstractConfig> entry : CONFIGS.entrySet()) {
+            entry.getValue().load();
+        }
+        LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
+    }
+
+    public static void reload() {
+        for (final Map.Entry<String, AbstractConfig> entry : CONFIGS.entrySet()) {
+            entry.getValue().reload();
+        }
+        LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
+    }
+
+    public static ConfigService getInstance() {
+        return INSTANCE;
     }
 }
