@@ -45,7 +45,7 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void configureLogger() {
-        switch (configService.getGeneralConfig().getDebugLevel()) {
+        switch (ConfigService.getGeneralConfig().getDebugLevel()) {
             case 1 -> LoggerUtility.setLevel(Level.INFO); // Debug
             case 2 -> LoggerUtility.setLevel(Level.ALL); // Extra detailed debug
             default -> LoggerUtility.setLevel(Level.WARNING); // Default
@@ -53,7 +53,7 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void loadAPI() { // TODO
-        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer(configService.getGeneralConfig()); // TODO
+        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer(ConfigService.getGeneralConfig()); // TODO
         EventAPI.init(worldStateConfigurer); // TODO
     }
 

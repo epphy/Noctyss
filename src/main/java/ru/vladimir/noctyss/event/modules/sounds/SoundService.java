@@ -107,17 +107,16 @@ public class SoundService implements Module {
             return this;
         }
 
-        public Builder addSoundMuter(Set<Sound> disallowedSounds, Sound rewindSound, long frequency) {
-            final PacketType[] soundPackets = new PacketType[]
-                    {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
-            final AmbientSoundBlocker soundManager = new AmbientSoundBlocker(
-                    plugin, world, disallowedSounds, rewindSound, frequency, soundPackets);
+        public Builder addSoundMuter(Set<Sound> disallowedSounds, List<Sound> allowedSounds, Sound rewindSound, long frequency) {
+            final PacketType[] soundPackets = new PacketType[] {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
+            final var soundManager = new AmbientSoundBlocker(
+                    plugin, world, allowedSounds, disallowedSounds, rewindSound, frequency, soundPackets);
             soundManagers.add(soundManager);
             return this;
         }
 
         public Builder addAmbiencePlayer(long[] delay, long[] frequency, List<Sound> sounds, Random random) {
-            final AmbientSoundScheduler soundManager = new AmbientSoundScheduler(
+            final var soundManager = new AmbientSoundScheduler(
                     plugin, delay, frequency, world, eventType, sounds, random);
             soundManagers.add(soundManager);
             return this;

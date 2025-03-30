@@ -97,7 +97,7 @@ public final class SuddenNightInstance implements EventInstance {
         );
 
         soundServiceBuilder.addSoundMuter(
-                config.getDisallowedSounds(), config.getRewindSound(), config.getAmbientStopFrequency());
+                config.getAllowedSounds(), config.getDisallowedSounds(), config.getRewindSound(), config.getAmbientStopFrequency());
 
         if (config.isMusicEnabled()) {
             soundServiceBuilder.addAmbiencePlayer(
