@@ -81,7 +81,7 @@ public class NotificationService implements Module {
         private final List<NotificationRule> notificationRules = new ArrayList<>();
 
         public Builder addToastEndEvent(boolean oneTime, ToastNotification endToast) {
-            notificationRules.add(new NightmareNightToastEndEvent(service, eventType, world, oneTime, endToast));
+            notificationRules.add(new ToastSenderOnEvent(service, eventType, world, oneTime, endToast));
             return this;
         }
 

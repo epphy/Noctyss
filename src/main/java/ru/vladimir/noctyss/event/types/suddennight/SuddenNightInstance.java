@@ -14,6 +14,8 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
+import ru.vladimir.noctyss.event.modules.notification.NotificationService;
+import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
@@ -34,6 +36,7 @@ public final class SuddenNightInstance implements EventInstance {
     private final EventManager eventManager;
     private final SuddenNightConfig config;
     private final MessageConfig messageConfig;
+    private final PlayerNotificationService playerNotificationService;
     private final World world;
 
     @Override
@@ -69,6 +72,15 @@ public final class SuddenNightInstance implements EventInstance {
     }
 
     private void registerModules() {
+        addBukkitEventService();
+        addTimeModifyService();
+        addSoundService();
+        addSpawnRateService();
+        addEnvironmentService();
+        addNotificationService();
+    }
+
+    private void addBukkitEventService() {
         modules.add(
                 new BukkitEventService.Builder(
                         plugin,
@@ -77,7 +89,9 @@ public final class SuddenNightInstance implements EventInstance {
                         .addBedCancelEvent(messageConfig.getCannotSleep())
                         .build()
         );
+    }
 
+    private void addTimeModifyService() {
         modules.add(
                 new TimeModifyService.Builder(
                         plugin,
@@ -87,43 +101,49 @@ public final class SuddenNightInstance implements EventInstance {
                         .addAbruptNight(config.getNightTimeModifyFrequency(), config.getNightLength(), new Random())
                         .build()
         );
+    }
 
-        final SoundService.Builder soundServiceBuilder = new SoundService.Builder(
-                plugin,
-                pluginManager,
-                protocolManager,
-                world,
-                EVENT_TYPE
-        );
-
+    private void addSoundService() {
+        final var soundServiceBuilder = new SoundService.Builder(
+                plugin, pluginManager, protocolManager, world, EVENT_TYPE);
         soundServiceBuilder.addSoundMuter(
                 config.getDisallowedSounds(), config.getAllowedSounds(), config.getRewindSound(), config.getAmbientStopFrequency());
 
         if (config.isMusicEnabled()) {
-            soundServiceBuilder.addAmbiencePlayer(
-                    config.getAmbientPlayDelayTicks(), config.getAmbientPlayFrequencyTicks(), config.getAllowedSounds(), new Random());
+            soundServiceBuilder.addAmbiencePlayer(config.getAmbientPlayDelayTicks(), config.getAmbientPlayFrequencyTicks(), config.getAllowedSounds(), new Random());
         }
 
         modules.add(soundServiceBuilder.build());
+    }
 
-        modules.add(
-                new SpawnRateService.Builder(
-                        plugin,
-                        pluginManager,
-                        world)
-                        .addNoSpawnRate()
-                        .build()
+    private void addSpawnRateService() {
+        modules.add(new SpawnRateService.Builder(
+                plugin,
+                pluginManager,
+                world)
+                .addNoSpawnRate()
+                .build()
         );
+    }
 
-        final EnvironmentService.Builder environmentServiceBuilder = new EnvironmentService.Builder(
+    private void addEnvironmentService() {
+        final var environmentServiceBuilder = new EnvironmentService.Builder(
                 plugin, pluginManager, protocolManager, world, EVENT_TYPE);
-
         if (config.isLightDimEnabled()) {
             environmentServiceBuilder.addLightingPocketModifier();
         }
-
         environmentServiceBuilder.addEntityAIKiller();
-
         modules.add(environmentServiceBuilder.build());
+    }
+
+    private void addNotificationService() {
+        final var notificationServiceBuilder = new NotificationService.Builder(
+                plugin, pluginManager, playerNotificationService, EVENT_TYPE, world);
+
+        if (config.isEndToastEnabled()) {
+            notificationServiceBuilder.addToastEndEvent(config.isEndToastOneTime(), config.getEndToast());
+        }
+
+        modules.add(notificationServiceBuilder.build());
     }
 }
