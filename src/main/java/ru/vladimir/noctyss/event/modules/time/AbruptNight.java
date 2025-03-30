@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.event.modules.time;
 import com.comphenix.protocol.PacketType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,7 +53,10 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
             return;
         }
 
-        GameTimeUtility.setTime(world, MIDNIGHT_TIME);
+        if (world.getTime() != MIDNIGHT_TIME) {
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            GameTimeUtility.setTime(world, MIDNIGHT_TIME);
+        }
     }
 
     @EventHandler
@@ -65,6 +69,7 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
             GameTimeUtility.setTime(world, originalWorldTime);
         }
     }

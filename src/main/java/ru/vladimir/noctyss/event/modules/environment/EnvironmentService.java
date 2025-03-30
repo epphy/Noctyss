@@ -103,7 +103,7 @@ public class EnvironmentService implements Module {
         }
 
         public Builder addEntityAIKiller() {
-            modifiers.add(new EntityAIKiller(world));
+            modifiers.add(new EntityAIKiller(plugin, world));
             return this;
         }
 
