@@ -8,10 +8,11 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO
 @UtilityClass
 public class ConfigService {
     private static final String CLASS_NAME = "ConfigService";
-    private final Map<String, AbstractConfig> configs = new HashMap<>();
+    private final Map<String, IConfig> configs = new HashMap<>();
     @Getter
     private GeneralConfig generalConfig;
     @Getter
@@ -41,12 +42,12 @@ public class ConfigService {
     }
 
     private static void load() {
-        configs.values().forEach(AbstractConfig::load);
+        configs.values().forEach(IConfig::load);
         LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
     }
 
     public static void reload() {
-        configs.values().forEach(AbstractConfig::reload);
+        configs.values().forEach(IConfig::reload);
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 

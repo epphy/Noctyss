@@ -18,7 +18,7 @@ import java.util.Map;
 @ToString
 @Getter
 @RequiredArgsConstructor
-public final class GeneralConfig implements AbstractConfig {
+public final class GeneralConfig implements IConfig {
     private static final String SETTINGS = "settings.";
     private final FileConfiguration fileConfig;
     private int debugLevel;

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public final class SuddenNightConfig implements AbstractConfig {
+public final class SuddenNightConfig implements IConfig {
     private static final String FILE_NAME = "SuddenNight.yml";
     private static final String SETTINGS = "settings.";
     private static final String EFFECT_SETTINGS = SETTINGS + "effect.";
@@ -83,13 +83,6 @@ public final class SuddenNightConfig implements AbstractConfig {
         final Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
         loadAllowedSounds(soundRegistry);
         loadDisallowedSounds(soundRegistry);
-
-        // TODO
-        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL);
-        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL.getKey());
-        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL.getKey().toString());
-        LoggerUtility.info(this, "Sound key: " + soundRegistry.getKey(Sound.MUSIC_DISC_STAL));
-        LoggerUtility.info(this, "Sound key: " + soundRegistry.getKey(Sound.MUSIC_DISC_STAL).toString());
     }
 
     private void loadAllowedSounds(Registry<@NotNull Sound> soundRegistry) {
@@ -127,7 +120,6 @@ public final class SuddenNightConfig implements AbstractConfig {
     }
 
     private boolean isDisallowedSound(String soundName) {
-        LoggerUtility.info(this, "Sound name: " + soundName);
         return soundName.startsWith("minecraft:music_disc") ||
                 soundName.startsWith("minecraft:music.overworld");
     }

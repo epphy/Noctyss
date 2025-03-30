@@ -97,8 +97,8 @@ public class EnvironmentService implements Module {
         private final EventType eventType;
         private final List<EnvironmentModifier> modifiers = new ArrayList<>();
 
-        public Builder addLightDimmer() {
-            modifiers.add(new LightingPacketDimmer(plugin, world));
+        public Builder addLightingPocketModifier() {
+            modifiers.add(new LightingPacketModifier(plugin, world));
             return this;
         }
 

@@ -1,6 +1,6 @@
 package ru.vladimir.noctyss.config;
 
-interface AbstractConfig {
+interface IConfig {
     void load();
     void reload();
 }

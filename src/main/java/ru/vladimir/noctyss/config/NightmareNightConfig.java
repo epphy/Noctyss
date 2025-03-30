@@ -20,7 +20,7 @@ import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
-public final class NightmareNightConfig implements AbstractConfig {
+public final class NightmareNightConfig implements IConfig {
     private static final String FILE_CONFIG_NAME = "NightmareNight.yml";
 
     // Sections

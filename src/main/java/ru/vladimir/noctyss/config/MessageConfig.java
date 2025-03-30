@@ -11,7 +11,7 @@ import java.io.File;
 
 @Getter
 @RequiredArgsConstructor
-public final class MessageConfig implements AbstractConfig {
+public final class MessageConfig implements IConfig {
     private static final String FILE_NAME = "MessageConfig.yml";
 
     // Sections

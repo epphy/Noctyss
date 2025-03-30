@@ -122,7 +122,7 @@ public final class SuddenNightInstance implements EventInstance {
                         protocolManager,
                         world,
                         EVENT_TYPE)
-                        .addLightDimmer()
+                        .addLightingPocketModifier()
                         .build()
         );
     }
