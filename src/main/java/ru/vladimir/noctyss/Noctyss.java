@@ -8,6 +8,7 @@ import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.api.WorldStateConfigurer;
 import ru.vladimir.noctyss.config.*;
 import ru.vladimir.noctyss.event.*;
+import ru.vladimir.noctyss.event.modules.notification.senders.NotificationManager;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationSerializer;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationStorage;
@@ -27,7 +28,6 @@ public final class Noctyss extends JavaPlugin {
     @Override
     public void onEnable() {
         loadUtilities();
-        loadConfig();
         configureLogger();
         loadAPI(); // TODO
         loadScheduler(); // TODO
@@ -37,10 +37,13 @@ public final class Noctyss extends JavaPlugin {
     private void loadUtilities() {
         LoggerUtility.init(getLogger());
         GameTimeUtility.init(this);
-    }
-
-    private void loadConfig() {
         ConfigService.init(this);
+
+        var service = new PlayerNotificationService(
+                new PlayerNotificationStorage(this),
+                new PlayerNotificationSerializer());
+        service.init();
+        NotificationManager.init(service);
     }
 
     private void configureLogger() {
@@ -58,14 +61,10 @@ public final class Noctyss extends JavaPlugin {
 
     private void loadScheduler() { // TODO
         EventManager eventManager = new EventManager(); // TODO
-        PlayerNotificationService service = new PlayerNotificationService( // TODO
-                new PlayerNotificationStorage(this), // TODO
-                new PlayerNotificationSerializer()); // TODO
-        service.init(); // TODO
         PluginManager pluginManager = getServer().getPluginManager(); // TODO
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager(); // TODO
         GlobalEventScheduler eventScheduler = new GlobalEventScheduler( // TODO
-                this, service, pluginManager, protocolManager, eventManager); // TODO
+                this, pluginManager, protocolManager, eventManager); // TODO
         eventScheduler.start(); // TODO
     }
 

@@ -15,7 +15,6 @@ import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
@@ -36,7 +35,6 @@ public final class SuddenNightInstance implements EventInstance {
     private final EventManager eventManager;
     private final SuddenNightConfig config;
     private final MessageConfig messageConfig;
-    private final PlayerNotificationService playerNotificationService;
     private final World world;
 
     @Override
@@ -138,7 +136,7 @@ public final class SuddenNightInstance implements EventInstance {
 
     private void addNotificationService() {
         final var notificationServiceBuilder = new NotificationService.Builder(
-                plugin, pluginManager, playerNotificationService, EVENT_TYPE, world);
+                plugin, pluginManager, EVENT_TYPE, world);
 
         if (config.isEndToastEnabled()) {
             notificationServiceBuilder.addToastEndEvent(config.isEndToastOneTime(), config.getEndToast());

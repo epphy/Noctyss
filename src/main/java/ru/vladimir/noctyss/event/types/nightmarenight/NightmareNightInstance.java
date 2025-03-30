@@ -16,7 +16,6 @@ import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.effects.EffectService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
@@ -34,7 +33,6 @@ public class NightmareNightInstance implements EventInstance {
     private final List<Module> modules = new ArrayList<>();
     private final JavaPlugin plugin;
     private final ProtocolManager protocolManager;
-    private final PlayerNotificationService service;
     private final EventManager eventManager;
     private final PluginManager pluginManager;
     private final NightmareNightConfig config;
@@ -127,7 +125,6 @@ public class NightmareNightInstance implements EventInstance {
             modules.add(new NotificationService.Builder(
                     plugin,
                     pluginManager,
-                    service,
                     EventType.NIGHTMARE_NIGHT,
                     world)
                     .addToastEndEvent(config.isEndToastOneTime(), config.getEndToast())

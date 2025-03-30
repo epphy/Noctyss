@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.ArrayList;
@@ -75,13 +74,12 @@ public class NotificationService implements Module {
     public static class Builder {
         private final JavaPlugin plugin;
         private final PluginManager pluginManager;
-        private final PlayerNotificationService service;
         private final EventType eventType;
         private final World world;
         private final List<NotificationRule> notificationRules = new ArrayList<>();
 
         public Builder addToastEndEvent(boolean oneTime, ToastNotification endToast) {
-            notificationRules.add(new ToastSenderOnEvent(service, eventType, world, oneTime, endToast));
+            notificationRules.add(new ToastSenderOnEvent(eventType, world, oneTime, endToast));
             return this;
         }
 

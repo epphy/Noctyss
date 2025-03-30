@@ -28,6 +28,7 @@ public class ConfigService {
     }
 
     private static void register(JavaPlugin plugin) {
+        plugin.saveDefaultConfig();
         generalConfig = new GeneralConfig(plugin.getConfig());
         messageConfig = new MessageConfig(plugin);
         nightmareNightConfig = new NightmareNightConfig(plugin);

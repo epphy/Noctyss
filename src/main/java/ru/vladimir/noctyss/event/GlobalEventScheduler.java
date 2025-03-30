@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.config.ConfigService;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.event.types.EventScheduler;
 import ru.vladimir.noctyss.event.types.nightmarenight.NightmareNightScheduler;
 import ru.vladimir.noctyss.event.types.suddennight.SuddenNightScheduler;
@@ -18,7 +17,6 @@ import java.util.Random;
 public class GlobalEventScheduler implements EventScheduler {
     private final EnumMap<EventType, EventScheduler> eventSchedulers = new EnumMap<>(EventType.class);
     private final JavaPlugin plugin;
-    private final PlayerNotificationService service;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
     private final EventManager eventManager;
@@ -32,7 +30,7 @@ public class GlobalEventScheduler implements EventScheduler {
     private void addNightmareNight() {
         if (ConfigService.getNightmareNightConfig().isEventEnabled()) {
             final NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                    plugin, protocolManager, service, pluginManager, eventManager, ConfigService.getNightmareNightConfig(),
+                    plugin, protocolManager, pluginManager, eventManager, ConfigService.getNightmareNightConfig(),
                     ConfigService.getMessageConfig(), new Random());
             eventSchedulers.put(EventType.NIGHTMARE_NIGHT, scheduler);
             scheduler.start();
