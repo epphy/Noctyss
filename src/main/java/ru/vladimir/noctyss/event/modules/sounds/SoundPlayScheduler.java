@@ -1,4 +1,4 @@
-package ru.vladimir.noctyss.event.modules;
+package ru.vladimir.noctyss.event.modules.sounds;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -7,13 +7,14 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public final class SoundPlayer implements Module {
+final class SoundPlayScheduler implements SoundManager, Controllable {
     private final JavaPlugin plugin;
     private final World world;
     private final Random random;
@@ -25,13 +26,12 @@ public final class SoundPlayer implements Module {
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::playSound, frequency, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler for world '%s'.".formatted(world.getName()));
     }
 
     private void playSound() {
         final Sound sound = getSound();
         if (sound == null) {
-            LoggerUtility.warn(this, "Could not play a sound because sound is null");
+            LoggerUtility.warn(this, "Failed to play a sound because sound is null");
             return;
         }
 
@@ -65,9 +65,6 @@ public final class SoundPlayer implements Module {
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world.getName()));
-        } else {
-            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world.getName()));
         }
     }
 }

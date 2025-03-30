@@ -31,10 +31,10 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void addNightmareNight() {
-        if (configService.getNightmareNightConfig().isEventEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isEventEnabled()) {
             final NightmareNightScheduler scheduler = new NightmareNightScheduler(
-                    plugin, service, pluginManager, eventManager, configService.getNightmareNightConfig(),
-                    configService.getMessageConfig(), new Random());
+                    plugin, protocolManager, service, pluginManager, eventManager, ConfigService.getNightmareNightConfig(),
+                    ConfigService.getMessageConfig(), new Random());
             eventSchedulers.put(EventType.NIGHTMARE_NIGHT, scheduler);
             scheduler.start();
             LoggerUtility.info(this, "NightmareNight event has been enabled");
@@ -44,10 +44,10 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void addSuddenNight() {
-        if (configService.getSuddenNightConfig().isEventEnabled()) {
+        if (ConfigService.getSuddenNightConfig().isEventEnabled()) {
             final SuddenNightScheduler scheduler = new SuddenNightScheduler(
-                    plugin, pluginManager, protocolManager, configService.getSuddenNightConfig(),
-                    configService.getMessageConfig(), eventManager, new Random());
+                    plugin, pluginManager, protocolManager, ConfigService.getSuddenNightConfig(),
+                    ConfigService.getMessageConfig(), eventManager, new Random());
             eventSchedulers.put(EventType.SUDDEN_NIGHT, scheduler);
             scheduler.start();
             LoggerUtility.info(this, "SuddenNight event has been enabled");
@@ -63,7 +63,7 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void removeNightmareNight() {
-        if (configService.getNightmareNightConfig().isEventEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isEventEnabled()) {
             eventSchedulers.get(EventType.NIGHTMARE_NIGHT).stop();
             eventSchedulers.remove(EventType.NIGHTMARE_NIGHT);
             LoggerUtility.info(this, "NightmareNight event has been stopped");
@@ -71,7 +71,7 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void removeSuddenNight() {
-        if (configService.getSuddenNightConfig().isEventEnabled()) {
+        if (ConfigService.getSuddenNightConfig().isEventEnabled()) {
             eventSchedulers.get(EventType.SUDDEN_NIGHT).stop();
             eventSchedulers.remove(EventType.SUDDEN_NIGHT);
             LoggerUtility.info(this, "SuddenNight event has been stopped");

@@ -1,4 +1,4 @@
-package ru.vladimir.noctyss.event.modules;
+package ru.vladimir.noctyss.event.modules.effects;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -7,12 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class EffectGiver implements Module {
+final class EffectGiveScheduler implements EffectManager, Controllable {
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final World world;
@@ -24,7 +25,6 @@ public final class EffectGiver implements Module {
     public void start() {
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::giveEffects, DELAY, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler for world %s".formatted(world.getName()));
     }
 
     private void giveEffects() {
@@ -40,9 +40,6 @@ public final class EffectGiver implements Module {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
             takeAwayEffects();
-            LoggerUtility.info(this, "Stopped scheduler for %s".formatted(world.getName()));
-        } else {
-            LoggerUtility.info(this, "Cannot stop scheduler for %s".formatted(world.getName()));
         }
     }
 

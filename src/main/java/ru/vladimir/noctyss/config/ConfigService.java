@@ -8,16 +8,19 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 @UtilityClass
 public class ConfigService {
     private static final String CLASS_NAME = "ConfigService";
     private static final ConfigService INSTANCE = new ConfigService();
     private static final Map<String, AbstractConfig> CONFIGS = new HashMap<>();
-    private GeneralConfig generalConfig;
-    private MessageConfig messageConfig;
-    private NightmareNightConfig nightmareNightConfig;
-    private SuddenNightConfig suddenNightConfig;
+    @Getter
+    private static GeneralConfig generalConfig;
+    @Getter
+    private static MessageConfig messageConfig;
+    @Getter
+    private static NightmareNightConfig nightmareNightConfig;
+    @Getter
+    private static SuddenNightConfig suddenNightConfig;
 
     public static void init(JavaPlugin plugin) {
         register(plugin);
@@ -52,7 +55,4 @@ public class ConfigService {
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 
-    public static ConfigService getInstance() {
-        return INSTANCE;
-    }
 }

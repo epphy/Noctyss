@@ -20,8 +20,8 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public final class SuddenNightScheduler implements EventScheduler {
-    private final EventType eventType = EventType.SUDDEN_NIGHT;
-    private final long delay = 0L;
+    private static final EventType EVENT_TYPE = EventType.SUDDEN_NIGHT;
+    private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
@@ -39,23 +39,20 @@ public final class SuddenNightScheduler implements EventScheduler {
     public void start() {
         cache();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                plugin, this::processWorlds, delay, checkFrequencyTicks).getTaskId();
-        LoggerUtility.info(this, "Started");
+                plugin, this::processWorlds, DELAY, checkFrequencyTicks).getTaskId();
     }
 
     private void processWorlds() {
         for (final World world : worlds) {
-
-            if (EventAPI.isEventActive(world, eventType)) continue;
-            if (!GameTimeUtility.isDay(world)) continue;
-            if (!isPassingChance()) continue;
-            if (isCooldown(world)) continue;
-
-            final SuddenNightInstance instance = new SuddenNightInstance(
-                    plugin, pluginManager, protocolManager, eventManager, config, messageConfig, world);
-            eventManager.startEvent(world, eventType, instance);
-            LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
+            if (isEligible(world)) startEvent(world);
         }
+    }
+
+    private boolean isEligible(World world) {
+        return !EventAPI.isEventActive(world, EVENT_TYPE) && // Whether the event is already active
+               GameTimeUtility.isDay(world) &&               // Whether there is a day
+               isPassingChance() &&                          // Whether the chance is passing
+               !isCooldown(world);                           // Whether the world is in cooldown
     }
 
     private boolean isPassingChance() {
@@ -64,20 +61,26 @@ public final class SuddenNightScheduler implements EventScheduler {
 
     private boolean isCooldown(World world) {
         final long currentDay = GameTimeUtility.getDay(world);
-        final long lastTimeDayEvent = EventAPI.getLastDayTheEventWas(world, eventType);
+        final long lastTimeDayEvent = EventAPI.getLastDayTheEventWas(world, EVENT_TYPE);
         return (currentDay - lastTimeDayEvent) < cooldownDays;
+    }
+
+    private void startEvent(World world) {
+        final var eventInstance = new SuddenNightInstance(
+                plugin, pluginManager, protocolManager, eventManager, config, messageConfig, world);
+        eventManager.startEvent(world, EVENT_TYPE, eventInstance);
+        LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
     }
 
     @Override
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            LoggerUtility.info(this, "Stopped");
         }
     }
 
     private void cache() {
-        worlds = EventAPI.getWorldsWithAllowedEvent(eventType);
+        worlds = EventAPI.getWorldsWithAllowedEvent(EVENT_TYPE);
         checkFrequencyTicks = config.getCheckFrequencyTicks();
         eventChance = config.getEventChance();
         cooldownDays = config.getCooldownDays();

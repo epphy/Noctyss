@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
@@ -83,8 +84,9 @@ public class EffectService implements Module {
         private final EventType eventType;
         private final List<EffectManager> effectManagers = new ArrayList<>();
 
-        public Builder addDarknessAtStartProvider(int duration) {
-            final SmoothDarknessTransition effectManager = new SmoothDarknessTransition(plugin, world, duration);
+        public Builder addEffectGiveScheduler(List<PotionEffect> effects, long frequency) {
+            final EffectGiveScheduler effectManager = new EffectGiveScheduler(
+                    plugin, world, effects, frequency);
             effectManagers.add(effectManager);
             return this;
         }

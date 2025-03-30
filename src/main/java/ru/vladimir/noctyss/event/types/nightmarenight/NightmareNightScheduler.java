@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.types.nightmarenight;
 
+import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -24,6 +25,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
+    private final ProtocolManager protocolManager;
     private final PlayerNotificationService service;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
@@ -66,7 +68,7 @@ public final class NightmareNightScheduler implements EventScheduler {
 
             checkedWorlds.add(world);
             final NightmareNightInstance eventInstance = new NightmareNightInstance(
-                    plugin, service, eventManager, pluginManager, config, messageConfig, world);
+                    plugin, protocolManager, service, eventManager, pluginManager, config, messageConfig, world);
             eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
             LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
         }

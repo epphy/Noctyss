@@ -13,7 +13,6 @@ import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
-import ru.vladimir.noctyss.event.modules.effects.EffectService;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
@@ -26,8 +25,8 @@ import java.util.Random;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class SuddenNightInstance implements EventInstance {
-    private static final EventType eventType = EventType.SUDDEN_NIGHT;
+public final class SuddenNightInstance implements EventInstance {
+    private static final EventType EVENT_TYPE = EventType.SUDDEN_NIGHT;
     private final Set<Module> modules = new HashSet<>();
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
@@ -84,7 +83,7 @@ public class SuddenNightInstance implements EventInstance {
                         plugin,
                         eventManager,
                         world,
-                        eventType)
+                        EVENT_TYPE)
                         .addAbruptNight(config.getNightTimeModifyFrequency(), config.getNightLength(), new Random())
                         .build()
         );
@@ -94,7 +93,7 @@ public class SuddenNightInstance implements EventInstance {
                 pluginManager,
                 protocolManager,
                 world,
-                eventType
+                EVENT_TYPE
         );
 
         soundServiceBuilder.addSoundMuter(
@@ -122,7 +121,7 @@ public class SuddenNightInstance implements EventInstance {
                         pluginManager,
                         protocolManager,
                         world,
-                        eventType)
+                        EVENT_TYPE)
                         .addLightDimmer()
                         .build()
         );

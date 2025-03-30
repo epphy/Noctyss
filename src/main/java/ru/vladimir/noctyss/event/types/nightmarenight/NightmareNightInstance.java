@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.types.nightmarenight;
 
+import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.World;
@@ -11,12 +12,12 @@ import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.config.NightmareNightConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
-import ru.vladimir.noctyss.event.modules.EffectGiver;
 import ru.vladimir.noctyss.event.modules.Module;
-import ru.vladimir.noctyss.event.modules.SoundPlayer;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
+import ru.vladimir.noctyss.event.modules.effects.EffectService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
+import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
 import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
 import ru.vladimir.noctyss.event.types.EventInstance;
@@ -29,8 +30,10 @@ import java.util.Random;
 @ToString
 @RequiredArgsConstructor
 public class NightmareNightInstance implements EventInstance {
+    private static final EventType EVENT_TYPE = EventType.NIGHTMARE_NIGHT;
     private final List<Module> modules = new ArrayList<>();
     private final JavaPlugin plugin;
+    private final ProtocolManager protocolManager;
     private final PlayerNotificationService service;
     private final EventManager eventManager;
     private final PluginManager pluginManager;
@@ -69,22 +72,26 @@ public class NightmareNightInstance implements EventInstance {
 
     private void registerModules() {
         if (config.isEffectEnabled()) {
-            modules.add(new EffectGiver(
+            modules.add(new EffectService.Builder(
                     plugin,
+                    pluginManager,
                     world,
-                    config.getEffects(),
-                    config.getEffectGiveFrequency())
+                    EVENT_TYPE)
+                    .addEffectGiveScheduler(config.getEffects(), config.getEffectGiveFrequency())
+                    .build()
             );
         }
 
         if (config.isSoundEnabled()) {
-            modules.add(new SoundPlayer(
+            modules.add(new SoundService.Builder(
                     plugin,
+                    pluginManager,
+                    protocolManager,
                     world,
-                    new Random(),
-                    config.getSounds(),
-                    config.getSoundPlayFrequency()
-            ));
+                    EVENT_TYPE)
+                    .addSoundPlayScheduler(new Random(), config.getSounds(), config.getSoundPlayFrequency())
+                    .build()
+            );
         }
 
         if (config.isTimeEnabled()) {

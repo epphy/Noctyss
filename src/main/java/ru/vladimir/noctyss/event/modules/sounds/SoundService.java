@@ -100,6 +100,13 @@ public class SoundService implements Module {
         private final EventType eventType;
         private final List<SoundManager> soundManagers = new ArrayList<>();
 
+        public Builder addSoundPlayScheduler(Random random, List<Sound> sounds, long frequency) {
+            final SoundPlayScheduler soundManager = new SoundPlayScheduler(
+                    plugin, world, random, sounds, frequency);
+            soundManagers.add(soundManager);
+            return this;
+        }
+
         public Builder addSoundMuter(Set<Sound> disallowedSounds, Sound rewindSound, long frequency) {
             final PacketType[] soundPackets = new PacketType[]
                     {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
