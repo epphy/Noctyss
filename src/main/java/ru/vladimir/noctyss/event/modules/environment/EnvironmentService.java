@@ -102,6 +102,11 @@ public class EnvironmentService implements Module {
             return this;
         }
 
+        public Builder addEntityAIKiller() {
+            modifiers.add(new EntityAIKiller(world));
+            return this;
+        }
+
         public EnvironmentService build() {
             return new EnvironmentService(this);
         }

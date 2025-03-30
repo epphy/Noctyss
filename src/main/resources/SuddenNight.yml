@@ -1,11 +1,15 @@
-# Sudden Night event settings
+# Sudden Night event settings.
 #
-# Everything is measured in ticks unless said otherwise
+# These settings are not full and cover only those options
+# on which the developer thinks the user should decide himself
+# for one reason or another.
+#
+# Everything is measured in ticks unless said otherwise.
 settings:
   enabled: true
   event-chance: 0.05 # Measured in percents. 0 - 1.0
   check-frequency: 3000
-  cooldown-in-days: 10 # After how many days the event may occur again
+  cooldown-in-days: 10 # Measured in days. After how many days the event may occur again
 
   sound:
     music: true # If true, an atmospheric music will play; absolute silence otherwise

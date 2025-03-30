@@ -122,6 +122,8 @@ public final class SuddenNightInstance implements EventInstance {
             environmentServiceBuilder.addLightingPocketModifier();
         }
 
+        environmentServiceBuilder.addEntityAIKiller();
+
         modules.add(environmentServiceBuilder.build());
     }
 }
