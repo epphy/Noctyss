@@ -18,6 +18,8 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.logging.Level;
 
 public final class Noctyss extends JavaPlugin {
+    private EventManager eventManager;
+    private GlobalEventScheduler globalEventScheduler;
 
     /*
 
@@ -29,8 +31,8 @@ public final class Noctyss extends JavaPlugin {
     public void onEnable() {
         loadUtilities();
         configureLogger();
-        loadAPI(); // TODO
-        loadScheduler(); // TODO
+        loadAPI();
+        loadScheduler();
         startupMessage();
     }
 
@@ -48,24 +50,24 @@ public final class Noctyss extends JavaPlugin {
 
     private void configureLogger() {
         switch (ConfigService.getGeneralConfig().getDebugLevel()) {
-            case 1 -> LoggerUtility.setLevel(Level.INFO); // Debug
-            case 2 -> LoggerUtility.setLevel(Level.ALL); // Extra detailed debug
-            default -> LoggerUtility.setLevel(Level.WARNING); // Default
+            case 1 -> LoggerUtility.setLevel(Level.INFO);       // Debug
+            case 2 -> LoggerUtility.setLevel(Level.ALL);        // Extra detailed debug
+            default -> LoggerUtility.setLevel(Level.WARNING);   // Standard
         }
     }
 
-    private void loadAPI() { // TODO
-        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer(ConfigService.getGeneralConfig()); // TODO
-        EventAPI.init(worldStateConfigurer); // TODO
+    private void loadAPI() {
+        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer();
+        EventAPI.init(worldStateConfigurer);
     }
 
-    private void loadScheduler() { // TODO
-        EventManager eventManager = new EventManager(); // TODO
-        PluginManager pluginManager = getServer().getPluginManager(); // TODO
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager(); // TODO
-        GlobalEventScheduler eventScheduler = new GlobalEventScheduler( // TODO
-                this, pluginManager, protocolManager, eventManager); // TODO
-        eventScheduler.start(); // TODO
+    private void loadScheduler() {
+        eventManager = new EventManager();
+        final PluginManager pluginManager = getServer().getPluginManager();
+        final ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        globalEventScheduler = new GlobalEventScheduler(
+                this, pluginManager, protocolManager, eventManager);
+        globalEventScheduler.start();
     }
 
     private void startupMessage() {
@@ -80,7 +82,19 @@ public final class Noctyss extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        stopScheduler();
+        stopAllEvents();
         shutdownMessage();
+    }
+
+    private void stopScheduler() {
+        if (globalEventScheduler != null) {
+            globalEventScheduler.stop();
+        }
+    }
+
+    private void stopAllEvents() {
+        eventManager.stopAllEvents();
     }
 
     private void shutdownMessage() {

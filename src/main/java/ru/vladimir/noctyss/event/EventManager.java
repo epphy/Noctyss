@@ -2,8 +2,12 @@ package ru.vladimir.noctyss.event;
 
 import org.bukkit.World;
 import ru.vladimir.noctyss.api.EventAPI;
+import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+
+import java.util.List;
+import java.util.Map;
 
 public class EventManager {
 
@@ -37,7 +41,7 @@ public class EventManager {
         }
     }
 
-    public boolean stopAllEvents(World world) {
+    public boolean stopAllEventsForWorld(World world) {
         LoggerUtility.info(this, "Stopping all events in world '%s'".formatted(world.getName()));
 
         boolean allEventsStopped = true;
@@ -66,5 +70,12 @@ public class EventManager {
         }
         LoggerUtility.info(this, "Stopped event '%s' in '%d' worlds"
                 .formatted(eventType.name(), stopped));
+    }
+
+    public void stopAllEvents() {
+        final Map<World, List<EventType>> worldsAllowedEvents = ConfigService.getGeneralConfig().getAllowedEventWorlds();
+        for (final World world : worldsAllowedEvents.keySet()) {
+            stopAllEventsForWorld(world);
+        }
     }
 }

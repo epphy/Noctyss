@@ -2,7 +2,6 @@ package ru.vladimir.noctyss.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@ToString
 @Getter
 @RequiredArgsConstructor
 public final class GeneralConfig implements IConfig {
