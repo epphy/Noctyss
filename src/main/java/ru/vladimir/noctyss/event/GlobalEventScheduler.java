@@ -21,7 +21,6 @@ public class GlobalEventScheduler implements EventScheduler {
     private final PlayerNotificationService service;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
-    private final ConfigService configService;
     private final EventManager eventManager;
 
     @Override
