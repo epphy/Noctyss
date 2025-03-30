@@ -33,7 +33,6 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
         setSchedulerParams();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::playAmbient, delay, frequency).getTaskId();
-        LoggerUtility.info(this, "Started up with this: %s".formatted(this));
     }
 
     private void setSchedulerParams() {
@@ -49,11 +48,9 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
             return;
         }
 
-        LoggerUtility.info(this, "Playing sound '%s'".formatted(sound));
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
-            LoggerUtility.info(this, "Started sound for player: %s".formatted(player.getName()));
         }
     }
 
@@ -74,11 +71,9 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     }
 
     private void stopAmbient() {
-        LoggerUtility.info(this, "Stopping following sounds: '%s'".formatted(sounds));
         for (final Player player : world.getPlayers()) {
             for (final Sound sound : sounds) {
                 Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(sound));
-                LoggerUtility.info(this, "Stopped sound for player: %s".formatted(player.getName()));
             }
         }
     }
