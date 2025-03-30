@@ -6,10 +6,12 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -31,38 +33,34 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
         setSchedulerParams();
         taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
                 plugin, this::playAmbient, delay, frequency).getTaskId();
+        LoggerUtility.info(this, "Started up with this: %s".formatted(this));
     }
 
     private void setSchedulerParams() {
-        delay = getDelay();
-        frequency = getFrequency();
-    }
-
-    private long getDelay() {
-        return random.nextLong(delayRange[0], delayRange[1]);
-    }
-
-    public long getFrequency() {
-        return random.nextLong(frequencyRange[0], frequencyRange[1]);
+        delay = random.nextLong(delayRange[0], delayRange[1]);
+        frequency = random.nextLong(frequencyRange[0], frequencyRange[1]);
     }
 
     private void playAmbient() {
         final Sound sound = getSound();
         if (sound == null) {
-            LoggerUtility.warn(this, "Failed to play an ambience for players in '%s' for '%s'"
+            LoggerUtility.warn(this, "Failed to play an ambient in '%s' for '%s' because sound is null"
                     .formatted(world.getName(), eventType.name()));
             return;
         }
 
-        LoggerUtility.info(this, "Scheduling sound '%s'".formatted(sound));
+        LoggerUtility.info(this, "Playing sound '%s'".formatted(sound));
         for (final Player player : world.getPlayers()) {
             Bukkit.getScheduler().runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
+            LoggerUtility.info(this, "Started sound for player: %s".formatted(player.getName()));
         }
     }
 
+    @Nullable
     private Sound getSound() {
-        if (sounds.size() <= 1) return sounds.getFirst();
+        if (sounds.isEmpty()) return null;
+        if (sounds.size() == 1) return sounds.getFirst();
         final int randomIndex = random.nextInt(sounds.size() - 1);
         return sounds.get(randomIndex);
     }
@@ -76,10 +74,26 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     }
 
     private void stopAmbient() {
+        LoggerUtility.info(this, "Stopping following sounds: '%s'".formatted(sounds));
         for (final Player player : world.getPlayers()) {
             for (final Sound sound : sounds) {
                 Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(sound));
+                LoggerUtility.info(this, "Stopped sound for player: %s".formatted(player.getName()));
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "AmbientSoundScheduler{" +
+                "taskId=" + taskId +
+                ", frequency=" + frequency +
+                ", delay=" + delay +
+                ", sounds=" + sounds +
+                ", world=" + world.getName() +
+                ", frequencyRange=" + Arrays.toString(frequencyRange) +
+                ", delayRange=" + Arrays.toString(delayRange) +
+                ", eventType=" + eventType.name() +
+                '}';
     }
 }
