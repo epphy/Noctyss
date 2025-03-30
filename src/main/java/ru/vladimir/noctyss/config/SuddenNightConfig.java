@@ -85,11 +85,11 @@ public final class SuddenNightConfig implements AbstractConfig {
         loadDisallowedSounds(soundRegistry);
 
         // TODO
-        LoggerUtility.info(this, "EXAMPLE: " + soundRegistry.getKey(Sound.MUSIC_NETHER_NETHER_WASTES));
-        LoggerUtility.info(this, "");
-        LoggerUtility.info(this, "Allowed: %s".formatted(allowedSounds));
-        LoggerUtility.info(this, "");
-        LoggerUtility.info(this, "Disallowed: %s".formatted(disallowedSounds));
+        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL);
+        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL.getKey());
+        LoggerUtility.info(this, "Sound key: " + Sound.MUSIC_DISC_STAL.getKey().toString());
+        LoggerUtility.info(this, "Sound key: " + soundRegistry.getKey(Sound.MUSIC_DISC_STAL));
+        LoggerUtility.info(this, "Sound key: " + soundRegistry.getKey(Sound.MUSIC_DISC_STAL).toString());
     }
 
     private void loadAllowedSounds(Registry<@NotNull Sound> soundRegistry) {
@@ -127,6 +127,7 @@ public final class SuddenNightConfig implements AbstractConfig {
     }
 
     private boolean isDisallowedSound(String soundName) {
+        LoggerUtility.info(this, "Sound name: " + soundName);
         return soundName.startsWith("minecraft:music_disc") ||
                 soundName.startsWith("minecraft:music.overworld");
     }
