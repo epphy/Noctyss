@@ -98,6 +98,6 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void shutdownMessage() {
-        LoggerUtility.announce("Have a nice day!");
+        LoggerUtility.announce("Have a nice day! :)");
     }
 }
