@@ -17,6 +17,7 @@ public class LightUpdateWrapperProxy {
     private WrappedLevelChunkData.LightData lightData;
 
     public void fillMasks() {
+        LoggerUtility.info(this, "Filling masks");
         var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -33,6 +34,7 @@ public class LightUpdateWrapperProxy {
     }
 
     public void clearEmptyMasks() {
+        LoggerUtility.info(this, "Clearing empty masks");
         var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -44,6 +46,7 @@ public class LightUpdateWrapperProxy {
     }
 
     public void setLightLevel(byte level) {
+        LoggerUtility.info(this, "Setting light level");
         final byte[] bytes = new byte[2048];
         Arrays.fill(bytes, level);
 
@@ -57,6 +60,7 @@ public class LightUpdateWrapperProxy {
     }
 
     private void skyLightArrays(List<byte[]> array) {
+        LoggerUtility.info(this, "Updating sky light updates");
         var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -69,6 +73,7 @@ public class LightUpdateWrapperProxy {
     }
 
     private void blockLightArrays(List<byte[]> array) {
+        LoggerUtility.info(this, "Updating block light updates");
         var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -80,7 +85,7 @@ public class LightUpdateWrapperProxy {
         blockUpdates.addAll(array);
     }
 
-    public boolean isContainsLightData() {
+    public boolean containsLightData() {
         return lightDataStructure != null && getLightData() != null;
     }
 
@@ -88,6 +93,18 @@ public class LightUpdateWrapperProxy {
         if (lightData != null) return lightData;
         if (lightDataStructure.size() < 1) return null;
         lightData = lightDataStructure.read(0);
+        LoggerUtility.info(this, "New data: %s".formatted(debug()));
         return lightData;
+    }
+
+    public String debug() {
+        return "LightData{" +
+                "SkyYMask=" + lightData.getSkyYMask() +
+                ", BlockYMask=" + lightData.getBlockYMask() +
+                ", EmptySkyYMask=" + lightData.getEmptySkyYMask() +
+                ", EmptyBlockYMask=" + lightData.getEmptyBlockYMask() +
+                ", SkyUpdates=" + lightData.getSkyYMask() +
+                ", BlockUpdates=" + lightData.getBlockUpdates() +
+                '}';
     }
 }

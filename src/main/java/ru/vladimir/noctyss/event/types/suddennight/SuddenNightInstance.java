@@ -115,15 +115,13 @@ public final class SuddenNightInstance implements EventInstance {
                         .build()
         );
 
-        modules.add(
-                new EnvironmentService.Builder(
-                        plugin,
-                        pluginManager,
-                        protocolManager,
-                        world,
-                        EVENT_TYPE)
-                        .addLightingPocketModifier()
-                        .build()
-        );
+        final EnvironmentService.Builder environmentServiceBuilder = new EnvironmentService.Builder(
+                plugin, pluginManager, protocolManager, world, EVENT_TYPE);
+
+        if (config.isLightDimEnabled()) {
+            environmentServiceBuilder.addLightingPocketModifier();
+        }
+
+        modules.add(environmentServiceBuilder.build());
     }
 }

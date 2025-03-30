@@ -20,12 +20,11 @@ final class LightingPacketModifier extends PacketAdapter implements EnvironmentM
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        event.getPlayer().sendMessage("Sent");
         if (isWrongWorld(event)) return;
         
         final var packet = event.getPacket();
         final var proxy = new LightUpdateWrapperProxy(packet.getLightUpdateData());
-        if (!proxy.isContainsLightData()) return;
+        if (!proxy.containsLightData()) return;
 
         proxy.fillMasks();
         proxy.clearEmptyMasks();

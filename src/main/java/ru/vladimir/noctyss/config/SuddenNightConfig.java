@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public final class SuddenNightConfig implements IConfig {
     private static final String FILE_NAME = "SuddenNight.yml";
     private static final String SETTINGS = "settings.";
-    private static final String EFFECT_SETTINGS = SETTINGS + "effect.";
+    private static final String LIGHT_SETTINGS = SETTINGS + "light.";
     private static final String SOUND_SETTINGS = SETTINGS + "sound.";
     private static final String NOTIFICATION_SETTINGS = SETTINGS + "notification.";
     private final JavaPlugin plugin;
@@ -44,8 +44,8 @@ public final class SuddenNightConfig implements IConfig {
     private double eventChance;
     private long checkFrequencyTicks;
     private long cooldownDays;
-    private boolean isFadeEffectEnabled;
     private boolean isMusicEnabled;
+    private boolean isLightDimEnabled;
     private boolean isEndToastEnabled;
     private boolean isEndToastOneTime;
     private ToastNotification endToast;
@@ -72,7 +72,7 @@ public final class SuddenNightConfig implements IConfig {
         loadInternalSettings();
 
         parseGeneral();
-        parseEffect();
+        parseLight();
         parseSound();
         parseNotification();
     }
@@ -139,8 +139,8 @@ public final class SuddenNightConfig implements IConfig {
         cooldownDays = fileConfig.getInt(SETTINGS + "cooldown-in-days", 10);
     }
 
-    private void parseEffect() {
-        isFadeEffectEnabled = fileConfig.getBoolean(EFFECT_SETTINGS + "fade-effect", true);
+    private void parseLight() {
+        isLightDimEnabled = fileConfig.getBoolean(LIGHT_SETTINGS + "dim-light", true);
     }
 
     private void parseSound() {

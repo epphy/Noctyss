@@ -10,6 +10,10 @@ settings:
   sound:
     music: true # If true, an atmospheric music will play; absolute silence otherwise
 
+  light:
+    dim-light: true # If true, the world light will be temporarily dimmed for the event time.
+                    # However, be aware that you might need to rejoin for the change to apply.
+
   notification:
     end:
       enabled: true
