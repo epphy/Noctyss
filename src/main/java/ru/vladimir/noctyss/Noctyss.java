@@ -17,7 +17,6 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.logging.Level;
 
 public final class Noctyss extends JavaPlugin {
-    private ConfigService configService;
 
     /*
 
@@ -66,7 +65,7 @@ public final class Noctyss extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager(); // TODO
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager(); // TODO
         GlobalEventScheduler eventScheduler = new GlobalEventScheduler( // TODO
-                this, service, pluginManager, protocolManager, configService, eventManager); // TODO
+                this, service, pluginManager, protocolManager, eventManager); // TODO
         eventScheduler.start(); // TODO
     }
 

@@ -11,16 +11,15 @@ import java.util.Map;
 @UtilityClass
 public class ConfigService {
     private static final String CLASS_NAME = "ConfigService";
-    private static final ConfigService INSTANCE = new ConfigService();
-    private static final Map<String, AbstractConfig> CONFIGS = new HashMap<>();
+    private final Map<String, AbstractConfig> configs = new HashMap<>();
     @Getter
-    private static GeneralConfig generalConfig;
+    private GeneralConfig generalConfig;
     @Getter
-    private static MessageConfig messageConfig;
+    private MessageConfig messageConfig;
     @Getter
-    private static NightmareNightConfig nightmareNightConfig;
+    private NightmareNightConfig nightmareNightConfig;
     @Getter
-    private static SuddenNightConfig suddenNightConfig;
+    private SuddenNightConfig suddenNightConfig;
 
     public static void init(JavaPlugin plugin) {
         register(plugin);
@@ -33,25 +32,21 @@ public class ConfigService {
         nightmareNightConfig = new NightmareNightConfig(plugin);
         suddenNightConfig = new SuddenNightConfig(plugin);
 
-        CONFIGS.put("General", generalConfig);
-        CONFIGS.put("Message", messageConfig);
-        CONFIGS.put("NightmareNight", nightmareNightConfig);
-        CONFIGS.put("SuddenNight", suddenNightConfig);
+        configs.put("General", generalConfig);
+        configs.put("Message", messageConfig);
+        configs.put("NightmareNight", nightmareNightConfig);
+        configs.put("SuddenNight", suddenNightConfig);
 
         LoggerUtility.info(CLASS_NAME, "All configs have been registered");
     }
 
     private static void load() {
-        for (final Map.Entry<String, AbstractConfig> entry : CONFIGS.entrySet()) {
-            entry.getValue().load();
-        }
+        configs.values().forEach(AbstractConfig::load);
         LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
     }
 
     public static void reload() {
-        for (final Map.Entry<String, AbstractConfig> entry : CONFIGS.entrySet()) {
-            entry.getValue().reload();
-        }
+        configs.values().forEach(AbstractConfig::reload);
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 
