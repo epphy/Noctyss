@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -20,12 +21,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class GeneralConfig implements IConfig {
     private static final String SETTINGS = "settings.";
+    private final JavaPlugin plugin;
     private final FileConfiguration fileConfig;
     private int debugLevel;
     private Map<World, List<EventType>> allowedEventWorlds;
 
     @Override
     public void load() {
+        plugin.saveDefaultConfig();
         parse();
         validate();
     }
