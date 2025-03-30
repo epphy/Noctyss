@@ -65,6 +65,9 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
                 Bukkit.getScheduler().runTask(plugin, () ->
                         player.stopSound(disallowedSound));
                 LoggerUtility.info(this, "Stopping sound: %s".formatted(disallowedSound));
+
+                LoggerUtility.info(this, "Now stopping stal in specific");
+                Bukkit.getScheduler().runTaskLater(plugin, () -> player.stopSound(Sound.MUSIC_DISC_STAL), 100L);
             }
         }
     }
