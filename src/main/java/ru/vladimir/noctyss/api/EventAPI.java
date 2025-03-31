@@ -8,6 +8,7 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -89,6 +90,10 @@ public final class EventAPI {
         }
 
         return worldStateManager.getWorldState(world).isEventActive(eventType);
+    }
+
+    public static Map<UUID, Set<EventType>> getWorldsWithActiveEvents() {
+        return worldStateManager.getWorldsWithActiveEvents();
     }
 
     public static List<EventType> getActiveEventTypes(World world) {

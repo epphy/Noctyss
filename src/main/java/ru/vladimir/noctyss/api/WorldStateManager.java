@@ -19,6 +19,15 @@ import java.util.*;
 record WorldStateManager(Map<World, WorldState> worldStates) {
 
     @NotNull
+    public Map<UUID, Set<EventType>> getWorldsWithActiveEvents() {
+        final Map<UUID, Set<EventType>> result = new HashMap<>();
+        for (final WorldState worldState : worldStates.values()) {
+            result.put(worldState.world().getUID(), worldState.activeEvents().keySet());
+        }
+        return result;
+    }
+
+    @NotNull
     public Set<UUID> getWorldsIdsWithAllowedEvent(EventType eventType) {
         final Set<UUID> worlds = new HashSet<>();
         for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {

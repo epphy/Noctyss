@@ -9,17 +9,24 @@ import ru.vladimir.noctyss.event.Controllable;
 
 @RequiredArgsConstructor
 final class EntityAIKiller implements EnvironmentModifier, Controllable {
+    private static final long DELAY = 0L;
+    private static final long FREQUENCY = 100L;
     private final JavaPlugin plugin;
     private final World world;
+    private int taskId = -1;
 
     @Override
     public void start() {
-        updateEntitiesAI(false);
+         taskId = Bukkit.getScheduler().runTaskTimer(plugin, () ->
+                updateEntitiesAI(false), DELAY, FREQUENCY).getTaskId();
     }
 
     @Override
     public void stop() {
-        updateEntitiesAI(true);
+        if (taskId != -1) {
+            Bukkit.getScheduler().cancelTask(taskId);
+            updateEntitiesAI(true);
+        }
     }
 
     private void updateEntitiesAI(boolean value) {

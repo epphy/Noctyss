@@ -3,12 +3,11 @@ package ru.vladimir.noctyss.event;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import ru.vladimir.noctyss.api.EventAPI;
-import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class EventManager {
@@ -81,8 +80,13 @@ public class EventManager {
     }
 
     public void stopAllEvents() {
-        final Map<World, List<EventType>> worldsAllowedEvents = ConfigService.getGeneralConfig().getAllowedEventWorlds();
-        for (final World world : worldsAllowedEvents.keySet()) {
+        final Map<UUID, Set<EventType>> worldsAllowedEvents = EventAPI.getWorldsWithActiveEvents();
+        for (final UUID worldId : worldsAllowedEvents.keySet()) {
+            final World world = Bukkit.getWorld(worldId);
+            if (world == null) {
+                LoggerUtility.warn(this, "Failed to stop events for world because it's null");
+                continue;
+            }
             stopAllEventsForWorld(world);
         }
     }
