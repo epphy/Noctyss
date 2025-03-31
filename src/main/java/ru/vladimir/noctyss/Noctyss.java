@@ -6,12 +6,14 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.api.WorldStateConfigurer;
-import ru.vladimir.noctyss.config.*;
-import ru.vladimir.noctyss.event.*;
+import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.event.EventManager;
+import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.event.modules.notification.senders.NotificationManager;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.logging.Level;
 
@@ -36,6 +38,7 @@ public final class Noctyss extends JavaPlugin {
 
     private void loadUtilities() {
         LoggerUtility.init(getLogger());
+        TaskUtil.init(this);
         GameTimeUtility.init(this);
         ConfigService.init(this);
         PlayerNotificationService.init(this);
@@ -76,8 +79,10 @@ public final class Noctyss extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        TaskUtil.setShuttingDown(true);
         stopScheduler();
         stopAllEvents();
+        unloadNecessaryUtilities();
         shutdownMessage();
     }
 
@@ -89,6 +94,10 @@ public final class Noctyss extends JavaPlugin {
 
     private void stopAllEvents() {
         eventManager.stopAllEvents();
+    }
+
+    private void unloadNecessaryUtilities() {
+        PlayerNotificationService.updateStorage();
     }
 
     private void shutdownMessage() {

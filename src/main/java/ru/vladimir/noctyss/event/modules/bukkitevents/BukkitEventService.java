@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -12,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public final class BukkitEventService implements Module {
     public void start() {
         int started = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            Bukkit.getScheduler().runTask(plugin, () ->
+            TaskUtil.runTask(plugin, () ->
                     pluginManager.registerEvents(bukkitEvent, plugin));
             started++;
             LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
@@ -49,7 +49,7 @@ public final class BukkitEventService implements Module {
     public void stop() {
         int stopped = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            Bukkit.getScheduler().runTask(plugin, () ->
+            TaskUtil.runTask(plugin, () ->
                     HandlerList.unregisterAll(bukkitEvent));
             stopped++;
             LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"

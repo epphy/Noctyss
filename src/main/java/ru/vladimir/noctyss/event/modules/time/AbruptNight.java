@@ -12,6 +12,7 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.Random;
 
@@ -74,6 +75,6 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
     }
 
     private void setDoDaylightCycle(boolean value) {
-        Bukkit.getScheduler().runTask(plugin, () -> world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, value));
+        TaskUtil.runTask(plugin, () -> world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, value));
     }
 }

@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 @RequiredArgsConstructor
 final class EntityAIKiller implements EnvironmentModifier, Controllable {
@@ -30,8 +31,9 @@ final class EntityAIKiller implements EnvironmentModifier, Controllable {
     }
 
     private void updateEntitiesAI(boolean value) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        TaskUtil.runTask(plugin, () -> {
             for (final LivingEntity entity : world.getLivingEntities()) {
+                if (entity.isDead()) continue; // Skip dead entities
                 entity.setAI(value);
             }
         });

@@ -41,21 +41,21 @@ public class PlayerNotificationService {
 
     @NotNull
     private static Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(World world) {
-        data.computeIfAbsent(world, newWorld -> data.put(newWorld, new EnumMap<>(EventType.class)));
+        data.computeIfAbsent(world, newWorld -> new EnumMap<>(EventType.class));
         return data.get(world);
     }
 
     @NotNull
     private static Map<String, Set<UUID>> getDataOfWorldEvent(World world, EventType eventType) {
         final Map<EventType, Map<String, Set<UUID>>> eventMap = getDataOfWorld(world);
-        eventMap.computeIfAbsent(eventType, newEventType -> eventMap.put(newEventType, new HashMap<>()));
+        eventMap.computeIfAbsent(eventType, newEventType -> new HashMap<>());
         return eventMap.get(eventType);
     }
 
     @NotNull
     private static Set<UUID> getDataOfWorldEventRule(World world, EventType eventType, String rule) {
         final Map<String, Set<UUID>> rulePlayerIds = getDataOfWorldEvent(world, eventType);
-        rulePlayerIds.computeIfAbsent(rule, newRUle -> rulePlayerIds.put(rule, new HashSet<>()));
+        rulePlayerIds.computeIfAbsent(rule, newRule -> new HashSet<>());
         return rulePlayerIds.get(rule);
     }
 

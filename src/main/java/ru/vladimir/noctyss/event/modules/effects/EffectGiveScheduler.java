@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import ru.vladimir.noctyss.event.Controllable;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ final class EffectGiveScheduler implements EffectManager, Controllable {
     private void giveEffects() {
         for (final Player player : world.getPlayers()) {
             for (final PotionEffect effect : effects) {
-                Bukkit.getScheduler().runTask(plugin, () -> player.addPotionEffect(effect));
+                TaskUtil.runTask(plugin, () -> player.addPotionEffect(effect));
             }
         }
     }
@@ -49,7 +50,7 @@ final class EffectGiveScheduler implements EffectManager, Controllable {
 
         for (final Player player : world.getPlayers()) {
             for (final PotionEffectType effectType : effectTypes) {
-                Bukkit.getScheduler().runTask(plugin, () -> player.removePotionEffect(effectType));
+                TaskUtil.runTask(plugin, () -> player.removePotionEffect(effectType));
             }
         }
     }

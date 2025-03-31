@@ -11,12 +11,14 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.List;
 import java.util.Set;
 
 final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, Controllable {
     private static final long DELAY = 0L;
+    private final JavaPlugin plugin;
     private final World world;
     private final List<Sound> allowedSounds;
     private final Set<Sound> disallowedSounds;
@@ -27,6 +29,7 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     AmbientSoundBlocker(JavaPlugin plugin, World world, List<Sound> allowedSounds, Set<Sound> disallowedSounds,
                         Sound rewindSound, long stopFrequency, PacketType... types) {
         super(plugin, types);
+        this.plugin = plugin;
         this.world = world;
         this.allowedSounds = allowedSounds;
         this.disallowedSounds = disallowedSounds;
@@ -56,7 +59,7 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     private void stopDisallowedSounds() {
         for (final Player player : world.getPlayers()) {
             for (final Sound disallowedSound : disallowedSounds) {
-                Bukkit.getScheduler().runTask(plugin, () -> {
+                TaskUtil.runTask(plugin, () -> {
                         player.stopSound(disallowedSound, SoundCategory.RECORDS);
                         player.stopSound(disallowedSound, SoundCategory.MUSIC);
                 });
@@ -74,13 +77,13 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     }
 
     private void stopAllSounds() {
-        Bukkit.getScheduler().runTask(plugin, () ->
+        TaskUtil.runTask(plugin, () ->
                 world.getPlayers().forEach(Player::stopAllSounds));
     }
 
     private void playRewindSound() {
         for (final Player player : world.getPlayers()) {
-            player.playSound(player, rewindSound, 1.0f, 1.0f);
+            TaskUtil.runTask(() -> player.playSound(player, rewindSound, 1.0f, 1.0f));
         }
     }
 }

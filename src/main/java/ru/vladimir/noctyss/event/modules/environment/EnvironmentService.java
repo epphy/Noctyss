@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.PacketListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -17,6 +16,7 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.environment.light.LightingPacketModifier;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +48,12 @@ public final class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) modifier, plugin));
             }
 
             if (modifier instanceof PacketAdapter) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         protocolManager.addPacketListener((PacketListener) modifier));
             }
 
@@ -76,12 +76,12 @@ public final class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) modifier));
             }
 
             if (modifier instanceof PacketAdapter) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         protocolManager.removePacketListener((PacketListener) modifier));
             }
 

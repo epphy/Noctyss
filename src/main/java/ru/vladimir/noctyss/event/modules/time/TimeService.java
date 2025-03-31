@@ -3,7 +3,6 @@ package ru.vladimir.noctyss.event.modules.time;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -14,6 +13,7 @@ import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +44,7 @@ public final class TimeService implements Module {
             }
 
             if (rule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
-                        pluginManager.registerEvents((Listener) rule, plugin));
+                TaskUtil.runTask(() -> pluginManager.registerEvents((Listener) rule, plugin));
             }
 
             started++;
@@ -66,8 +65,7 @@ public final class TimeService implements Module {
             }
 
             if (rule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
-                        HandlerList.unregisterAll((Listener) rule));
+                TaskUtil.runTask(() -> HandlerList.unregisterAll((Listener) rule));
             }
 
             stopped++;

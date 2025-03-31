@@ -28,7 +28,7 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
 
         proxy.fillMasks();
         proxy.clearEmptyMasks();
-        proxy.setLightLevel((byte) 0x00);
+        proxy.setLightLevel((byte) 0x02);
     }
 
     private boolean isWrongWorld(PacketEvent event) {

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
         }
 
         for (final Player player : world.getPlayers()) {
-            Bukkit.getScheduler().runTask(plugin, () ->
+            TaskUtil.runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
         }
     }
@@ -73,7 +74,8 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     private void stopAmbient() {
         for (final Player player : world.getPlayers()) {
             for (final Sound sound : sounds) {
-                Bukkit.getScheduler().runTask(plugin, () -> player.stopSound(sound));
+                TaskUtil.runTask(plugin, () -> player.stopSound(sound));
+                plugin.getServer().getScheduler();
             }
         }
     }

@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.PacketListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
@@ -17,6 +16,7 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +50,12 @@ public final class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) soundManager, plugin));
             }
 
             if (soundManager instanceof PacketListener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         protocolManager.addPacketListener((PacketListener) soundManager));
             }
 
@@ -78,12 +78,12 @@ public final class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) soundManager));
             }
 
             if (soundManager instanceof PacketListener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         protocolManager.removePacketListener((PacketListener) soundManager));
             }
 

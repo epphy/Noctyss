@@ -3,7 +3,6 @@ package ru.vladimir.noctyss.event.modules.spawnrate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -13,6 +12,7 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +42,7 @@ public final class SpawnRateService implements Module {
             }
 
             if (spawnRule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
-                        pluginManager.registerEvents((Listener) spawnRule, plugin));
+                TaskUtil.runTask(plugin, () -> pluginManager.registerEvents((Listener) spawnRule, plugin));
             }
 
             started++;
@@ -64,8 +63,7 @@ public final class SpawnRateService implements Module {
             }
 
             if (rule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
-                        HandlerList.unregisterAll((Listener) rule));
+                TaskUtil.runTask(plugin, () -> HandlerList.unregisterAll((Listener) rule));
             }
 
             stopped++;

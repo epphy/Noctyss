@@ -17,7 +17,7 @@ public class NotificationManager {
         toastSender = new ToastSender();
     }
 
-    public static void sendToast(EventType eventType, World world, boolean oneTime, ToastNotification toast) {
-        toastSender.send(eventType, world, oneTime, toast);
+    public static void sendToast(EventType eventType, World world, boolean oneTime, String className, ToastNotification toast) {
+        toastSender.send(eventType, world, oneTime, className, toast);
     }
 }

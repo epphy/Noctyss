@@ -4,7 +4,6 @@ import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -14,6 +13,7 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public final class NotificationService implements Module {
             }
 
             if (rule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) rule, plugin));
             }
 
@@ -63,7 +63,7 @@ public final class NotificationService implements Module {
         for (final NotificationRule rule : notificationRules) {
 
             if (rule instanceof Listener) {
-                Bukkit.getScheduler().runTask(plugin, () ->
+                TaskUtil.runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) rule));
             }
 

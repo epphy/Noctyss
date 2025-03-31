@@ -19,6 +19,6 @@ final class ToastSenderOnEvent implements NotificationRule, Listener {
     @EventHandler
     public void on(SuddenNightEndEvent event) {
         if (!event.getWorld().equals(world)) return;
-        NotificationManager.sendToast(eventType, world, oneTime, endToast);
+        NotificationManager.sendToast(eventType, world, oneTime, getClass().getSimpleName(), endToast);
     }
 }

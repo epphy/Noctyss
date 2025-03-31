@@ -88,7 +88,7 @@ public class GameTimeUtility {
      */
     public static void setTime(World world, long newTime) {
         final long updatedWorldTime = getUpdatedTime(world, newTime);
-        Bukkit.getScheduler().runTask(plugin, () -> world.setFullTime(updatedWorldTime));
+        TaskUtil.runTask(plugin, () -> world.setFullTime(updatedWorldTime));
     }
 
     /**
@@ -119,7 +119,7 @@ public class GameTimeUtility {
         final AtomicLong timeChange = new AtomicLong();
         final AtomicInteger taskId = new AtomicInteger();
 
-        taskId.set(Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        taskId.set(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             setTime(world, worldTime + timeChange.addAndGet(timeChangeChange));
             if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= time) {
                 setTime(world, newTime);
