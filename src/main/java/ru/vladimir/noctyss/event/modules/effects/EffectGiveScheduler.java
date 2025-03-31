@@ -22,7 +22,7 @@ final class EffectGiveScheduler implements EffectManager, Controllable {
 
     @Override
     public void start() {
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::giveEffects, DELAY, frequency).getTaskId();
     }
 

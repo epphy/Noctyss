@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.modules.effects;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
@@ -16,7 +17,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EffectService implements Module {
+public final class EffectService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final World world;
@@ -49,7 +50,7 @@ public class EffectService implements Module {
                     .formatted(effectManager.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Started '%d' effect managers in '%s' for '%s'"
+        LoggerUtility.info(this, "Started all '%d' in '%s' for '%s'"
                 .formatted(started, world.getName(), eventType.name()));
     }
 
@@ -71,11 +72,11 @@ public class EffectService implements Module {
                     .formatted(effectManager.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Stopped '%d' effect managers in '%s' for '%s'"
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
                 .formatted(stopped, world.getName(), eventType.name()));
     }
 
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
     public static class Builder {
         private final JavaPlugin plugin;
