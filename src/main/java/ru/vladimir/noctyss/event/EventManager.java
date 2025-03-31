@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.config.ConfigService;
@@ -8,6 +9,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class EventManager {
 
@@ -64,7 +66,13 @@ public class EventManager {
 
     public void stopEventInAllWorlds(EventType eventType) {
         int stopped = 0;
-        for (final World world : EventAPI.getWorldsWithAllowedEvent(eventType)) {
+        for (final UUID worldId : EventAPI.getWorldsWithAllowedEvent(eventType)) {
+            final World world = Bukkit.getWorld(worldId);
+            if (world == null) {
+                LoggerUtility.info(this, "World is null");
+                continue;
+            }
+
             stopEvent(world, eventType);
             stopped++;
         }
