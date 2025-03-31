@@ -35,7 +35,8 @@ public final class BukkitEventService implements Module {
     public void start() {
         int started = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            Bukkit.getScheduler().runTask(plugin, () -> pluginManager.registerEvents(bukkitEvent, plugin));
+            Bukkit.getScheduler().runTask(plugin, () ->
+                    pluginManager.registerEvents(bukkitEvent, plugin));
             started++;
             LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
                     .formatted(bukkitEvent.getClass().getSimpleName(), world.getName(), eventType.name()));
@@ -48,7 +49,8 @@ public final class BukkitEventService implements Module {
     public void stop() {
         int stopped = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            Bukkit.getScheduler().runTask(plugin, () -> HandlerList.unregisterAll(bukkitEvent));
+            Bukkit.getScheduler().runTask(plugin, () ->
+                    HandlerList.unregisterAll(bukkitEvent));
             stopped++;
             LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
                     .formatted(bukkitEvent.getClass().getSimpleName(), world.getName(), eventType.name()));

@@ -3,8 +3,10 @@ package ru.vladimir.noctyss.event.modules.environment;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketListener;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -13,12 +15,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
+import ru.vladimir.noctyss.event.modules.environment.light.LightingPacketModifier;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnvironmentService implements Module {
+public final class EnvironmentService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
@@ -45,11 +48,13 @@ public class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                pluginManager.registerEvents((Listener) modifier, plugin);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        pluginManager.registerEvents((Listener) modifier, plugin));
             }
 
             if (modifier instanceof PacketAdapter) {
-                protocolManager.addPacketListener((PacketListener) modifier);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        protocolManager.addPacketListener((PacketListener) modifier));
             }
 
             started++;
@@ -57,7 +62,7 @@ public class EnvironmentService implements Module {
                     .formatted(modifier.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Added '%d' modifiers in '%s' for '%s'"
+        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
                 .formatted(started, world.getName(), eventType.name()));
     }
 
@@ -71,11 +76,13 @@ public class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                HandlerList.unregisterAll((Listener) modifier);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        HandlerList.unregisterAll((Listener) modifier));
             }
 
             if (modifier instanceof PacketAdapter) {
-                protocolManager.removePacketListener((PacketListener) modifier);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        protocolManager.removePacketListener((PacketListener) modifier));
             }
 
             stopped++;
@@ -83,11 +90,11 @@ public class EnvironmentService implements Module {
                     .formatted(modifier.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Stopped '%d' modifiers in '%s' for '%s'"
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
                 .formatted(stopped, world.getName(), eventType.name()));
     }
 
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
     public static class Builder {
         private final JavaPlugin plugin;

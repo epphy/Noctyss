@@ -14,18 +14,18 @@ final class EntityAIKiller implements EnvironmentModifier, Controllable {
 
     @Override
     public void start() {
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            for (final LivingEntity entity : world.getLivingEntities()) {
-                entity.setAI(false);
-            }
-        });
+        updateEntitiesAI(false);
     }
 
     @Override
     public void stop() {
+        updateEntitiesAI(true);
+    }
+
+    private void updateEntitiesAI(boolean value) {
         Bukkit.getScheduler().runTask(plugin, () -> {
             for (final LivingEntity entity : world.getLivingEntities()) {
-                entity.setAI(true);
+                entity.setAI(value);
             }
         });
     }

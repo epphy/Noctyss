@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.event.modules.effects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -42,7 +43,8 @@ public final class EffectService implements Module {
             }
 
             if (effectManager instanceof Listener) {
-                pluginManager.registerEvents((Listener) effectManager, plugin);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        pluginManager.registerEvents((Listener) effectManager, plugin));
             }
 
             started++;
@@ -64,7 +66,8 @@ public final class EffectService implements Module {
             }
 
             if (effectManager instanceof Listener) {
-                HandlerList.unregisterAll((Listener) effectManager);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        HandlerList.unregisterAll((Listener) effectManager));
             }
 
             stopped++;

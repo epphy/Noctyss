@@ -17,7 +17,7 @@ public class LightUpdateWrapperProxy {
     private WrappedLevelChunkData.LightData lightData;
 
     public void fillMasks() {
-        var light = getLightData();
+        final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
             return;
@@ -33,7 +33,7 @@ public class LightUpdateWrapperProxy {
     }
 
     public void clearEmptyMasks() {
-        var light = getLightData();
+        final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
             return;
@@ -57,7 +57,7 @@ public class LightUpdateWrapperProxy {
     }
 
     private void skyLightArrays(List<byte[]> array) {
-        var light = getLightData();
+        final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
             return;
@@ -69,7 +69,7 @@ public class LightUpdateWrapperProxy {
     }
 
     private void blockLightArrays(List<byte[]> array) {
-        var light = getLightData();
+        final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
             return;
