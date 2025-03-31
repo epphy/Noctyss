@@ -73,6 +73,11 @@ public final class BukkitEventService implements Module {
             return this;
         }
 
+        public Builder addChunkRefresher() {
+            bukkitEvents.add(new ChunkRefresher());
+            return this;
+        }
+
         public BukkitEventService build() {
             return new BukkitEventService(this);
         }

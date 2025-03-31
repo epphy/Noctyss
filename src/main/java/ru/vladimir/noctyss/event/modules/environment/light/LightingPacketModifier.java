@@ -4,13 +4,21 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentModifier;
+import ru.vladimir.noctyss.utility.TaskUtil;
 
-public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier {
+public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
+    private static final byte LIGHT_LEVEL = 0x01;
+    private static final byte LIGHT_SOURCE_LIGHT_LEVEL = 0x05;
     private final World world;
 
     public LightingPacketModifier(JavaPlugin pluginInstance, World world) {
@@ -29,10 +37,55 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
         proxy.resetLight();
         proxy.fillMasks();
         proxy.clearEmptyMasks();
-        proxy.setLightLevel((byte) 0x01);
+        proxy.setLightLevel(LIGHT_LEVEL);
     }
 
     private boolean isWrongWorld(PacketEvent event) {
         return !event.getPlayer().getWorld().equals(world);
+    }
+
+    /*
+
+    We need to refresh loaded chunks, so the light data would update in them, too.
+
+     */
+
+    @Override
+    public void start() {
+        refreshChunks();
+    }
+
+    @Override
+    public void stop() {
+        refreshChunks();
+    }
+
+    /*
+
+    To partly fix the light glitch, we have a listener which refreshes a new
+    chunk a player moves into. So, if there is a light glitch, it gets fixed.
+
+     */
+
+    @EventHandler
+    private void on(PlayerMoveEvent event) {
+        if (!event.getPlayer().getWorld().equals(world)) return;
+        if (!event.hasChangedBlock()) return;
+
+        final Chunk fromChunk = event.getFrom().getBlock().getChunk();
+        final Chunk toChunk = event.getTo().getBlock().getChunk();
+        if (fromChunk.equals(toChunk)) return;
+
+        refreshChunk(toChunk);
+    }
+
+    private void refreshChunks() {
+        for (final Chunk chunk : world.getLoadedChunks()) {
+            TaskUtil.runTask(() -> world.refreshChunk(chunk.getX(), chunk.getZ()));
+        }
+    }
+
+    private void refreshChunk(Chunk chunk) {
+        TaskUtil.runTask(() -> world.refreshChunk(chunk.getX(), chunk.getZ()));
     }
 }
