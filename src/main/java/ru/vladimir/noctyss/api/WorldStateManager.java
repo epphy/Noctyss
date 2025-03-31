@@ -19,11 +19,11 @@ import java.util.*;
 record WorldStateManager(Map<World, WorldState> worldStates) {
 
     @NotNull
-    public Set<World> getWorldsWithAllowedEvent(EventType eventType) {
-        final Set<World> worlds = new HashSet<>();
+    public Set<UUID> getWorldsIdsWithAllowedEvent(EventType eventType) {
+        final Set<UUID> worlds = new HashSet<>();
         for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
             if (entry.getValue().isEventAllowed(eventType)) {
-                worlds.add(entry.getKey());
+                worlds.add(entry.getKey().getUID());
             }
         }
         return worlds;
@@ -44,7 +44,13 @@ record WorldStateManager(Map<World, WorldState> worldStates) {
     @NotNull
     WorldState getWorldState(World world) {
         if (!hasWorldState(world)) {
-            worldStates.put(world, new WorldState(world, new HashMap<>(), new HashMap<>(), new ArrayList<>()));
+            final WorldState worldState = new WorldState(
+                    world,
+                    new EnumMap<>(EventType.class),
+                    new EnumMap<>(EventType.class),
+                    new ArrayList<>()
+            );
+            worldStates.put(world, worldState);
         }
         return worldStates.get(world);
     }

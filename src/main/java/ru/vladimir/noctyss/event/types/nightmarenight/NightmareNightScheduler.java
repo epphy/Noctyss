@@ -7,8 +7,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
-import ru.vladimir.noctyss.config.MessageConfig;
-import ru.vladimir.noctyss.config.NightmareNightConfig;
+import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventScheduler;
@@ -18,57 +17,49 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class NightmareNightScheduler implements EventScheduler {
+    private static final EventType EVENT_TYPE = EventType.NIGHTMARE_NIGHT;
     private static final int CHANCE_RANGE = 100;
     private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final ProtocolManager protocolManager;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
-    private final NightmareNightConfig config;
-    private final MessageConfig messageConfig;
     private final Random random;
-    private final Set<World> checkedWorlds = new HashSet<>();
-    private Set<World> worlds;
+    private final Set<UUID> checkedWorldsIds = new HashSet<>();
+    private Set<UUID> worldsIds;
+    private long checkFrequency;
     private int eventChance;
     private int taskId = -1;
 
     @Override
     public void start() {
-        if (config.isEventEnabled()) {
-            cache();
-            taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                    plugin, this::processWorlds, DELAY, config.getCheckFrequency()).getTaskId();
-            LoggerUtility.info(this, "Started scheduler");
-        }
+        cache();
+        taskId = Bukkit.getScheduler().runTaskTimer(
+                plugin, this::processWorlds, DELAY, checkFrequency).getTaskId();
     }
 
     private void processWorlds() {
-        for (final World world : worlds) {
+        for (final UUID worldUid : worldsIds) {
+
+            final World world = Bukkit.getWorld(worldUid);
             if (world == null) {
-                LoggerUtility.warn(this, "Could not find world because it's null");
+                LoggerUtility.warn(this, "Failed to process a world because it's null");
                 continue;
             }
 
             if (!GameTimeUtility.isNight(world)) {
-                checkedWorlds.remove(world);
+                checkedWorldsIds.remove(worldUid);
                 continue;
             }
+            if (checkedWorldsIds.contains(worldUid)) continue;
+            if (!passesChance() || EventAPI.isEventActive(world, EVENT_TYPE)) continue;
 
-            if (checkedWorlds.contains(world)) {
-                continue;
-            }
-
-            if (!passesChance() || EventAPI.isEventActive(world, EventType.NIGHTMARE_NIGHT))
-                continue;
-
-            checkedWorlds.add(world);
-            final var eventInstance = new NightmareNightInstance(
-                    plugin, protocolManager, eventManager, pluginManager, config, messageConfig, world);
-            eventManager.startEvent(world, EventType.NIGHTMARE_NIGHT, eventInstance);
-            LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
+            checkedWorldsIds.add(worldUid);
+            startEvent(world);
         }
     }
 
@@ -77,19 +68,23 @@ public final class NightmareNightScheduler implements EventScheduler {
         return randomNumber <= eventChance;
     }
 
+    private void startEvent(World world) {
+        final var eventInstance = new NightmareNightInstance(
+                plugin, protocolManager, eventManager, pluginManager, world);
+        eventManager.startEvent(world, EVENT_TYPE, eventInstance);
+        LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
+    }
+
     @Override
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            LoggerUtility.info(this, "Stopped scheduler");
-        } else {
-            LoggerUtility.info(this, "Scheduler is not active");
         }
     }
 
     private void cache() {
-        worlds = EventAPI.getWorldsWithAllowedEvent(EventType.NIGHTMARE_NIGHT);
-        eventChance = config.getEventChance();
-        LoggerUtility.info(this, "Cached fields");
+        worldsIds = EventAPI.getWorldsWithAllowedEvent(EVENT_TYPE);
+        checkFrequency = ConfigService.getNightmareNightConfig().getCheckFrequency();
+        eventChance = ConfigService.getNightmareNightConfig().getEventChance();
     }
 }

@@ -9,6 +9,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The EventAPI class provides a centralized interface for managing events within
@@ -94,8 +95,8 @@ public final class EventAPI {
         return worldStateManager.getWorldState(world).getActiveEventTypes();
     }
 
-    public static Set<World> getWorldsWithAllowedEvent(EventType eventType) {
-        return worldStateManager.getWorldsWithAllowedEvent(eventType);
+    public static Set<UUID> getWorldsWithAllowedEvent(EventType eventType) {
+        return worldStateManager.getWorldsIdsWithAllowedEvent(eventType);
     }
 
     public static long getLastDayTheEventWas(World world, EventType eventType) {

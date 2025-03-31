@@ -2,14 +2,12 @@ package ru.vladimir.noctyss.event.types.nightmarenight;
 
 import com.comphenix.protocol.ProtocolManager;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightStartEvent;
-import ru.vladimir.noctyss.config.MessageConfig;
-import ru.vladimir.noctyss.config.NightmareNightConfig;
+import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
@@ -26,79 +24,85 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@ToString
 @RequiredArgsConstructor
-public class NightmareNightInstance implements EventInstance {
+public final class NightmareNightInstance implements EventInstance {
     private static final EventType EVENT_TYPE = EventType.NIGHTMARE_NIGHT;
     private final List<Module> modules = new ArrayList<>();
     private final JavaPlugin plugin;
     private final ProtocolManager protocolManager;
     private final EventManager eventManager;
     private final PluginManager pluginManager;
-    private final NightmareNightConfig config;
-    private final MessageConfig messageConfig;
     private final World world;
 
     @Override
     public void start() {
         registerModules();
+
         int registered = 0;
-        pluginManager.callEvent(new NightmareNightStartEvent(world, true));
         for (final Module module : modules) {
             module.start();
             registered++;
-            LoggerUtility.info(this, "Registered module '%s' in '%s'"
+            LoggerUtility.info(this, "Started '%s' in '%s'"
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All modules '%d' started in %s"
+
+        pluginManager.callEvent(new NightmareNightStartEvent(world, false));
+        LoggerUtility.info(this, "Started all '%d' in %s"
                 .formatted(registered, world.getName()));
     }
 
     @Override
     public void stop() {
-        pluginManager.callEvent(new NightmareNightEndEvent(world, true));
-        int unregistered = 0;
+        pluginManager.callEvent(new NightmareNightEndEvent(world, false));
+
+        int stopped = 0;
         for (final Module module : modules) {
             module.stop();
-            unregistered++;
-            LoggerUtility.info(this, "Unregistered module '%s' in '%s'"
+            stopped++;
+            LoggerUtility.info(this, "Stopped '%s' in '%s'"
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
-        LoggerUtility.info(this, "All modules '%d' stopped in '%s'"
-                .formatted(unregistered, world.getName()));
+        LoggerUtility.info(this, "Stopped all '%d' in '%s'"
+                .formatted(stopped, world.getName()));
     }
 
     private void registerModules() {
-        if (config.isEffectEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isEffectEnabled()) {
             modules.add(new EffectService.Builder(
                     plugin,
                     pluginManager,
                     world,
                     EVENT_TYPE)
-                    .addEffectGiveScheduler(config.getEffects(), config.getEffectGiveFrequency())
+                    .addEffectGiveScheduler(
+                            ConfigService.getNightmareNightConfig().getEffects(),
+                            ConfigService.getNightmareNightConfig().getEffectGiveFrequency())
                     .build()
             );
         }
 
-        if (config.isSoundEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isSoundEnabled()) {
             modules.add(new SoundService.Builder(
                     plugin,
                     pluginManager,
                     protocolManager,
                     world,
                     EVENT_TYPE)
-                    .addSoundPlayScheduler(new Random(), config.getSounds(), config.getSoundPlayFrequency())
+                    .addSoundPlayScheduler(new Random(),
+                            ConfigService.getNightmareNightConfig().getSounds(),
+                            ConfigService.getNightmareNightConfig().getSoundPlayFrequency())
                     .build()
             );
         }
 
-        if (config.isTimeEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isTimeEnabled()) {
             modules.add(new TimeModifyService.Builder(
                     plugin,
                     eventManager,
                     world,
                     EventType.NIGHTMARE_NIGHT)
-                    .addMidnightLoopModifier(config.getTimeModifyFrequency(), config.getNightLength())
+                    .addMidnightLoopModifier(
+                            ConfigService.getNightmareNightConfig().getTimeModifyFrequency(),
+                            ConfigService.getNightmareNightConfig().getNightLength())
                     .build()
             );
         }
@@ -107,28 +111,31 @@ public class NightmareNightInstance implements EventInstance {
                 plugin,
                 pluginManager,
                 world)
-                .addBedCancelEvent(messageConfig.getCannotSleep())
+                .addBedCancelEvent(ConfigService.getMessageConfig().getCannotSleep())
                 .build()
         );
 
-        if (config.isSpawnRateEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isSpawnRateEnabled()) {
             modules.add(new SpawnRateService.Builder(
                     plugin,
                     pluginManager,
                     EVENT_TYPE,
                     world)
-                    .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
+                    .addMonsterSpawnMultiplier(
+                            ConfigService.getNightmareNightConfig().getMonsterMultiplier())
                     .build()
             );
         }
 
-        if (config.isNotificationsEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isNotificationsEnabled()) {
             modules.add(new NotificationService.Builder(
                     plugin,
                     pluginManager,
                     EventType.NIGHTMARE_NIGHT,
                     world)
-                    .addToastEndEvent(config.isEndToastOneTime(), config.getEndToast())
+                    .addToastEndEvent(
+                            ConfigService.getNightmareNightConfig().isEndToastOneTime(),
+                            ConfigService.getNightmareNightConfig().getEndToast())
                     .build()
             );
         }

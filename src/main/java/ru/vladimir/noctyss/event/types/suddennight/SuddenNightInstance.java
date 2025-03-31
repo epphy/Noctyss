@@ -7,8 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.events.suddennight.SuddenNightEndEvent;
 import ru.vladimir.noctyss.api.events.suddennight.SuddenNightStartEvent;
-import ru.vladimir.noctyss.config.MessageConfig;
-import ru.vladimir.noctyss.config.SuddenNightConfig;
+import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
@@ -33,8 +32,6 @@ public final class SuddenNightInstance implements EventInstance {
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
     private final EventManager eventManager;
-    private final SuddenNightConfig config;
-    private final MessageConfig messageConfig;
     private final World world;
 
     @Override
@@ -49,13 +46,15 @@ public final class SuddenNightInstance implements EventInstance {
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
 
-        pluginManager.callEvent(new SuddenNightStartEvent(world, true));
+        pluginManager.callEvent(new SuddenNightStartEvent(world, false));
         LoggerUtility.info(this, "Started all '%d' in '%s'"
                 .formatted(started, world.getName()));
     }
 
     @Override
     public void stop() {
+        pluginManager.callEvent(new SuddenNightEndEvent(world, false));
+
         int stopped = 0;
         for (final Module module : modules) {
             module.stop();
@@ -64,22 +63,17 @@ public final class SuddenNightInstance implements EventInstance {
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
 
-        pluginManager.callEvent(new SuddenNightEndEvent(world, true));
         LoggerUtility.info(this, "Stopped all '%d' in '%s'"
                 .formatted(stopped, world.getName()));
     }
 
     private void registerModules() {
-        try {
-            addBukkitEventService();
-            addTimeModifyService();
-            addSoundService();
-            addSpawnRateService();
-            addEnvironmentService();
-            addNotificationService();
-        } catch (Exception e) {
-            throw new IllegalStateException("An error occurred while registering modules", e);
-        }
+        addBukkitEventService();
+        addTimeModifyService();
+        addSoundService();
+        addSpawnRateService();
+        addEnvironmentService();
+        addNotificationService();
     }
 
     private void addBukkitEventService() {
@@ -88,7 +82,8 @@ public final class SuddenNightInstance implements EventInstance {
                         plugin,
                         pluginManager,
                         world)
-                        .addBedCancelEvent(messageConfig.getCannotSleep())
+                        .addBedCancelEvent(
+                                ConfigService.getMessageConfig().getCannotSleep())
                         .build()
         );
     }
@@ -100,7 +95,10 @@ public final class SuddenNightInstance implements EventInstance {
                         eventManager,
                         world,
                         EVENT_TYPE)
-                        .addAbruptNight(config.getNightTimeModifyFrequency(), config.getNightLength(), new Random())
+                        .addAbruptNight(
+                                ConfigService.getSuddenNightConfig().getNightTimeModifyFrequency(),
+                                ConfigService.getSuddenNightConfig().getNightLength(),
+                                new Random())
                         .build()
         );
     }
@@ -109,10 +107,17 @@ public final class SuddenNightInstance implements EventInstance {
         final var soundServiceBuilder = new SoundService.Builder(
                 plugin, pluginManager, protocolManager, world, EVENT_TYPE);
         soundServiceBuilder.addSoundMuter(
-                config.getDisallowedSounds(), config.getAllowedSounds(), config.getRewindSound(), config.getAmbientStopFrequency());
+                ConfigService.getSuddenNightConfig().getDisallowedSounds(),
+                ConfigService.getSuddenNightConfig().getAllowedSounds(),
+                ConfigService.getSuddenNightConfig().getRewindSound(),
+                ConfigService.getSuddenNightConfig().getAmbientStopFrequency());
 
-        if (config.isMusicEnabled()) {
-            soundServiceBuilder.addAmbiencePlayer(config.getAmbientPlayDelayTicks(), config.getAmbientPlayFrequencyTicks(), config.getAllowedSounds(), new Random());
+        if (ConfigService.getSuddenNightConfig().isMusicEnabled()) {
+            soundServiceBuilder.addAmbiencePlayer(
+                    ConfigService.getSuddenNightConfig().getAmbientPlayDelayTicks(),
+                    ConfigService.getSuddenNightConfig().getAmbientPlayFrequencyTicks(),
+                    ConfigService.getSuddenNightConfig().getAllowedSounds(),
+                    new Random());
         }
 
         modules.add(soundServiceBuilder.build());
@@ -132,7 +137,7 @@ public final class SuddenNightInstance implements EventInstance {
     private void addEnvironmentService() {
         final var environmentServiceBuilder = new EnvironmentService.Builder(
                 plugin, pluginManager, protocolManager, world, EVENT_TYPE);
-        if (config.isLightDimEnabled()) {
+        if (ConfigService.getSuddenNightConfig().isLightDimEnabled()) {
             environmentServiceBuilder.addLightingPocketModifier();
         }
         environmentServiceBuilder.addEntityAIKiller();
@@ -143,8 +148,10 @@ public final class SuddenNightInstance implements EventInstance {
         final var notificationServiceBuilder = new NotificationService.Builder(
                 plugin, pluginManager, EVENT_TYPE, world);
 
-        if (config.isEndToastEnabled()) {
-            notificationServiceBuilder.addToastEndEvent(config.isEndToastOneTime(), config.getEndToast());
+        if (ConfigService.getSuddenNightConfig().isEndToastEnabled()) {
+            notificationServiceBuilder.addToastEndEvent(
+                    ConfigService.getSuddenNightConfig().isEndToastOneTime(),
+                    ConfigService.getSuddenNightConfig().getEndToast());
         }
 
         modules.add(notificationServiceBuilder.build());
