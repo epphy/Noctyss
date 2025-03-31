@@ -58,11 +58,11 @@ public final class EnvironmentService implements Module {
             }
 
             started++;
-            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
+            LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
                     .formatted(modifier.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
+        LoggerUtility.info(this, "Started all '%d' in '%s' for '%s'"
                 .formatted(started, world.getName(), eventType.name()));
     }
 

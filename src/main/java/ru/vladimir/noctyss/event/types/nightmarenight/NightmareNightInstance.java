@@ -97,6 +97,7 @@ public final class NightmareNightInstance implements EventInstance {
         if (ConfigService.getNightmareNightConfig().isTimeEnabled()) {
             modules.add(new TimeModifyService.Builder(
                     plugin,
+                    pluginManager,
                     eventManager,
                     world,
                     EventType.NIGHTMARE_NIGHT)

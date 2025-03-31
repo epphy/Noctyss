@@ -11,12 +11,12 @@ import java.util.BitSet;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class LightUpdateWrapperProxy {
+class LightUpdateWrapperProxy {
     private static final String NO_CONTAINS = "Failed to process light: light packet is not found";
     private final StructureModifier<WrappedLevelChunkData.LightData> lightDataStructure;
     private WrappedLevelChunkData.LightData lightData;
 
-    public void fillMasks() {
+    void fillMasks() {
         final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -32,7 +32,7 @@ public class LightUpdateWrapperProxy {
         light.setSkyYMask(skyMask);
     }
 
-    public void clearEmptyMasks() {
+    void clearEmptyMasks() {
         final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -43,7 +43,7 @@ public class LightUpdateWrapperProxy {
         light.setEmptySkyYMask(new BitSet());
     }
 
-    public void setLightLevel(byte level) {
+    void setLightLevel(byte level) {
         final byte[] bytes = new byte[2048];
         Arrays.fill(bytes, level);
 
@@ -56,7 +56,7 @@ public class LightUpdateWrapperProxy {
         skyLightArrays(updates);
     }
 
-    private void skyLightArrays(List<byte[]> array) {
+    void skyLightArrays(List<byte[]> array) {
         final var light = getLightData();
         if (light == null) {
             LoggerUtility.warn(this, NO_CONTAINS);
@@ -80,7 +80,7 @@ public class LightUpdateWrapperProxy {
         blockUpdates.addAll(array);
     }
 
-    public boolean containsLightData() {
+    boolean containsLightData() {
         return lightDataStructure != null && getLightData() != null;
     }
 

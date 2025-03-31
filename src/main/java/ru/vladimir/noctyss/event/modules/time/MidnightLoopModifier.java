@@ -8,7 +8,6 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
-import ru.vladimir.noctyss.utility.LoggerUtility;
 
 @RequiredArgsConstructor
 final class MidnightLoopModifier implements TimeModificationRule, Controllable {
@@ -31,9 +30,8 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
 
     @Override
     public void start() {
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::processTime, frequency, frequency).getTaskId();
-        LoggerUtility.info(this, "Started scheduler in '%s'".formatted(world.getName()));
     }
 
     private void processTime() {
@@ -64,9 +62,6 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
             GameTimeUtility.setTime(world, MORNING_TICKS_TIME);
-            LoggerUtility.info(this, "Scheduler stopped in '%s'".formatted(world.getName()));
-        } else {
-            LoggerUtility.warn(this, "Failed to stop scheduler in '%s'".formatted(world.getName()));
         }
     }
 }

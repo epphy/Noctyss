@@ -24,7 +24,7 @@ final class SoundPlayScheduler implements SoundManager, Controllable {
 
     @Override
     public void start() {
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::playSound, frequency, frequency).getTaskId();
     }
 

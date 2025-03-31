@@ -93,6 +93,7 @@ public final class SuddenNightInstance implements EventInstance {
         modules.add(
                 new TimeModifyService.Builder(
                         plugin,
+                        pluginManager,
                         eventManager,
                         world,
                         EVENT_TYPE)

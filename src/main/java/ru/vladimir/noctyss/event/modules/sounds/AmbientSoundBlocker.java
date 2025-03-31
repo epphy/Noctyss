@@ -49,13 +49,8 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     @Override
     public void start() {
         stopAllSounds();
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::stopDisallowedSounds, DELAY, stopFrequency).getTaskId();
-    }
-
-    private void stopAllSounds() {
-        Bukkit.getScheduler().runTask(plugin, () ->
-                world.getPlayers().forEach(Player::stopAllSounds));
     }
 
     private void stopDisallowedSounds() {
@@ -76,6 +71,11 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
             stopAllSounds();
             playRewindSound();
         }
+    }
+
+    private void stopAllSounds() {
+        Bukkit.getScheduler().runTask(plugin, () ->
+                world.getPlayers().forEach(Player::stopAllSounds));
     }
 
     private void playRewindSound() {

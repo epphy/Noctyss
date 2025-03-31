@@ -31,7 +31,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     @Override
     public void start() {
         setSchedulerParams();
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::playAmbient, delay, frequency).getTaskId();
     }
 

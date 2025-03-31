@@ -1,6 +1,5 @@
 package ru.vladimir.noctyss.event.modules.time;
 
-import com.comphenix.protocol.PacketType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
@@ -37,8 +36,8 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
         setNightLength();
         originalWorldTime = world.getTime();
         world.setStorm(false);
-        taskId = Bukkit.getScheduler().runTaskTimerAsynchronously
-                (plugin, this::processTime, DELAY, frequency).getTaskId();
+        taskId = Bukkit.getScheduler().runTaskTimer(
+                plugin, this::processTime, DELAY, frequency).getTaskId();
     }
 
     private void setNightLength() {

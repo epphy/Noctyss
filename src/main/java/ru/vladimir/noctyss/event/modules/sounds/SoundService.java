@@ -3,8 +3,10 @@ package ru.vladimir.noctyss.event.modules.sounds;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketListener;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class SoundService implements Module {
+public final class SoundService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
@@ -48,11 +50,13 @@ public class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                pluginManager.registerEvents((Listener) soundManager, plugin);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        pluginManager.registerEvents((Listener) soundManager, plugin));
             }
 
             if (soundManager instanceof PacketListener) {
-                protocolManager.addPacketListener((PacketListener) soundManager);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        protocolManager.addPacketListener((PacketListener) soundManager));
             }
 
             started++;
@@ -60,7 +64,7 @@ public class SoundService implements Module {
                     .formatted(soundManager.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Started '%d' sound managers in '%s' for '%s'"
+        LoggerUtility.info(this, "Started all '%d' in '%s' for '%s'"
                 .formatted(started, world.getName(), eventType.name()));
     }
 
@@ -74,11 +78,13 @@ public class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                HandlerList.unregisterAll((Listener) soundManager);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        HandlerList.unregisterAll((Listener) soundManager));
             }
 
             if (soundManager instanceof PacketListener) {
-                protocolManager.removePacketListener((PacketListener) soundManager);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        protocolManager.removePacketListener((PacketListener) soundManager));
             }
 
             stopped++;
@@ -86,11 +92,11 @@ public class SoundService implements Module {
                     .formatted(soundManager.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
 
-        LoggerUtility.info(this, "Stopped '%d' effect managers in '%s' for '%s'"
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
                 .formatted(stopped, world.getName(), eventType.name()));
     }
 
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
     public static class Builder {
         private final JavaPlugin plugin;
@@ -101,14 +107,14 @@ public class SoundService implements Module {
         private final List<SoundManager> soundManagers = new ArrayList<>();
 
         public Builder addSoundPlayScheduler(Random random, List<Sound> sounds, long frequency) {
-            final SoundPlayScheduler soundManager = new SoundPlayScheduler(
-                    plugin, world, random, sounds, frequency);
+            final var soundManager = new SoundPlayScheduler(plugin, world, random, sounds, frequency);
             soundManagers.add(soundManager);
             return this;
         }
 
         public Builder addSoundMuter(Set<Sound> disallowedSounds, List<Sound> allowedSounds, Sound rewindSound, long frequency) {
-            final PacketType[] soundPackets = new PacketType[] {PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT};
+            final PacketType[] soundPackets = new PacketType[]
+                    { PacketType.Play.Server.ENTITY_SOUND, PacketType.Play.Server.NAMED_SOUND_EFFECT };
             final var soundManager = new AmbientSoundBlocker(
                     plugin, world, allowedSounds, disallowedSounds, rewindSound, frequency, soundPackets);
             soundManagers.add(soundManager);
