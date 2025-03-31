@@ -14,9 +14,11 @@ final class NoNaturalSpawnRate implements SpawnRule, Listener {
     private void on(CreatureSpawnEvent event) {
         if (!event.getEntity().getWorld().equals(world)) return;
 
-        final CreatureSpawnEvent.SpawnReason spawnReason = event.getSpawnReason();
+        final var spawnReason = event.getSpawnReason();
         if (spawnReason != CreatureSpawnEvent.SpawnReason.SPAWNER &&
-            spawnReason != CreatureSpawnEvent.SpawnReason.NATURAL) return;
+            spawnReason != CreatureSpawnEvent.SpawnReason.NATURAL)
+            return;
+
         event.setCancelled(true);
     }
 }

@@ -1,7 +1,9 @@
 package ru.vladimir.noctyss.event.modules.spawnrate;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -15,7 +17,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpawnRateService implements Module {
+public final class SpawnRateService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final EventType eventType;
@@ -32,7 +34,7 @@ public class SpawnRateService implements Module {
 
     @Override
     public void start() {
-        int registered = 0;
+        int started = 0;
         for (final SpawnRule spawnRule : spawnRules) {
 
             if (spawnRule instanceof Controllable) {
@@ -40,42 +42,41 @@ public class SpawnRateService implements Module {
             }
 
             if (spawnRule instanceof Listener) {
-                pluginManager.registerEvents((Listener) spawnRule, plugin);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        pluginManager.registerEvents((Listener) spawnRule, plugin));
             }
 
-            registered++;
-            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
+            started++;
+            LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
                     .formatted(spawnRule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
-                .formatted(registered, world.getName(), eventType.name()));
+        LoggerUtility.info(this, "Started all '%d' in '%s' for '%s'"
+                .formatted(started, world.getName(), eventType.name()));
     }
 
     @Override
     public void stop() {
-        try {
-            int unregistered = 0;
-            for (final SpawnRule rule : spawnRules) {
+        int stopped = 0;
+        for (final SpawnRule rule : spawnRules) {
 
-                if (rule instanceof Controllable) {
-                    ((Controllable) rule).stop();
-                }
-
-                if (rule instanceof Listener) {
-                    HandlerList.unregisterAll((Listener) rule);
-                }
-
-                unregistered++;
-                LoggerUtility.info(this, "Unregistered '%s' spawn rule in '%s'"
-                        .formatted(rule.getClass().getSimpleName(), world.getName()));
+            if (rule instanceof Controllable) {
+                ((Controllable) rule).stop();
             }
-            LoggerUtility.info(this, "Unregistered '%d' spawn rules in '%s'".formatted(unregistered, world.getName()));
-        } catch (Exception e) {
-            throw new IllegalStateException("An error occurred while loading spawn rules", e);
+
+            if (rule instanceof Listener) {
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        HandlerList.unregisterAll((Listener) rule));
+            }
+
+            stopped++;
+            LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
+                    .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
+                .formatted(stopped, world.getName(), eventType.name()));
     }
 
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
     public static class Builder {
         private final JavaPlugin plugin;
@@ -85,8 +86,7 @@ public class SpawnRateService implements Module {
         private final List<SpawnRule> spawnRules = new ArrayList<>();
 
         public Builder addMonsterSpawnMultiplier(int multiplier) {
-            MonsterSpawnMultiplier spawnRule = new MonsterSpawnMultiplier(world, multiplier);
-            spawnRule.init();
+            final var spawnRule = new MonsterSpawnMultiplier(world, multiplier);
             spawnRules.add(spawnRule);
             return this;
         }

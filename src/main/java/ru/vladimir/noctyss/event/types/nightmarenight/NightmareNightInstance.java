@@ -16,7 +16,7 @@ import ru.vladimir.noctyss.event.modules.effects.EffectService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
-import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
+import ru.vladimir.noctyss.event.modules.time.TimeService;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -95,7 +95,7 @@ public final class NightmareNightInstance implements EventInstance {
         }
 
         if (ConfigService.getNightmareNightConfig().isTimeEnabled()) {
-            modules.add(new TimeModifyService.Builder(
+            modules.add(new TimeService.Builder(
                     plugin,
                     pluginManager,
                     eventManager,

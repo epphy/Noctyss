@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class TimeModifyService implements Module {
+public final class TimeService implements Module {
     private final List<TimeModificationRule> rules;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final World world;
     private final EventType eventType;
 
-    private TimeModifyService(Builder builder) {
+    private TimeService(Builder builder) {
         this.rules = builder.getRules();
         this.plugin = builder.getPlugin();
         this.pluginManager = builder.getPluginManager();
@@ -101,8 +101,8 @@ public final class TimeModifyService implements Module {
             return this;
         }
 
-        public TimeModifyService build() {
-            return new TimeModifyService(this);
+        public TimeService build() {
+            return new TimeService(this);
         }
     }
 }

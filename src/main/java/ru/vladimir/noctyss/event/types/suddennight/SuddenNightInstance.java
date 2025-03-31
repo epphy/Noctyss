@@ -16,7 +16,7 @@ import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
-import ru.vladimir.noctyss.event.modules.time.TimeModifyService;
+import ru.vladimir.noctyss.event.modules.time.TimeService;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -91,7 +91,7 @@ public final class SuddenNightInstance implements EventInstance {
 
     private void addTimeModifyService() {
         modules.add(
-                new TimeModifyService.Builder(
+                new TimeService.Builder(
                         plugin,
                         pluginManager,
                         eventManager,

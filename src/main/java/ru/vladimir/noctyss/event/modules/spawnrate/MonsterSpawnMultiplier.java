@@ -16,7 +16,7 @@ final class MonsterSpawnMultiplier implements SpawnRule, Listener {
     private final int multiplier;
     private int modifiedMultiplier;
 
-    public void init() {
+    {
         cache();
     }
 
@@ -37,6 +37,6 @@ final class MonsterSpawnMultiplier implements SpawnRule, Listener {
     }
 
     private void cache() {
-        modifiedMultiplier = multiplier - 1;
+        modifiedMultiplier = multiplier - 1; // Remove one, already spawned entity
     }
 }
