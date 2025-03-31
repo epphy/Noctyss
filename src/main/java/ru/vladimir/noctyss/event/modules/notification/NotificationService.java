@@ -89,8 +89,8 @@ public final class NotificationService implements Module {
         private final List<NotificationRule> notificationRules = new ArrayList<>();
 
         public Builder addToastEndEvent(boolean oneTime, ToastNotification endToast) {
-            final var event = new ToastSenderOnEvent(eventType, world, oneTime, endToast);
-            notificationRules.add(event);
+            final var rule = new ToastSenderOnEvent(eventType, world, oneTime, endToast);
+            notificationRules.add(rule);
             return this;
         }
 

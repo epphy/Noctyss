@@ -5,7 +5,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.api.events.ICustomEvent;
-import ru.vladimir.noctyss.utility.LoggerUtility;
 
 public class SuddenNightEndEvent extends WorldEvent implements ICustomEvent {
     private static final HandlerList handlers = new HandlerList();
@@ -19,7 +18,7 @@ public class SuddenNightEndEvent extends WorldEvent implements ICustomEvent {
         return handlers;
     }
 
-    public @NotNull HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 }
