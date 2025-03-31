@@ -85,6 +85,7 @@ public final class SuddenNightInstance implements EventInstance {
                         world)
                         .addBedCancelEvent(
                                 ConfigService.getMessageConfig().getCannotSleep())
+                        .a()
                         .build()
         );
     }
