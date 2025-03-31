@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import ru.vladimir.noctyss.api.events.suddennight.SuddenNightEndEvent;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.notification.senders.NotificationManager;
+import ru.vladimir.noctyss.utility.LoggerUtility;
 
 @RequiredArgsConstructor
 final class ToastSenderOnEvent implements NotificationRule, Listener {

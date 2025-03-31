@@ -3,6 +3,8 @@ package ru.vladimir.noctyss.event.modules.notification;
 import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -16,23 +18,28 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 public class NotificationService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
+    private final EventType eventType;
     private final World world;
     private final List<NotificationRule> notificationRules;
 
     private NotificationService(Builder builder) {
         this.plugin = builder.getPlugin();
         this.pluginManager = builder.pluginManager;
+        this.eventType = builder.getEventType();
         this.world = builder.getWorld();
         this.notificationRules = builder.getNotificationRules();
     }
 
     @Override
     public void start() {
-        int registered = 0;
+        int started = 0;
+
         for (final NotificationRule rule : notificationRules) {
+
             if (rule instanceof Listener) {
                 pluginManager.registerEvents((Listener) rule, plugin);
             }
@@ -41,18 +48,20 @@ public class NotificationService implements Module {
                 ((Controllable) rule).start();
             }
 
-            registered++;
-            LoggerUtility.info(this, "Registered '%s' notification rule in '%s'"
-                    .formatted(rule.getClass().getSimpleName(), world.getName()));
+            started++;
+            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
+                    .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "All notification rules '%d' registered in '%s'"
-                .formatted(registered, world.getName()));
+        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
+                .formatted(started, world.getName(), eventType.name()));
     }
 
     @Override
     public void stop() {
-        int unregistered = 0;
+        int stopped = 0;
+
         for (final NotificationRule rule : notificationRules) {
+
             if (rule instanceof Listener) {
                 HandlerList.unregisterAll((Listener) rule);
             }
@@ -61,14 +70,15 @@ public class NotificationService implements Module {
                 ((Controllable) rule).stop();
             }
 
-            unregistered++;
-            LoggerUtility.info(this, "Unregistered '%s' notification rule in '%s'"
-                    .formatted(rule.getClass().getSimpleName(), world.getName()));
+            stopped++;
+            LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
+                    .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "All notification rules '%d' unregistered in world %s"
-                .formatted(unregistered, world.getName()));
+        LoggerUtility.info(this, "Stopped all '%d' stopped in '%s' for '%s'"
+                .formatted(stopped, world.getName(), eventType.name()));
     }
 
+    @ToString
     @Getter
     @RequiredArgsConstructor
     public static class Builder {
@@ -79,7 +89,8 @@ public class NotificationService implements Module {
         private final List<NotificationRule> notificationRules = new ArrayList<>();
 
         public Builder addToastEndEvent(boolean oneTime, ToastNotification endToast) {
-            notificationRules.add(new ToastSenderOnEvent(eventType, world, oneTime, endToast));
+            final var event = new ToastSenderOnEvent(eventType, world, oneTime, endToast);
+            notificationRules.add(event);
             return this;
         }
 

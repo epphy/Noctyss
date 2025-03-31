@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
+import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -17,12 +18,14 @@ import java.util.List;
 public class SpawnRateService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
+    private final EventType eventType;
     private final World world;
     private final List<SpawnRule> spawnRules;
 
     private SpawnRateService(Builder builder) {
         this.plugin = builder.getPlugin();
         this.pluginManager = builder.getPluginManager();
+        this.eventType = builder.getEventType();
         this.world = builder.getWorld();
         this.spawnRules = builder.getSpawnRules();
     }
@@ -41,30 +44,35 @@ public class SpawnRateService implements Module {
             }
 
             registered++;
-            LoggerUtility.info(this, "Registered '%s' spawn rule in '%s'"
-                    .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
+            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
+                    .formatted(spawnRule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Registered '%d' spawn rules in '%s'".formatted(registered, world.getName()));
+        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
+                .formatted(registered, world.getName(), eventType.name()));
     }
 
     @Override
     public void stop() {
-        int unregistered = 0;
-        for (final SpawnRule spawnRule : spawnRules) {
+        try {
+            int unregistered = 0;
+            for (final SpawnRule rule : spawnRules) {
 
-            if (spawnRule instanceof Controllable) {
-                ((Controllable) spawnRule).stop();
+                if (rule instanceof Controllable) {
+                    ((Controllable) rule).stop();
+                }
+
+                if (rule instanceof Listener) {
+                    HandlerList.unregisterAll((Listener) rule);
+                }
+
+                unregistered++;
+                LoggerUtility.info(this, "Unregistered '%s' spawn rule in '%s'"
+                        .formatted(rule.getClass().getSimpleName(), world.getName()));
             }
-
-            if (spawnRule instanceof Listener) {
-                HandlerList.unregisterAll((Listener) spawnRule);
-            }
-
-            unregistered++;
-            LoggerUtility.info(this, "Unregistered '%s' spawn rule in '%s'"
-                    .formatted(spawnRule.getClass().getSimpleName(), world.getName()));
+            LoggerUtility.info(this, "Unregistered '%d' spawn rules in '%s'".formatted(unregistered, world.getName()));
+        } catch (Exception e) {
+            throw new IllegalStateException("An error occurred while loading spawn rules", e);
         }
-        LoggerUtility.info(this, "Unregistered '%d' spawn rules in '%s'".formatted(unregistered, world.getName()));
     }
 
     @Getter
@@ -72,6 +80,7 @@ public class SpawnRateService implements Module {
     public static class Builder {
         private final JavaPlugin plugin;
         private final PluginManager pluginManager;
+        private final EventType eventType;
         private final World world;
         private final List<SpawnRule> spawnRules = new ArrayList<>();
 

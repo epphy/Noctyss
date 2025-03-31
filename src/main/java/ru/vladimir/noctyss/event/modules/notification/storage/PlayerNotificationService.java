@@ -17,16 +17,15 @@ public class PlayerNotificationService {
     public void init() {
         storage.save();
         updateData();
+        LoggerUtility.info(this, "initialised");
     }
 
     public void updateStorage() {
-        LoggerUtility.info(this, "Serializing following data: %s".formatted(data));
         storage.store(serializer.serialize(data));
     }
 
     public void updateData() {
         data = serializer.deserialize(storage.retrieve());
-        LoggerUtility.info(this, "Data has been updated for map: %s".formatted(data));
     }
 
     @NotNull
@@ -63,10 +62,8 @@ public class PlayerNotificationService {
     }
 
     public void addNewExcludedPlayerIds(World world, EventType eventType, String rule, Set<UUID> playerIds) {
-        LoggerUtility.info(this, "Adding '%s' to excluded player ids".formatted(playerIds));
         final Set<UUID> excludedPlayerIds = getDataOfWorldEventRule(world, eventType, rule);
         excludedPlayerIds.addAll(playerIds);
         updateStorage();
-        LoggerUtility.info(this, "Added. Updated list: %s".formatted(excludedPlayerIds));
     }
 }

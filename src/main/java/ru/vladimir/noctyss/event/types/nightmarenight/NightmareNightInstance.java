@@ -115,6 +115,7 @@ public class NightmareNightInstance implements EventInstance {
             modules.add(new SpawnRateService.Builder(
                     plugin,
                     pluginManager,
+                    EVENT_TYPE,
                     world)
                     .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
                     .build()

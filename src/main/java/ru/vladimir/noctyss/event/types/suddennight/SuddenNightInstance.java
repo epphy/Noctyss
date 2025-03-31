@@ -45,12 +45,12 @@ public final class SuddenNightInstance implements EventInstance {
         for (final Module module : modules) {
             module.start();
             started++;
-            LoggerUtility.info(this, "Started module '%s' in '%s'"
+            LoggerUtility.info(this, "Started '%s' in '%s'"
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
 
         pluginManager.callEvent(new SuddenNightStartEvent(world, true));
-        LoggerUtility.info(this, "Started '%d' modules in '%s'"
+        LoggerUtility.info(this, "Started all '%d' in '%s'"
                 .formatted(started, world.getName()));
     }
 
@@ -60,22 +60,26 @@ public final class SuddenNightInstance implements EventInstance {
         for (final Module module : modules) {
             module.stop();
             stopped++;
-            LoggerUtility.info(this, "Stopped module '%s' in '%s'"
+            LoggerUtility.info(this, "Stopped '%s' in '%s'"
                     .formatted(module.getClass().getSimpleName(), world.getName()));
         }
 
         pluginManager.callEvent(new SuddenNightEndEvent(world, true));
-        LoggerUtility.info(this, "Stopped '%d' modules in '%s'"
+        LoggerUtility.info(this, "Stopped all '%d' in '%s'"
                 .formatted(stopped, world.getName()));
     }
 
     private void registerModules() {
-        addBukkitEventService();
-        addTimeModifyService();
-        addSoundService();
-        addSpawnRateService();
-        addEnvironmentService();
-        addNotificationService();
+        try {
+            addBukkitEventService();
+            addTimeModifyService();
+            addSoundService();
+            addSpawnRateService();
+            addEnvironmentService();
+            addNotificationService();
+        } catch (Exception e) {
+            throw new IllegalStateException("An error occurred while registering modules", e);
+        }
     }
 
     private void addBukkitEventService() {
@@ -118,6 +122,7 @@ public final class SuddenNightInstance implements EventInstance {
         modules.add(new SpawnRateService.Builder(
                 plugin,
                 pluginManager,
+                EVENT_TYPE,
                 world)
                 .addNoSpawnRate()
                 .build()

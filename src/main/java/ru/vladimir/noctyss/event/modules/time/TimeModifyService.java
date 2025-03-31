@@ -16,45 +16,47 @@ import java.util.Random;
 
 public class TimeModifyService implements Module {
     private final List<TimeModificationRule> rules;
-    private final JavaPlugin plugin;
     private final World world;
     private final EventType eventType;
 
     private TimeModifyService(Builder builder) {
         this.rules = builder.getRules();
-        this.plugin = builder.getPlugin();
         this.world = builder.getWorld();
         this.eventType = builder.getEventType();
     }
 
     @Override
     public void start() {
-        int registered = 0;
+        int started = 0;
         for (final TimeModificationRule rule : rules) {
+
             if (rule instanceof Controllable scheduleRule) {
                 scheduleRule.start();
             }
-            registered++;
-            LoggerUtility.info(this, "Registered '%s' in '%s' for '%s'"
+
+            started++;
+            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
                     .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Registered '%d' time modification rules in '%s' for '%s'"
-                .formatted(registered, world.getName(), eventType.name()));
+        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
+                .formatted(started, world.getName(), eventType.name()));
     }
 
     @Override
     public void stop() {
-        int unregistered = 0;
+        int stopped = 0;
         for (final TimeModificationRule rule : rules) {
+
             if (rule instanceof Controllable scheduleRule) {
                 scheduleRule.stop();
             }
-            unregistered++;
-            LoggerUtility.info(this, "Unregistered '%s' in '%s' for '%s'"
+
+            stopped++;
+            LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
                     .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Unregistered '%d' time modification rules in '%s' for '%s'"
-                .formatted(unregistered, world.getName(), eventType.name()));
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
+                .formatted(stopped, world.getName(), eventType.name()));
     }
 
     @Getter

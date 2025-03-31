@@ -64,6 +64,8 @@ public class LoggerUtility {
     }
 
     private static String getSender(Object o) {
-        return (o instanceof String) ? o.toString() : o.getClass().getSimpleName();
+        if (o == null) return "UnknownSender";
+        if (o instanceof String) return o.toString();
+        return o.getClass().getSimpleName();
     }
 }
