@@ -110,6 +110,7 @@ public final class NightmareNightInstance implements EventInstance {
         modules.add(new BukkitEventService.Builder(
                 plugin,
                 pluginManager,
+                EVENT_TYPE,
                 world)
                 .addBedCancelEvent(ConfigService.getMessageConfig().getCannotSleep())
                 .build()

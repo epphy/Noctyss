@@ -81,6 +81,7 @@ public final class SuddenNightInstance implements EventInstance {
                 new BukkitEventService.Builder(
                         plugin,
                         pluginManager,
+                        EVENT_TYPE,
                         world)
                         .addBedCancelEvent(
                                 ConfigService.getMessageConfig().getCannotSleep())
