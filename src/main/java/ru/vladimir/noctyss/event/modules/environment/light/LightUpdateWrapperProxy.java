@@ -16,6 +16,22 @@ class LightUpdateWrapperProxy {
     private final StructureModifier<WrappedLevelChunkData.LightData> lightDataStructure;
     private WrappedLevelChunkData.LightData lightData;
 
+    void resetLight() {
+        final var light = getLightData();
+        if (light == null) {
+            LoggerUtility.warn(this, NO_CONTAINS);
+            return;
+        }
+
+        light.getBlockUpdates().clear();
+        light.getSkyUpdates().clear();
+
+        light.setBlockYMask(new BitSet());
+        light.setSkyYMask(new BitSet());
+        light.setEmptyBlockYMask(new BitSet());
+        light.setEmptySkyYMask(new BitSet());
+    }
+
     void fillMasks() {
         final var light = getLightData();
         if (light == null) {

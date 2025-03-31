@@ -26,9 +26,10 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
         final var proxy = new LightUpdateWrapperProxy(packet.getLightUpdateData());
         if (!proxy.containsLightData()) return;
 
+        proxy.resetLight();
         proxy.fillMasks();
         proxy.clearEmptyMasks();
-        proxy.setLightLevel((byte) 0x02);
+        proxy.setLightLevel((byte) 0x01);
     }
 
     private boolean isWrongWorld(PacketEvent event) {
