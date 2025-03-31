@@ -1,9 +1,9 @@
 package ru.vladimir.noctyss.event.modules.notification;
 
 import eu.endercentral.crazy_advancements.advancement.ToastNotification;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
@@ -18,8 +18,7 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString
-public class NotificationService implements Module {
+public final class NotificationService implements Module {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final EventType eventType;
@@ -40,19 +39,20 @@ public class NotificationService implements Module {
 
         for (final NotificationRule rule : notificationRules) {
 
-            if (rule instanceof Listener) {
-                pluginManager.registerEvents((Listener) rule, plugin);
-            }
-
             if (rule instanceof Controllable) {
                 ((Controllable) rule).start();
             }
 
+            if (rule instanceof Listener) {
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        pluginManager.registerEvents((Listener) rule, plugin));
+            }
+
             started++;
-            LoggerUtility.info(this, "Added '%s' in '%s' for '%s'"
+            LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
                     .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Added all '%d' in '%s' for '%s'"
+        LoggerUtility.info(this, "Started all '%d' in '%s' for '%s'"
                 .formatted(started, world.getName(), eventType.name()));
     }
 
@@ -63,7 +63,8 @@ public class NotificationService implements Module {
         for (final NotificationRule rule : notificationRules) {
 
             if (rule instanceof Listener) {
-                HandlerList.unregisterAll((Listener) rule);
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        HandlerList.unregisterAll((Listener) rule));
             }
 
             if (rule instanceof Controllable) {
@@ -74,12 +75,11 @@ public class NotificationService implements Module {
             LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"
                     .formatted(rule.getClass().getSimpleName(), world.getName(), eventType.name()));
         }
-        LoggerUtility.info(this, "Stopped all '%d' stopped in '%s' for '%s'"
+        LoggerUtility.info(this, "Stopped all '%d' in '%s' for '%s'"
                 .formatted(stopped, world.getName(), eventType.name()));
     }
 
-    @ToString
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @RequiredArgsConstructor
     public static class Builder {
         private final JavaPlugin plugin;

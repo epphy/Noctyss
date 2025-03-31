@@ -9,9 +9,7 @@ import ru.vladimir.noctyss.api.WorldStateConfigurer;
 import ru.vladimir.noctyss.config.*;
 import ru.vladimir.noctyss.event.*;
 import ru.vladimir.noctyss.event.modules.notification.senders.NotificationManager;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationSerializer;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
-import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationStorage;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -40,12 +38,8 @@ public final class Noctyss extends JavaPlugin {
         LoggerUtility.init(getLogger());
         GameTimeUtility.init(this);
         ConfigService.init(this);
-
-        var service = new PlayerNotificationService(
-                new PlayerNotificationStorage(this),
-                new PlayerNotificationSerializer());
-        service.init();
-        NotificationManager.init(service);
+        PlayerNotificationService.init(this);
+        NotificationManager.init();
     }
 
     private void configureLogger() {

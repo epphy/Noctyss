@@ -13,8 +13,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 final class ToastSender {
-    private final PlayerNotificationService notificationService;
-
     void send(EventType eventType, World world, boolean oneTime, ToastNotification toast) {
         if (oneTime) sendToPlayersOneTime(world, eventType, toast);
         else sendToPlayers(world, toast);
@@ -40,12 +38,12 @@ final class ToastSender {
     }
 
     private Set<UUID> getExcludedPlayerIds(World world, EventType eventType) {
-        return notificationService.getExcludedPlayersFor(
+        return PlayerNotificationService.getExcludedPlayersFor(
                 world, eventType, getClass().getSimpleName());
     }
 
     private void storeNewExcludedPlayerIds(World world, EventType eventType, Set<UUID> playerIds) {
-        notificationService.addNewExcludedPlayerIds(
+        PlayerNotificationService.addNewExcludedPlayerIds(
                 world, eventType, getClass().getSimpleName(), playerIds);
     }
 }
