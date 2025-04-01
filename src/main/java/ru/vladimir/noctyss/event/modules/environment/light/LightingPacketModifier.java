@@ -14,14 +14,12 @@ import ru.vladimir.noctyss.event.modules.environment.EnvironmentModifier;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
     private static final byte LIGHT_LEVEL = 0x01;
-    private static final byte LIGHT_SOURCE_LIGHT_LEVEL = 0x05;
     private final Map<Location, Byte> lightSources = new HashMap<>();
     private final World world;
 
@@ -56,7 +54,6 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
 
     @Override
     public void start() {
-        setLightSources();
         refreshChunks();
     }
 
@@ -81,39 +78,16 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
         final Chunk toChunk = event.getTo().getBlock().getChunk();
         if (fromChunk.equals(toChunk)) return;
 
-        setLightSources();
         refreshChunk(toChunk);
     }
 
     private void refreshChunks() {
         for (final Chunk chunk : world.getLoadedChunks()) {
-            TaskUtil.runTask(() -> world.refreshChunk(chunk.getX(), chunk.getZ()));
+            refreshChunk(chunk);
         }
     }
 
     private void refreshChunk(Chunk chunk) {
         TaskUtil.runTask(() -> world.refreshChunk(chunk.getX(), chunk.getZ()));
-    }
-
-    private void setLightSources() {
-        for (final Chunk chunk : world.getLoadedChunks()) {
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    for (int y = world.getMinHeight(); y < world.getMaxHeight(); y++) {
-                        final Location location = chunk.getBlock(x, y, z).getLocation();
-                        final byte lightLevel = getLightLevel(location.getBlock().getType());
-                        if (lightLevel == -1) continue;
-                        lightSources.put(location, lightLevel);
-                    }
-                }
-            }
-        }
-    }
-
-    private byte getLightLevel(Material material) {
-        return switch (material) {
-            case TORCH -> 5;
-            default -> -1;
-        };
     }
 }

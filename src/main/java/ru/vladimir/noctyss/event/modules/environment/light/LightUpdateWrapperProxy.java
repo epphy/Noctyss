@@ -58,7 +58,7 @@ class LightUpdateWrapperProxy {
         light.setEmptySkyYMask(new BitSet());
     }
 
-    void setLightLevel(Map<Location, Byte> lightSources, byte level) {
+    void setLightLevel(byte level) {
         final byte[] bytes = new byte[2048];
         Arrays.fill(bytes, level);
 
@@ -67,44 +67,8 @@ class LightUpdateWrapperProxy {
             updates.add(bytes);
         }
 
-//        for (final Map.Entry<Location, Byte> entry : lightSources.entrySet()) {
-//            applyLightSpread(updates, entry.getKey(), entry.getValue(), level);
-//        }
-
         blockLightArrays(updates);
         skyLightArrays(updates);
-    }
-
-    private void applyLightSpread(List<byte[]> updates, Location source, byte initialLevel, byte minimumLevel) {
-        final Queue<Location> queue = new LinkedList<>();
-        final Map<Location, Byte> visited = new HashMap<>();
-
-        queue.add(source);
-        visited.put(source, initialLevel);
-
-        while (!queue.isEmpty()) {
-            final Location current = queue.poll();
-            final byte lightLevel = visited.get(current);
-            if (lightLevel <= minimumLevel) continue;
-
-            for (final BlockFace face : BlockFace.values()) {
-                final Location neighbour = current.clone().add(face.getModX(), face.getModY(), face.getModZ());
-                if (visited.containsKey(neighbour)) continue;
-
-                final byte newLevel = (byte) (lightLevel - 1);
-                visited.put(neighbour, newLevel);
-                queue.add(neighbour);
-            }
-        }
-
-        for (final Map.Entry<Location, Byte> entry : visited.entrySet()) {
-            int sectionIndex = getChunkSectionIndex(entry.getKey());
-            updates.set(sectionIndex, new byte[] { entry.getValue() });
-        }
-    }
-
-    private int getChunkSectionIndex(Location location) {
-        return (location.getBlockY() >> 4) & 0xF;
     }
 
     void skyLightArrays(List<byte[]> array) {
