@@ -17,7 +17,7 @@ public final class EventInfoCommand implements SubCommand {
 
     public EventInfoCommand(JavaPlugin plugin, PluginManager pluginManager) {
         eventInfoInventory = new EventInfoInventory();
-        eventInfoClickListener = new EventInfoClickListener();
+        eventInfoClickListener = new EventInfoClickListener(eventInfoInventory);
         TaskUtil.runTask(() -> pluginManager.registerEvents(eventInfoClickListener, plugin));
     }
 
