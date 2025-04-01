@@ -21,6 +21,9 @@ public final class MessageConfig implements IConfig {
     private final JavaPlugin plugin;
 
     // Configs
+    private final Component commandUsage;
+    private final Component unknownCommand;
+    private final Component noPermission;
     private FileConfiguration fileConfig;
     private File file;
     private Component cannotSleep;

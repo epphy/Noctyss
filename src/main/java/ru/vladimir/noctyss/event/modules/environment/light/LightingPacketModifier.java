@@ -13,9 +13,6 @@ import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentModifier;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};

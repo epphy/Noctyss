@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class SubCommandManager {
+abstract class SubCommandManager {
     private final List<SubCommandWrapper> subCommandWrappers = new ArrayList<>();
     protected final Permission defaultPermission = new Permission("noctyss.admin");
 

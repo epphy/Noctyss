@@ -3,8 +3,6 @@ package ru.vladimir.noctyss.event.modules.environment.light;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.WrappedLevelChunkData;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.*;
