@@ -2,6 +2,7 @@ package ru.vladimir.noctyss.config;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.EnumMap;
@@ -40,8 +41,10 @@ public class ConfigService {
         LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
     }
 
-    public static void reload() {
+    public static void reload(GlobalEventScheduler globalEventScheduler) {
         configs.values().forEach(IConfig::reload);
+        globalEventScheduler.stop();
+        globalEventScheduler.start();
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 

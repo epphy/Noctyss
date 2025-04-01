@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.command;
 
+import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -8,11 +9,15 @@ import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.command.list.EventListCommand;
+import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.event.GlobalEventScheduler;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class NoctyssCommand extends SubCommandManager implements TabExecutor {
+    private final GlobalEventScheduler globalEventScheduler;
 
     public void init() {
         registerCommands();
@@ -60,6 +65,12 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
                 new EventListCommand(),
                 "list",
                 new Permission("noctyss.eventlist")
+        );
+
+        addSubCommand(
+                new ReloadConfigCommand(globalEventScheduler),
+                "reload",
+                new Permission("noctyss.reload")
         );
     }
 }

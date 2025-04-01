@@ -28,6 +28,7 @@ public final class MessageConfig implements IConfig {
     private FileConfiguration fileConfig;
     private File file;
     private Component cannotSleep;
+    private Component reloadedConfig;
 
     @Override
     public void load() {
