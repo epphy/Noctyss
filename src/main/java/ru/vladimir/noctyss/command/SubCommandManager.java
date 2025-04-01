@@ -11,7 +11,6 @@ import java.util.List;
 
 abstract class SubCommandManager {
     private final List<SubCommandWrapper> subCommandWrappers = new ArrayList<>();
-    protected final Permission defaultPermission = new Permission("noctyss.admin");
 
     protected void addSubCommand(SubCommand command, String alias, Permission permission) {
         subCommandWrappers.add(new SubCommandWrapper(command, new String[] {alias}, permission));

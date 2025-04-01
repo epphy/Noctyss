@@ -2,10 +2,12 @@ package ru.vladimir.noctyss;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.api.WorldStateConfigurer;
+import ru.vladimir.noctyss.command.NoctyssCommand;
 import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
@@ -33,6 +35,7 @@ public final class Noctyss extends JavaPlugin {
         configureLogger();
         loadAPI();
         loadScheduler();
+        loadCommand();
         startupMessage();
     }
 
@@ -65,6 +68,19 @@ public final class Noctyss extends JavaPlugin {
         globalEventScheduler = new GlobalEventScheduler(
                 this, pluginManager, protocolManager, eventManager);
         globalEventScheduler.start();
+    }
+
+    private void loadCommand() {
+        final PluginCommand command = getServer().getPluginCommand("noctyss");
+        if (command == null) {
+            LoggerUtility.err(this, "Failed to load the main command");
+            return;
+        }
+
+        final NoctyssCommand commandHandler = new NoctyssCommand();
+        commandHandler.init();
+        command.setExecutor(commandHandler);
+        command.setTabCompleter(commandHandler);
     }
 
     private void startupMessage() {

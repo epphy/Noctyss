@@ -24,6 +24,7 @@ public final class MessageConfig implements IConfig {
     private final Component commandUsage;
     private final Component unknownCommand;
     private final Component noPermission;
+    private final Component eventList;
     private FileConfiguration fileConfig;
     private File file;
     private Component cannotSleep;
