@@ -29,10 +29,10 @@ public class TaskUtil {
 
     public static void runDelayedTask(Runnable task, long delay) {
         if (shuttingDown || plugin == null) {
-            Bukkit.getScheduler().runTaskLater(plugin, task, delay);
-        } else {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule a delayed task. Running now");
             runTask(task);
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin, task, delay);
         }
     }
 

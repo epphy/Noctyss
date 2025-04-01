@@ -17,7 +17,7 @@ import ru.vladimir.noctyss.utility.TaskUtil;
 public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
-    private static final long DELAY = 100L;
+    private static final long DELAY = 20L;
     private static final byte LIGHT_LEVEL = 0x01;
     private final World world;
 
