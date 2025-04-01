@@ -20,7 +20,6 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
     private static final byte LIGHT_LEVEL = 0x01;
-    private final Map<Location, Byte> lightSources = new HashMap<>();
     private final World world;
 
     public LightingPacketModifier(JavaPlugin pluginInstance, World world) {
@@ -39,7 +38,7 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
         proxy.resetLight();
         proxy.fillMasks();
         proxy.clearEmptyMasks();
-        proxy.setLightLevel(lightSources, LIGHT_LEVEL);
+        proxy.setLightLevel(LIGHT_LEVEL);
     }
 
     private boolean isWrongWorld(PacketEvent event) {
