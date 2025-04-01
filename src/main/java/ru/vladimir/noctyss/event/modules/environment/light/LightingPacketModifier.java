@@ -12,12 +12,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentModifier;
-import ru.vladimir.noctyss.utility.LoggerUtility;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
 public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
     private static final PacketType[] LIGHT_PACKET_TYPES = new PacketType[]
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
+    private static final long DELAY = 100L;
     private static final byte LIGHT_LEVEL = 0x01;
     private final World world;
 
@@ -80,12 +80,13 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
     }
 
     private void refreshChunks() {
-        for (final Player player : world.getPlayers()) {
-            for (final Chunk chunk : player.getSentChunks()) {
-                LoggerUtility.info(this, "Updated chunk: (%d, %d)".formatted(chunk.getX(), chunk.getZ()));
-                refreshChunk(chunk);
+        TaskUtil.runDelayedTask(() -> {
+            for (final Player player : world.getPlayers()) {
+                for (final Chunk chunk : player.getSentChunks()) {
+                    refreshChunk(chunk);
+                }
             }
-        }
+        }, DELAY);
     }
 
     private void refreshChunk(Chunk chunk) {

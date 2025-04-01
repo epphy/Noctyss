@@ -27,6 +27,15 @@ public class TaskUtil {
                 .formatted((shuttingDown ? "disabling" : "working")));
     }
 
+    public static void runDelayedTask(Runnable task, long delay) {
+        if (shuttingDown || plugin == null) {
+            Bukkit.getScheduler().runTaskLater(plugin, task, delay);
+        } else {
+            LoggerUtility.warn(CLASS_NAME, "Failed to schedule a delayed task. Running now");
+            runTask(task);
+        }
+    }
+
     public static void runTask(Runnable task) {
         if (shuttingDown || plugin == null || !IS_ASYNC) {
             task.run();

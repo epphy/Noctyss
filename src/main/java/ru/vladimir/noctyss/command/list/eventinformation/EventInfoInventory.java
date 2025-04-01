@@ -19,52 +19,53 @@ public class EventInfoInventory {
     private static final Component INVENTORY_TITLE = Component.text("Noctyss: Events Information");
 
     private static final Component INFORMATION_ICON_NAME = MiniMessage.miniMessage().deserialize(
-            "<white>Information</white>");
+            "<!i><white>Information</white>");
     private static final List<Component> INFORMATION_ICON_LORE = List.of(
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> In addition to all events, </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> you may also setup some of </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> their configs. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> Learn about all <gold>events</gold> and how to configure them. </gray>"),
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> All events share a notification </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> config, where you may setup </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> what it says at specific periods </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> of events. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> Each event has its own <yellow>settings</yellow> and effects. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> You can customize certain aspects to fit your world. </gray>"),
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> Lastly, you cannot sleep during </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> any of the events. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> <aqua>Notifications</aqua> will inform you of event progress. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> Adjust what they display at different times. </gray>"),
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> For more help, please refer to </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> the plugin's documentation. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> <red>Sleeping</red> is <bold>disabled</bold> during active events. </gray>"),
+            MiniMessage.miniMessage().deserialize(" "),
+            MiniMessage.miniMessage().deserialize("<!i><gray> For more details, check the <blue>plugin documentation</blue>. </gray>"),
             MiniMessage.miniMessage().deserialize(" ")
     );
 
     private static final Component NIGHTMARE_NIGHT_ICON_NAME = MiniMessage.miniMessage().deserialize(
-            "<gradient:#660000:#222222>Nightmare Night</gradient>");
+            "<!i><gradient:#660000:#222222>Nightmare Night</gradient>");
     private static final List<Component> NIGHTMARE_NIGHT_ICON_LORE = List.of(
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> This event occurs randomly </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> at nights, accompanied by: </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> A <dark_red>dark</dark_red> and <red>ominous</red> night approaches... </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> During this event, you may encounter: </gray>"),
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<white> - longer night </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - random creepy sounds </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - effect of darkness </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - modified spawnrate </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Longer night duration</dark_red> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <red>Unsettling ambient sounds</red> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <dark_gray>Reduced vision</dark_gray> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Increased monster spawns</gold> </white>"),
+            MiniMessage.miniMessage().deserialize(" "),
+            MiniMessage.miniMessage().deserialize("<!i><gray> Be cautious... <dark_red>you're never alone</dark_red>. </gray>"),
             MiniMessage.miniMessage().deserialize(" ")
     );
 
     private static final Component SUDDEN_NIGHT_ICON_NAME = MiniMessage.miniMessage().deserialize(
-            "<gradient:#F69806:#F68406>Sudden Night</gradient>");
+            "<!i><gradient:#F69806:#F68406>Sudden Night</gradient>");
     private static final List<Component> SUDDEN_NIGHT_ICON_LORE = List.of(
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<gray> This event occurs randomly </gray>"),
-            MiniMessage.miniMessage().deserialize("<gray> at days, accompanied by: </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> The <gold>sun vanishes</gold>, and the world is plunged into <dark_gray>darkness</dark_gray>. </gray>"),
+            MiniMessage.miniMessage().deserialize("<!i><gray> During this event, you will experience: </gray>"),
             MiniMessage.miniMessage().deserialize(" "),
-            MiniMessage.miniMessage().deserialize("<white> - change in light </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - complete silence </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - background soundtrack </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - freeze of all entities </white>"),
-            MiniMessage.miniMessage().deserialize("<white> - disabled entity spawn </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <dark_gray>Instant nightfall</dark_gray> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <gray>Complete silence</gray> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Unsettling music</gold> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <blue>All entities freeze</blue> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <red>No mobs will spawn</red> </white>"),
+            MiniMessage.miniMessage().deserialize(" "),
+            MiniMessage.miniMessage().deserialize("<!i><gray> Something feels <dark_red>wrong</dark_red>... Stay alert. </gray>"),
             MiniMessage.miniMessage().deserialize(" ")
     );
 
