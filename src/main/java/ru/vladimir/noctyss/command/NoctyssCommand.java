@@ -6,9 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.vladimir.noctyss.command.list.EventInfoCommand;
+import ru.vladimir.noctyss.command.list.eventinformation.EventInfoCommand;
 import ru.vladimir.noctyss.command.list.EventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.config.ConfigService;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class NoctyssCommand extends SubCommandManager implements TabExecutor {
+    private final JavaPlugin plugin;
+    private final PluginManager pluginManager;
     private final GlobalEventScheduler globalEventScheduler;
 
     public void init() {
@@ -74,10 +78,8 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
                 new Permission("noctyss.reload")
         );
 
-        final var eventInfoCommand = new EventInfoCommand();
-        eventInfoCommand.init();
         addSubCommand(
-                eventInfoCommand,
+                new EventInfoCommand(plugin, pluginManager),
                 "info",
                 new Permission("noctyss.eventinfo")
         );

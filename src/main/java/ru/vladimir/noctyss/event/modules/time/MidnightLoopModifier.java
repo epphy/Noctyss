@@ -12,6 +12,7 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 @RequiredArgsConstructor
 final class MidnightLoopModifier implements TimeModificationRule, Controllable {
     private static final long MORNING_TICKS_TIME = 0L;
+    private static final long NIGHT_START_TIME = 13000L;
     private static final long MIDNIGHT_TICKS_TIME = 18000L;
     private static final long FULL_DAY_TICKS_TIME = 24000L;
     private final JavaPlugin plugin;
@@ -30,6 +31,7 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
 
     @Override
     public void start() {
+        GameTimeUtility.setTime(world, NIGHT_START_TIME);
         taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::processTime, frequency, frequency).getTaskId();
     }
