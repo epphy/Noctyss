@@ -1,3 +1,10 @@
 messages:
+  general:
+    event-list: "Here is a list of existing events: {0}"
+    no-permission: "Oops! Seems like you don't have a permission to use this command"
+    unknown-command: "Uh, sorry, but this command, seems like, does not exist. Try again!"
+    command-usage: "Usage: {0}"
+    reloaded-config: "Config has been reloaded"
+    player-only: "Hey! This command is for players only"
   nightmare-night:
     cannot-sleep: "I don't want to sleep"

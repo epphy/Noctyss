@@ -2,10 +2,12 @@ package ru.vladimir.noctyss.config;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 @UtilityClass
@@ -24,7 +26,7 @@ public class ConfigService {
 
     private static void register(JavaPlugin plugin) {
         final GeneralConfig generalConfig = new GeneralConfig(plugin, plugin.getConfig());
-        final MessageConfig messageConfig = new MessageConfig(plugin);
+        final MessageConfig messageConfig = new MessageConfig(plugin, List.of(EventType.values()).toString());
         final NightmareNightConfig nightmareNightConfig = new NightmareNightConfig(plugin);
         final SuddenNightConfig suddenNightConfig = new SuddenNightConfig(plugin);
 

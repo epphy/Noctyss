@@ -14,7 +14,7 @@ public final class EventListCommand implements SubCommand {
         if (args.length != 1) {
             sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
         } else {
-            sendFeedback(sender, ConfigService.getMessageConfig().getEventList());
+            sendFeedback(sender, ConfigService.getMessageConfig().getEventListMsg());
         }
     }
 

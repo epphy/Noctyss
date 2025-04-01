@@ -16,6 +16,7 @@ import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (args.length <= 1) {
+        if (args.length < 1) {
             sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
             return true;
         }

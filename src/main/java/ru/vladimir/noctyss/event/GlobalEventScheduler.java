@@ -60,14 +60,18 @@ public class GlobalEventScheduler implements EventScheduler {
     }
 
     private void removeNightmareNight() {
-        if (ConfigService.getNightmareNightConfig().isEventEnabled()) {
+        if (ConfigService.getNightmareNightConfig().isEventEnabled() &&
+            eventSchedulers.containsKey(EventType.NIGHTMARE_NIGHT)) {
+
             eventSchedulers.get(EventType.NIGHTMARE_NIGHT).stop();
             eventSchedulers.remove(EventType.NIGHTMARE_NIGHT);
         }
     }
 
     private void removeSuddenNight() {
-        if (ConfigService.getSuddenNightConfig().isEventEnabled()) {
+        if (ConfigService.getSuddenNightConfig().isEventEnabled() &&
+            eventSchedulers.containsKey(EventType.SUDDEN_NIGHT)) {
+
             eventSchedulers.get(EventType.SUDDEN_NIGHT).stop();
             eventSchedulers.remove(EventType.SUDDEN_NIGHT);
         }

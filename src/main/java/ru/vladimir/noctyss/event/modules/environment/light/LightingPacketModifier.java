@@ -5,12 +5,14 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.Controllable;
 import ru.vladimir.noctyss.event.modules.environment.EnvironmentModifier;
+import ru.vladimir.noctyss.utility.LoggerUtility;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
 public final class LightingPacketModifier extends PacketAdapter implements EnvironmentModifier, Listener, Controllable {
@@ -78,8 +80,11 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
     }
 
     private void refreshChunks() {
-        for (final Chunk chunk : world.getLoadedChunks()) {
-            refreshChunk(chunk);
+        for (final Player player : world.getPlayers()) {
+            for (final Chunk chunk : player.getSentChunks()) {
+                LoggerUtility.info(this, "Updated chunk: (%d, %d)".formatted(chunk.getX(), chunk.getZ()));
+                refreshChunk(chunk);
+            }
         }
     }
 
