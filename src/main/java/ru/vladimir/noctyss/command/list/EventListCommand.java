@@ -7,7 +7,7 @@ import ru.vladimir.noctyss.config.ConfigService;
 
 import java.util.List;
 
-public class EventListCommand implements SubCommand {
+public final class EventListCommand implements SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {

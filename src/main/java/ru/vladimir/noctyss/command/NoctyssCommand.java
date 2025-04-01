@@ -8,6 +8,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.vladimir.noctyss.command.list.EventInfoCommand;
 import ru.vladimir.noctyss.command.list.EventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.config.ConfigService;
@@ -71,6 +72,14 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
                 new ReloadConfigCommand(globalEventScheduler),
                 "reload",
                 new Permission("noctyss.reload")
+        );
+
+        final var eventInfoCommand = new EventInfoCommand();
+        eventInfoCommand.init();
+        addSubCommand(
+                eventInfoCommand,
+                "info",
+                new Permission("noctyss.eventinfo")
         );
     }
 }

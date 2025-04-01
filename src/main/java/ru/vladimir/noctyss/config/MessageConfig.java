@@ -29,6 +29,7 @@ public final class MessageConfig implements IConfig {
     private File file;
     private Component cannotSleep;
     private Component reloadedConfig;
+    private Component playerOnly;
 
     @Override
     public void load() {

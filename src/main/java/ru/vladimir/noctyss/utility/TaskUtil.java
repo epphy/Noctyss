@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @UtilityClass
 public class TaskUtil {
+    private static final String CLASS_NAME = "TaskUtil";
+    private static final boolean IS_ASYNC = false;
     private static JavaPlugin plugin;
     private static boolean shuttingDown;
 
@@ -13,20 +15,20 @@ public class TaskUtil {
         if (TaskUtil.plugin == null) {
             TaskUtil.plugin = plugin;
             setShuttingDown(false);
-            LoggerUtility.info("TaskUtil", "Initialised");
+        LoggerUtility.info(CLASS_NAME, "Initialised");
         } else {
-            LoggerUtility.info("TaskUtil", "Already initialised");
+            LoggerUtility.info(CLASS_NAME, "Already initialised");
         }
     }
 
     public static void setShuttingDown(boolean shuttingDown) {
         TaskUtil.shuttingDown = shuttingDown;
-        LoggerUtility.info("TaskUtil", "Plugin state is marked as: %s"
+        LoggerUtility.info(CLASS_NAME, "Plugin state is marked as: %s"
                 .formatted((shuttingDown ? "disabling" : "working")));
     }
 
     public static void runTask(Runnable task) {
-        if (shuttingDown || plugin == null) {
+        if (shuttingDown || plugin == null || !IS_ASYNC) {
             task.run();
         } else {
             Bukkit.getScheduler().runTask(plugin, task);
@@ -34,7 +36,7 @@ public class TaskUtil {
     }
 
     public static void runTask(JavaPlugin plugin, Runnable task) {
-        if (shuttingDown || plugin == null) {
+        if (shuttingDown || plugin == null || !IS_ASYNC) {
             task.run();
         } else {
             Bukkit.getScheduler().runTask(plugin, task);

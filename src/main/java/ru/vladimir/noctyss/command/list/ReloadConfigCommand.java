@@ -10,7 +10,7 @@ import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class ReloadConfigCommand implements SubCommand {
+public final class ReloadConfigCommand implements SubCommand {
     private final GlobalEventScheduler globalEventScheduler;
 
     @Override
