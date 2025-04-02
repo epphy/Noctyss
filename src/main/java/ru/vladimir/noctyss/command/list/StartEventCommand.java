@@ -79,7 +79,6 @@ public final class StartEventCommand implements SubCommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, String[] args) {
-        sender.sendMessage(Arrays.toString(args));
         if (args.length == 2) {
             return Arrays.stream(EventType.values())
                     .map(Enum::name)
@@ -87,8 +86,8 @@ public final class StartEventCommand implements SubCommand {
         }
 
         if (args.length == 3) {
-            sender.sendMessage("Args: 3");
-            final EventType eventType = getEventType(args[2]);
+            final EventType eventType = getEventType(args[1]);
+            sender.sendMessage("Check: " + (eventType == null));
             return (eventType == null)
                     ? List.of()
                     : EventAPI.getWorldsWithSpecificInactiveEvent(eventType).stream()
