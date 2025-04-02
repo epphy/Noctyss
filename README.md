@@ -10,8 +10,9 @@
 
 ### 🚀 **Current Events**
 - **👁️ Nightmare Night** – A terrifying event where night looking much darker than usual, and besides that you're constantly being surrounded by monsters and disturbing sounds.
+- **👁️ Sudden Night** - A sudden, mysterious night during the mid of a day.
 
 ### ⚙️ **Installation & Usage**
-1️⃣ **Download & Install:** Place the pluginInstance `.jar` into your PaperMC `plugins` folder.  
+1️⃣ **Download & Install:** Place the pluginInstance `.jar` into your server `plugins` folder.  
 2️⃣ **Configure Settings:** Edit `config.yml` and event-specific files to customize behavior.  
 3️⃣ **Manage Events:** In further versions will be added an ability to control events manually.
