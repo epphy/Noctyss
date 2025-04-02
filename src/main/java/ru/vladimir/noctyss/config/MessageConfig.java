@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.World;
@@ -23,6 +24,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class MessageConfig implements IConfig {
     private static final String FILE_NAME = "Messages.yml";
+
+    // Settings
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
 
     // Section paths
     private static final String INFO = "messages.info.";
@@ -149,12 +154,8 @@ public final class MessageConfig implements IConfig {
      * Converts color codes (&6, &a, etc.) and hex colors (#FFA500) into MiniMessage format.
      */
     private Component parseColors(String message) {
-        message = LegacyComponentSerializer.legacyAmpersand().serialize(Component.text(message));
-
-        // Convert hex codes manually
-        message = message.replaceAll("#([A-Fa-f0-9]{6})", "<#$1>");
-
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+        message = LEGACY_SERIALIZER.serialize(Component.text(message));
+        return MINI_MESSAGE.deserialize(message);
     }
 
     public Component retrieveMessageNeedingFormat(Component message, Object... values) {
