@@ -15,9 +15,9 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class NightmareNightScheduler implements EventScheduler {
@@ -29,8 +29,8 @@ public final class NightmareNightScheduler implements EventScheduler {
     private final PluginManager pluginManager;
     private final EventManager eventManager;
     private final Random random;
-    private final Set<UUID> checkedWorldsIds = new HashSet<>();
-    private Set<UUID> worldsIds;
+    private final Set<World> checkedWorlds = new HashSet<>();
+    private List<World> worlds;
     private long checkFrequency;
     private int eventChance;
     private int taskId = -1;
@@ -43,22 +43,16 @@ public final class NightmareNightScheduler implements EventScheduler {
     }
 
     private void processWorlds() {
-        for (final UUID worldUid : worldsIds) {
-
-            final World world = Bukkit.getWorld(worldUid);
-            if (world == null) {
-                LoggerUtility.warn(this, "Failed to process a world because it's null");
-                continue;
-            }
+        for (final World world : worlds) {
 
             if (!GameTimeUtility.isNight(world)) {
-                checkedWorldsIds.remove(worldUid);
+                checkedWorlds.remove(world);
                 continue;
             }
-            if (checkedWorldsIds.contains(worldUid)) continue;
+            if (checkedWorlds.contains(world)) continue;
             if (!passesChance() || EventAPI.isEventActive(world, EVENT_TYPE)) continue;
 
-            checkedWorldsIds.add(worldUid);
+            checkedWorlds.add(world);
             startEvent(world);
         }
     }
@@ -84,7 +78,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worldsIds = EventAPI.getWorldIdsWithAllowedEvent(EVENT_TYPE);
+        worlds = EventAPI.getWorldsWithSpecificAllowedEvent(EVENT_TYPE);
         checkFrequency = ConfigService.getNightmareNightConfig().getCheckFrequency();
         eventChance = ConfigService.getNightmareNightConfig().getEventChance();
     }

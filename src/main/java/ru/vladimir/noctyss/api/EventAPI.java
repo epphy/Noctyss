@@ -78,6 +78,11 @@ public class EventAPI {
     }
 
     @NonNull
+    public static Set<Map.Entry<World, List<EventType>>> getActiveEventsPerWorldEntries() {
+        return Set.copyOf(getActiveEventsPerWorld().entrySet());
+    }
+
+    @NonNull
     public static Map<World, List<EventType>> getActiveEventsPerWorld() {
         Map<World, List<EventType>> result = new HashMap<>();
 

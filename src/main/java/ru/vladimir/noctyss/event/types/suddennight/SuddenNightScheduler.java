@@ -14,9 +14,8 @@ import ru.vladimir.noctyss.event.types.EventScheduler;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public final class SuddenNightScheduler implements EventScheduler {
@@ -27,7 +26,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     private final ProtocolManager protocolManager;
     private final EventManager eventManager;
     private final Random random;
-    private Set<UUID> worldIds;
+    private List<World> worlds;
     private long checkFrequencyTicks;
     private double eventChance;
     private long cooldownDays;
@@ -41,14 +40,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private void processWorlds() {
-        for (final UUID worldId : worldIds) {
-
-            final World world = Bukkit.getWorld(worldId);
-            if (world == null) {
-                LoggerUtility.warn(this, "Failed to process a world because it's null");
-                continue;
-            }
-
+        for (final World world : worlds) {
             if (isEligible(world)) startEvent(world);
         }
     }
@@ -86,7 +78,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worldIds = EventAPI.getWorldIdsWithAllowedEvent(EVENT_TYPE);
+        worlds = EventAPI.getWorldsWithSpecificAllowedEvent(EVENT_TYPE);
         checkFrequencyTicks = ConfigService.getSuddenNightConfig().getCheckFrequencyTicks();
         eventChance = ConfigService.getSuddenNightConfig().getEventChance();
         cooldownDays = ConfigService.getSuddenNightConfig().getCooldownDays();
@@ -99,7 +91,7 @@ public final class SuddenNightScheduler implements EventScheduler {
                 ", cooldownDays=" + cooldownDays +
                 ", eventChance=" + eventChance +
                 ", checkFrequencyTicks=" + checkFrequencyTicks +
-                ", worlds=" + worldIds +
+                ", worlds=" + worlds +
                 '}';
     }
 }

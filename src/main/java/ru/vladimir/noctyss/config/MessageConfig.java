@@ -12,7 +12,10 @@ import ru.vladimir.noctyss.event.EventType;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public final class MessageConfig implements IConfig {
     private final JavaPlugin plugin;
 
     // Configs
-    private Map<String, Set<String>> activeEventList;
+    private Map<String, List<String>> activeEventList;
     private String eventList;
     private String usage;
     private FileConfiguration fileConfig;
@@ -73,17 +76,18 @@ public final class MessageConfig implements IConfig {
         usage = "/noctyss [start/stop/list/debug] <event> <world>";
     }
 
-    private Map<String, Set<String>> getWorldNamesWithActiveEvents() {
-        final Map<World, Set<EventType>> worldsWithActiveEvents = EventAPI.getWorldWithActiveEvents();
-        final Map<String, Set<String>> worldNamesWithActiveEvents = new HashMap<>();
-        for (final Map.Entry<World, Set<EventType>> entry : worldsWithActiveEvents.entrySet()) {
+    private Map<String, List<String>> getWorldNamesWithActiveEvents() {
+        final Map<String, List<String>> worldNamesWithActiveEvents = new HashMap<>();
+
+        for (final Map.Entry<World, List<EventType>> entry : EventAPI.getActiveEventsPerWorldEntries()) {
             final String worldName = entry.getKey().getName();
-            final Set<String> eventTypeNames = new HashSet<>();
-            for (final EventType eventType : entry.getValue()) {
-                eventTypeNames.add(eventType.name());
-            }
-            worldNamesWithActiveEvents.put(worldName, eventTypeNames);
+            final List<String> eventTypes = entry.getValue().stream()
+                    .map(Enum::name)
+                    .toList();
+
+            worldNamesWithActiveEvents.put(worldName, eventTypes);
         }
+
         return worldNamesWithActiveEvents;
     }
 
