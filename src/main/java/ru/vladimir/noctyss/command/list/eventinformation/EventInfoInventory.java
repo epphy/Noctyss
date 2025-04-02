@@ -46,7 +46,7 @@ public class EventInfoInventory {
             MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Longer</dark_red> night duration </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Unsettling</dark_red> ambient sounds </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Reduced</dark_red> vision </white>"),
-            MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Increased</dark_red> monster spawns</white> </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <dark_red>Increased</dark_red> monster spawns </white>"),
             MiniMessage.miniMessage().deserialize(" "),
             MiniMessage.miniMessage().deserialize("<!i><gray> Be cautious... <dark_red>you're never alone</dark_red>. </gray>"),
             MiniMessage.miniMessage().deserialize(" ")
@@ -62,7 +62,7 @@ public class EventInfoInventory {
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Instant</gold> nightfall </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Complete</gold> silence </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Unsettling</gold> music </white>"),
-            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>All/gold> entities freeze< </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>All</gold> entities freeze< </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>No</gold> mobs will spawn </white>"),
             MiniMessage.miniMessage().deserialize(" "),
             MiniMessage.miniMessage().deserialize("<!i><gray> Something feels <gold>wrong</gold>... Stay alert. </gray>"),
