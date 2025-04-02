@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -131,7 +132,17 @@ public final class MessageConfig implements IConfig {
 
     private Component getFormattedMessage(String path, String defaultMsg, Object... values) {
         String message = fileConfig.getString(path, defaultMsg);
-        return Component.text(MessageFormat.format(message, values));
+        message = MessageFormat.format(message, values);
+        return parseColors(message);
+    }
+
+    /**
+     * Converts color codes (&6, &a, etc.) and hex colors (#FFA500) into MiniMessage format.
+     */
+    private Component parseColors(String message) {
+        message = message.replace('&', '§'); // Convert '&' to Bukkit color codes
+        message = message.replaceAll("#([A-Fa-f0-9]{6})", "<#$1>"); // Convert hex codes to MiniMessage format
+        return MiniMessage.miniMessage().deserialize(message);
     }
 
     @Override
