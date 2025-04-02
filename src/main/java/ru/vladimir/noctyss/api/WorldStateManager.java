@@ -1,86 +1,104 @@
 package ru.vladimir.noctyss.api;
 
+import lombok.NonNull;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.event.EventType;
 
 import java.util.*;
 
 /**
- * Manages the states of multiple {@code World} instances and provides access
- * to their respective {@code WorldState} objects. Each {@code WorldState}
- * encapsulates information about active and allowed events within a specific
- * {@code World}.
- * <p>
- * The {@code WorldStateManager} ensures that a {@code WorldState} exists for
- * a given {@code World}. If a requested {@code WorldState} does not exist, it
- * creates a new one with default configurations.
+ * The {@code WorldStateManager} class is responsible for managing the associations
+ * of {@link World} instances with their corresponding {@link WorldState} objects.
+ * This allows tracking and maintaining the states of different worlds in a structured
+ * manner. The class provides functionalities to retrieve, list, and manage the states
+ * of the worlds it oversees.
  */
 record WorldStateManager(Map<World, WorldState> worldStates) {
 
-    @NotNull
-    public Map<UUID, Set<EventType>> getWorldsWithActiveEvents() {
-        final Map<UUID, Set<EventType>> result = new HashMap<>();
-        for (final WorldState worldState : worldStates.values()) {
-            result.put(worldState.world().getUID(), worldState.activeEvents().keySet());
-        }
-        return result;
+    // ================================
+    // GETTERS
+    // ================================
+
+    /**
+     * Retrieves the {@link WorldState} associated with the given {@link World}.
+     * If the specified world does not have an associated {@link WorldState},
+     * a new {@link WorldState} is created and returned.
+     *
+     * @param world the world for which to retrieve the state; must not be null
+     * @return the {@code WorldState} associated with the given world
+     */
+    @NonNull
+    WorldState getWorldState(@NonNull World world) {
+        WorldState worldState = worldStates.get(world);
+        if (worldState == null) return new WorldState(
+                world.getUID(), new EnumMap<>(EventType.class), new EnumMap<>(EventType.class), new ArrayList<>());
+        return worldState;
     }
 
-    @NotNull
-    public Set<UUID> getWorldsIdsWithAllowedEvent(EventType eventType) {
-        final Set<UUID> worlds = new HashSet<>();
-        for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
-            if (entry.getValue().isEventAllowed(eventType)) {
-                worlds.add(entry.getKey().getUID());
-            }
-        }
-        return worlds;
-    }
-
-    @NotNull
-    public List<WorldState> getWorldStatesWithAllowedEvent(EventType eventType) {
-        final List<WorldState> worldStates = new ArrayList<>();
-        for (final Map.Entry<World, WorldState> entry : worldStates().entrySet()) {
-            final WorldState worldState = entry.getValue();
-            if (worldState.isEventAllowed(eventType)) {
-                worldStates.add(worldState);
-            }
-        }
-        return worldStates;
-    }
-
-    @NotNull
-    WorldState getWorldState(World world) {
-        if (!hasWorldState(world)) {
-            final WorldState worldState = new WorldState(
-                    world,
-                    new EnumMap<>(EventType.class),
-                    new EnumMap<>(EventType.class),
-                    new ArrayList<>()
-            );
-            worldStates.put(world, worldState);
-        }
-        return worldStates.get(world);
-    }
-
-    private boolean hasWorldState(World world) {
-        return worldStates.containsKey(world);
-    }
-
-    @NotNull
+    /**
+     * Retrieves an unmodifiable list of all {@link World} instances currently
+     * managed by this instance.
+     *
+     * @return An unmodifiable {@code List<World>} representing the worlds
+     *         managed by this instance.
+     */
+    @NonNull
     List<World> getWorlds() {
         return List.copyOf(worldStates.keySet());
     }
 
-    @NotNull
+    /**
+     * Retrieves a list of all {@link WorldState} objects managed by this instance.
+     *
+     * @return An unmodifiable list of {@code WorldState} objects representing the current
+     *         states of the worlds managed by this instance.
+     */
+    @NonNull
     List<WorldState> getWorldStates() {
         return List.copyOf(worldStates.values());
     }
 
-    @Override @NotNull
+    /**
+     * Provides a set of entries representing the mapping between {@link World}
+     * and their corresponding {@link WorldState} managed by this instance.
+     * Each entry in the set consists of a {@code World} as the key and its
+     * associated {@code WorldState} as the value.
+     *
+     * @return An unmodifiable {@code Set<Map.Entry<World, WorldState>>}
+     *         representing the current entries in the mapping of worlds
+     *         and their states.
+     */
+    @NonNull
+    Set<Map.Entry<World, WorldState>> getWorldStatesEntries() {
+        return Set.copyOf(worldStates.entrySet());
+    }
+
+    /**
+     * Provides a view of the map containing the association between
+     * worlds and their corresponding world states managed by this instance.
+     *
+     * @return An unmodifiable {@code Map<World, WorldState>} representing the current
+     *         mapping of worlds to their states.
+     */
+    @Override @NonNull
     public Map<World, WorldState> worldStates() {
         return Map.copyOf(worldStates);
+    }
+
+    // ================================
+    // OTHER
+    // ================================
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        WorldStateManager that = (WorldStateManager) o;
+        return Objects.equals(worldStates, that.worldStates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(worldStates);
     }
 
     @Override

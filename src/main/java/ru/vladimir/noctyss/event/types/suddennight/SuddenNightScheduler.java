@@ -70,7 +70,8 @@ public final class SuddenNightScheduler implements EventScheduler {
         return (currentDay - lastTimeDayEvent) < cooldownDays;
     }
 
-    private void startEvent(World world) {
+    @Override
+    public void startEvent(World world) {
         final var eventInstance = new SuddenNightInstance(
                 plugin, pluginManager, protocolManager, eventManager, world);
         eventManager.startEvent(world, EVENT_TYPE, eventInstance);
@@ -85,7 +86,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worldIds = EventAPI.getWorldsWithAllowedEvent(EVENT_TYPE);
+        worldIds = EventAPI.getWorldIdsWithAllowedEvent(EVENT_TYPE);
         checkFrequencyTicks = ConfigService.getSuddenNightConfig().getCheckFrequencyTicks();
         eventChance = ConfigService.getSuddenNightConfig().getEventChance();
         cooldownDays = ConfigService.getSuddenNightConfig().getCooldownDays();

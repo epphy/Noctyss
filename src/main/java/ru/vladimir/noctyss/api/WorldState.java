@@ -1,71 +1,129 @@
 package ru.vladimir.noctyss.api;
 
+import lombok.NonNull;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
+import ru.vladimir.noctyss.utility.GameTimeUtility;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Represents the state of a world, encompassing active events and allowed events.
- * Provides mechanisms to manage and query events specific to a world.
+ * Represents the state of a world, encapsulating active events, last recorded event days,
+ * and the list of allowed events specific to the world. Manages operations related
+ * to event activity, permissions, and event last occurrence tracking.
  * <p>
- * The {@code WorldState} record consists of:
- * - The associated {@code World} instance.
- * - A mapping of currently active events and their corresponding {@code EventInstance}.
- * - A list of permitted events that can be activated within the world.
- * <p>
- * Notable functions include adding or removing active events, managing the list of allowed events,
- * and querying whether a specific event is currently active or allowed.
- * <p>
- * This record is immutable, but the map of active events and the list of allowed events are encapsulated
- * through accessor methods for thread-safe interaction.
- *
- * @param world           The world instance this state corresponds to.
- * @param activeEvents    A map tracking currently active events by their {@code EventType}.
- * @param allowedEvents   A list of {@code EventType} that can be triggered in the world.
+ * This record uses the unique {@code worldId} to identify the specific world it pertains to.
+ * It also provides mechanisms to interact with and modify event-related properties
+ * such as adding or removing active or allowed events, and querying active or allowed
+ * states of events.
  */
-record WorldState(World world, Map<EventType, EventInstance> activeEvents, Map<EventType, Long> lastEvent, List<EventType> allowedEvents) {
+record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<EventType, Long> lastDayEvents, List<EventType> allowedEvents) {
 
     // ================================
     // ACTIVE EVENTS
     // ================================
 
-    boolean addActiveEvent(EventType eventType, EventInstance eventInstance) {
+    /**
+     * Adds an active event to the world state.
+     *
+     * @param eventType      the type of the event to be added.
+     * @param eventInstance  the instance of the event to be associated with the event type.
+     * @return {@code true} if the event was successfully added as an active event;
+     *         {@code false} if the event is already active or not allowed.
+     */
+    boolean addActiveEvent(@NonNull EventType eventType, @NonNull EventInstance eventInstance) {
         if (isEventActive(eventType) || !isEventAllowed(eventType)) return false;
         activeEvents.put(eventType, eventInstance);
         return true;
     }
 
-    boolean removeActiveEvent(EventType eventType, long day) {
+    /**
+     * Removes an active event from the world state. Updates the last time
+     * this exact event has occurred for this world.
+     *
+     * @param eventType the type of the event to be removed.
+     * @return {@code true} if the event was successfully removed as an active event;
+     *         {@code false} if the event was not active or not allowed.
+     */
+    boolean removeActiveEvent(@NonNull EventType eventType) {
         if (!isEventActive(eventType) || !isEventAllowed(eventType)) return false;
+        updateEventLasyDay(eventType, GameTimeUtility.getDay(getWorld()));
         activeEvents.remove(eventType);
-        updateLastEvent(eventType, day);
         return true;
     }
 
-    boolean isEventActive(EventType eventType) {
+    /**
+     * Checks whether the specific event is active for this world.
+     *
+     * @param eventType the type of the event to check for activity.
+     * @return {@code true} if the event is currently active;
+     *         {@code false} otherwise.
+     */
+    boolean isEventActive(@NonNull EventType eventType) {
         return activeEvents.containsKey(eventType);
     }
 
-    @NotNull
-    EventInstance getActiveEvent(EventType eventType) {
+    /**
+     * Retrieves the currently active event instance for the specified event type.
+     *
+     * @param eventType the type of the event whose active instance is to be retrieved.
+     * @return the active {@code EventInstance} associated with the specified event type.
+     */
+    @NonNull
+    EventInstance getActiveEvent(@NonNull EventType eventType) {
         return activeEvents.get(eventType);
     }
 
-    @NotNull
+    /**
+     * Retrieves a list of event types that are currently active in the world state.
+     *
+     * @return a non-null, immutable list of {@code EventType} instances representing
+     *         the active event types in the current world state.
+     */
+    @NonNull
     List<EventType> getActiveEventTypes() {
         return List.copyOf(activeEvents.keySet());
     }
 
-    @NotNull
+    /**
+     * Retrieves a list of all active event instances in the current world state.
+     * The returned list is a non-null, immutable copy of the event instances
+     * currently marked as active.
+     *
+     * @return a non-null, immutable list of {@code EventInstance} objects
+     *         that represent the currently active events in the world.
+     */
+    @NonNull
     List<EventInstance> getActiveEventInstances() {
         return List.copyOf(activeEvents.values());
     }
 
-    @Override @NotNull
+    /**
+     * Retrieves the active events in the world state as a set of map entries.
+     * Each entry in the returned set represents a mapping between an {@code EventType}
+     * and its corresponding {@code EventInstance}.
+     *
+     * @return a non-null, immutable set of {@code Map.Entry<EventType, EventInstance>}
+     *         representing the currently active events in the world state.
+     */
+    @NonNull
+    Set<Map.Entry<EventType, EventInstance>> getActiveEventsEntry() {
+        return Set.copyOf(activeEvents.entrySet());
+    }
+
+    /**
+     * Retrieves the currently active events in the world state.
+     * The returned map represents the mapping between event types
+     * and their corresponding active event instances.
+     *
+     * @return a non-null, immutable map where the keys are {@code EventType}
+     *         instances representing the types of active events,
+     *         and the values are {@code EventInstance} objects
+     *         representing their respective active event instances.
+     */
+    @Override @NonNull
     public Map<EventType, EventInstance> activeEvents() {
         return Map.copyOf(activeEvents);
     }
@@ -74,40 +132,118 @@ record WorldState(World world, Map<EventType, EventInstance> activeEvents, Map<E
     // LAST EVENTS
     // ================================
 
-    private void updateLastEvent(EventType eventType, long day) {
-        lastEvent.put(eventType, day);
+    /**
+     * Updates the last occurrence day of a specific event type in the world state.
+     *
+     * @param eventType the type of the event whose last occurrence day is being updated.
+     *                  Must not be null.
+     * @param day       the day to be recorded as the last occurrence of the event type.
+     */
+    private void updateEventLasyDay(@NonNull EventType eventType, long day) {
+        lastDayEvents.put(eventType, day);
     }
 
-    public long getDayOfLastTimeEvent(EventType eventType) {
-        return (lastEvent.containsKey(eventType)) ? lastEvent.get(eventType) : -1;
+    /**
+     * Retrieves the last recorded day on which the specified event type occurred
+     * in the world state. If the event type has no recorded occurrence, -1 is returned.
+     *
+     * @param eventType the type of the event whose last occurrence day is to be retrieved.
+     *                  Must not be null.
+     * @return the last recorded day of the event type if available;
+     *         otherwise, -1 if the event type has no record.
+     */
+    public long getEventLastDay(@NonNull EventType eventType) {
+        return lastDayEvents.containsKey(eventType) ? lastDayEvents.get(eventType) : -1;
     }
 
     // ================================
     // ALLOWED EVENTS
     // ================================
 
-    boolean addAllowedEvent(EventType eventType) {
+    /**
+     * Adds the specified event type to the list of allowed events in the current world state.
+     *
+     * @param eventType the type of the event to be added to the allowed events list. Must not be null.
+     * @return {@code true} if the event type was successfully added to the allowed events list;
+     *         {@code false} if the event type was already present in the list.
+     */
+    boolean addAllowedEvent(@NonNull EventType eventType) {
         return allowedEvents.add(eventType);
     }
 
-    boolean removeAllowedEvent(EventType eventType) {
+    /**
+     * Removes the specified event type from the list of allowed events in the current world state.
+     *
+     * @param eventType the type of the event to be removed from the allowed events list. Must not be null.
+     * @return {@code true} if the event type was successfully removed from the allowed events list;
+     *         {@code false} if the event type was not present in the list.
+     */
+    boolean removeAllowedEvent(@NonNull EventType eventType) {
         return allowedEvents.remove(eventType);
     }
 
-    boolean isEventAllowed(EventType eventType) {
+    /**
+     * Determines if a given event type is allowed in the current world state.
+     *
+     * @param eventType the type of the event to check. Must not be null.
+     * @return {@code true} if the event type is in the list of allowed events;
+     *         {@code false} otherwise.
+     */
+    boolean isEventAllowed(@NonNull EventType eventType) {
         return allowedEvents.contains(eventType);
     }
 
-    @NotNull
+    /**
+     * Retrieves a list of event types that are allowed in the current world state.
+     * The returned list is an immutable copy of the allowed events.
+     *
+     * @return a non-null, immutable list of {@code EventType} instances representing
+     *         the event types that are allowed in the current world state.
+     */
+    @NonNull
     List<EventType> getAllowedEvents() {
         return List.copyOf(allowedEvents);
+    }
+
+    // ================================
+    // OTHER
+    // ================================
+
+    /**
+     * Retrieves the {@code World} instance associated with the current {@code WorldState}.
+     *
+     * @return the non-null {@code World} instance corresponding to the current {@code worldId}.
+     * @throws IllegalStateException if the associated {@code World} cannot be found.
+     */
+    @NonNull
+    private World getWorld() {
+        World world = Bukkit.getWorld(worldId);
+        if (world == null)
+            throw new IllegalStateException("World must not be null for: %s".formatted(this));
+        return world;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        WorldState that = (WorldState) o;
+        return Objects.equals(worldId, that.worldId) &&
+                Objects.equals(allowedEvents, that.allowedEvents) &&
+                Objects.equals(lastDayEvents, that.lastDayEvents) &&
+                Objects.equals(activeEvents, that.activeEvents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(worldId, activeEvents, lastDayEvents, allowedEvents);
     }
 
     @Override
     public String toString() {
         return "WorldState{" +
-                "world=" + world +
+                "worldId=" + worldId +
                 ", activeEvents=" + activeEvents +
+                ", lastDayEvents=" + lastDayEvents +
                 ", allowedEvents=" + allowedEvents +
                 '}';
     }

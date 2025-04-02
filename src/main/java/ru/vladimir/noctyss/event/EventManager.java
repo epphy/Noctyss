@@ -65,7 +65,7 @@ public class EventManager {
 
     public void stopEventInAllWorlds(EventType eventType) {
         int stopped = 0;
-        for (final UUID worldId : EventAPI.getWorldsWithAllowedEvent(eventType)) {
+        for (final UUID worldId : EventAPI.getWorldIdsWithAllowedEvent(eventType)) {
             final World world = Bukkit.getWorld(worldId);
             if (world == null) {
                 LoggerUtility.info(this, "World is null");

@@ -1,6 +1,7 @@
 package ru.vladimir.noctyss.event;
 
 import com.comphenix.protocol.ProtocolManager;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +15,8 @@ import java.util.EnumMap;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public class GlobalEventScheduler implements EventScheduler {
+public class GlobalEventScheduler implements Controllable {
+    @Getter
     private final EnumMap<EventType, EventScheduler> eventSchedulers = new EnumMap<>(EventType.class);
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;

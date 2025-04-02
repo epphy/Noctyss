@@ -1,16 +1,14 @@
 package ru.vladimir.noctyss.api;
 
 import lombok.ToString;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The EventAPI class provides a centralized interface for managing events within
@@ -92,19 +90,40 @@ public final class EventAPI {
         return worldStateManager.getWorldState(world).isEventActive(eventType);
     }
 
-    public static Map<UUID, Set<EventType>> getWorldsWithActiveEvents() {
+    public static Map<UUID, Set<EventType>> getWorldIdsWithActiveEvents() {
         return worldStateManager.getWorldsWithActiveEvents();
+    }
+
+    public static Map<World, Set<EventType>> getWorldWithActiveEvents() {
+        Map<World, Set<EventType>> activeEventWorlds = new HashMap<>();
+        for (Map.Entry<UUID, Set<EventType>> entry : getWorldIdsWithActiveEvents().entrySet()) {
+
+            World world = Bukkit.getWorld(entry.getKey());
+            if (world == null) {
+                LoggerUtility.warn("EventAPI", "World is null when retrieving worlds with active events: %s"
+                        .formatted(entry.getKey().toString()));
+                continue;
+            }
+
+            activeEventWorlds.put(world, entry.getValue());
+        }
+
+        return activeEventWorlds;
     }
 
     public static List<EventType> getActiveEventTypes(World world) {
         return worldStateManager.getWorldState(world).getActiveEventTypes();
     }
 
-    public static Set<UUID> getWorldsWithAllowedEvent(EventType eventType) {
+    public static Set<UUID> getWorldIdsWithAllowedEvent(EventType eventType) {
         return worldStateManager.getWorldsIdsWithAllowedEvent(eventType);
     }
 
+    public static Set<World> getWorldsWithAllowedEvent(EventType eventType) {
+        return worldStateManager.getWorldsWithAllowedEvent(eventType);
+    }
+
     public static long getLastDayTheEventWas(World world, EventType eventType) {
-        return worldStateManager.getWorldState(world).getDayOfLastTimeEvent(eventType);
+        return worldStateManager.getWorldState(world).getEventLastDay(eventType);
     }
 }

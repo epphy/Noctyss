@@ -68,7 +68,8 @@ public final class NightmareNightScheduler implements EventScheduler {
         return randomNumber <= eventChance;
     }
 
-    private void startEvent(World world) {
+    @Override
+    public void startEvent(World world) {
         final var eventInstance = new NightmareNightInstance(
                 plugin, protocolManager, eventManager, pluginManager, world);
         eventManager.startEvent(world, EVENT_TYPE, eventInstance);
@@ -83,7 +84,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worldsIds = EventAPI.getWorldsWithAllowedEvent(EVENT_TYPE);
+        worldsIds = EventAPI.getWorldIdsWithAllowedEvent(EVENT_TYPE);
         checkFrequency = ConfigService.getNightmareNightConfig().getCheckFrequency();
         eventChance = ConfigService.getNightmareNightConfig().getEventChance();
     }
