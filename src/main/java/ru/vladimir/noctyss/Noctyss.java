@@ -26,7 +26,7 @@ import java.net.http.HttpResponse;
 import java.util.logging.Level;
 
 public final class Noctyss extends JavaPlugin {
-    private static final String CURRENT_VERSION = "v1.0.1";
+    private static final int CURRENT_VERSION = 101;
     private EventManager eventManager;
     private GlobalEventScheduler globalEventScheduler;
 
@@ -127,7 +127,9 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private boolean isNewerVersion(String latestVersion) {
-        return latestVersion.compareToIgnoreCase(CURRENT_VERSION) > 0;
+        latestVersion = latestVersion.startsWith("v") ? latestVersion.substring(1) : latestVersion;
+        final int latestVersionNumber = Integer.parseInt(latestVersion.replace(".", ""));
+        return CURRENT_VERSION < latestVersionNumber;
     }
 
     private void startupMessage() {

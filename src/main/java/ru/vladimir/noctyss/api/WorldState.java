@@ -19,6 +19,10 @@ import java.util.*;
  * It also provides mechanisms to interact with and modify event-related properties
  * such as adding or removing active or allowed events, and querying active or allowed
  * states of events.
+ * <p>
+ * To mention, the class is internally mutable, which means through methods the data
+ * of arrays can be changed. However, it provides arrays' copies only, so the data will
+ * not change for other users.
  */
 record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<EventType, Long> lastDayEvents, List<EventType> allowedEvents) {
 
@@ -38,16 +42,6 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
         if (world == null)
             throw new IllegalStateException("World must not be null for: %s".formatted(this));
         return world;
-    }
-
-    /**
-     * Retrieves the unique identifier of the world associated with this {@code WorldState}.
-     *
-     * @return a non-null {@code UUID} representing the unique identifier of the world.
-     */
-    @Override
-    public UUID worldId() {
-        return UUID.fromString(worldId.toString());
     }
 
     // ================================
@@ -301,15 +295,12 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         WorldState that = (WorldState) o;
-        return Objects.equals(worldId, that.worldId) &&
-                Objects.equals(allowedEvents, that.allowedEvents) &&
-                Objects.equals(lastDayEvents, that.lastDayEvents) &&
-                Objects.equals(activeEvents, that.activeEvents);
+        return Objects.equals(worldId, that.worldId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(worldId, activeEvents, lastDayEvents, allowedEvents);
+        return Objects.hash(worldId);
     }
 
     @Override
