@@ -1,6 +1,5 @@
 messages:
   info:
-    event-list: "Available events: {0}"
     active-events: "Currently active events: {0}"
     command-usage: "Correct usage: {0}"
     config-reloaded: "Configuration has been successfully reloaded."

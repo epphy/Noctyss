@@ -32,8 +32,9 @@ public final class Noctyss extends JavaPlugin {
     @Override
     public void onEnable() {
         loadUtilities();
-        configureLogger();
+        loadConfigService();
         loadAPI();
+        configureLogger();
         loadScheduler();
         loadCommand();
         startupMessage();
@@ -43,9 +44,18 @@ public final class Noctyss extends JavaPlugin {
         LoggerUtility.init(getLogger());
         TaskUtil.init(this);
         GameTimeUtility.init(this);
-        ConfigService.init(this);
         PlayerNotificationService.init(this);
         NotificationManager.init();
+    }
+
+    private void loadAPI() {
+        WorldStateManagerProvider worldStateManagerProvider = new WorldStateManagerProvider();
+        EventAPI.init(worldStateManagerProvider);
+        ConfigService.getMessageConfig().init();
+    }
+
+    private void loadConfigService() {
+        ConfigService.init(this);
     }
 
     private void configureLogger() {
@@ -54,11 +64,6 @@ public final class Noctyss extends JavaPlugin {
             case 2 -> LoggerUtility.setLevel(Level.ALL);        // Extra detailed debug
             default -> LoggerUtility.setLevel(Level.WARNING);   // Standard
         }
-    }
-
-    private void loadAPI() {
-        WorldStateManagerProvider worldStateManagerProvider = new WorldStateManagerProvider();
-        EventAPI.init(worldStateManagerProvider);
     }
 
     private void loadScheduler() {

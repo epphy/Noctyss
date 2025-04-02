@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.event.EventType;
@@ -40,7 +41,6 @@ public final class MessageConfig implements IConfig {
     private String usage;
 
     // Messages
-    private Component eventListMsg;
     private Component activeEventListMsg;
     private Component commandUsage;
     private Component configReloaded;
@@ -59,10 +59,14 @@ public final class MessageConfig implements IConfig {
 
     private Component cannotSleep;
 
+    public void init() {
+        loadInternalSettings();
+        parse();
+    }
+
     @Override
     public void load() {
         save();
-        parse();
     }
 
     private void save() {
@@ -73,10 +77,11 @@ public final class MessageConfig implements IConfig {
         if (!file.exists()) {
             plugin.saveResource(FILE_NAME, false);
         }
+
+        fileConfig = YamlConfiguration.loadConfiguration(file);
     }
 
     private void parse() {
-        loadInternalSettings();
         parseInfoMessages();
         parseErrorMessages();
         parseEventMessages();
@@ -104,7 +109,6 @@ public final class MessageConfig implements IConfig {
     }
 
     private void parseInfoMessages() {
-        eventListMsg = getFormattedMessage(INFO + "event-list", "Available events: {0}", eventList);
         activeEventListMsg = getFormattedMessage(INFO + "active-events", "Currently active events: {0}", activeEventList);
         commandUsage = getFormattedMessage(INFO + "command-usage", "Correct usage: {0}", usage);
         configReloaded = getMessage(INFO + "config-reloaded", "Configuration has been successfully reloaded.");

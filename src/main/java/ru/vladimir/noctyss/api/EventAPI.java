@@ -60,6 +60,7 @@ public class EventAPI {
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (!entry.getValue().isEventAllowed(eventType)) continue;
             if (entry.getValue().isEventActive(eventType)) result.add(entry.getKey());
         }
 
@@ -71,9 +72,12 @@ public class EventAPI {
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            LoggerUtility.info(CLASS_NAME, "Processing entry: %s".formatted(entry));
+            if (!entry.getValue().isEventAllowed(eventType)) continue;
             if (!entry.getValue().isEventActive(eventType)) result.add(entry.getKey());
         }
 
+        LoggerUtility.info(CLASS_NAME, "I was requested. Returning: %s".formatted(result));
         return List.copyOf(result);
     }
 
