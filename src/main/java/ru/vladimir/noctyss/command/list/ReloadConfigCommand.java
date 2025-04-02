@@ -16,10 +16,12 @@ public final class ReloadConfigCommand implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
+            Component message = ConfigService.getMessageConfig().getCommandUsage();
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
         } else {
             ConfigService.reload(globalEventScheduler);
-            sendFeedback(sender, ConfigService.getMessageConfig().getConfigReloaded());
+            Component message = ConfigService.getMessageConfig().getConfigReloaded();
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
         }
     }
 

@@ -12,9 +12,11 @@ public final class ActiveEventListCommand implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
+            Component message = ConfigService.getMessageConfig().getCommandUsage();
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
         } else {
-            sendFeedback(sender, ConfigService.getMessageConfig().getActiveEventListMsg());
+            Component message = ConfigService.getMessageConfig().getActiveEventListMsg();
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
         }
     }
 

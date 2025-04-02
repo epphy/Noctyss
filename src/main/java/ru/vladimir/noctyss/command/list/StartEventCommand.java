@@ -60,19 +60,19 @@ public final class StartEventCommand implements SubCommand {
     private void attemptStartEvent(CommandSender sender, World world, EventType eventType) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
             final Component message = ConfigService.getMessageConfig().getEventDisallowed();
-            sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
             return;
         }
 
         if (EventAPI.isEventActive(world ,eventType)) {
             final Component message = ConfigService.getMessageConfig().getEventAlreadyActive();
-            sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
+            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
             return;
         }
 
         globalEventScheduler.getEventSchedulers().get(eventType).startEvent(world);
         final Component message = ConfigService.getMessageConfig().getEventStarted();
-        sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
+        sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
     }
 
     private void sendFeedback(CommandSender sender, Component message) {
