@@ -87,7 +87,6 @@ public final class StartEventCommand implements SubCommand {
 
         if (args.length == 3) {
             final EventType eventType = getEventType(args[1]);
-            sender.sendMessage("Check: " + (eventType == null));
             return (eventType == null)
                     ? List.of()
                     : EventAPI.getWorldsWithSpecificInactiveEvent(eventType).stream()
