@@ -64,14 +64,10 @@ public final class MessageConfig implements IConfig {
 
     private Component cannotSleep;
 
-    public void init() {
-        loadInternalSettings();
-        parse();
-    }
-
     @Override
     public void load() {
         save();
+        parse();
     }
 
     private void save() {
@@ -87,6 +83,7 @@ public final class MessageConfig implements IConfig {
     }
 
     private void parse() {
+        loadInternalSettings();
         parseInfoMessages();
         parseErrorMessages();
         parseEventMessages();

@@ -19,6 +19,13 @@ public class ConfigService {
 
     public static void init(JavaPlugin plugin) {
         register(plugin);
+    }
+
+    public static void loadGeneralConfig() {
+        getGeneralConfig().load();
+    }
+
+    public static void loadOtherConfigs() {
         load();
     }
 
