@@ -81,6 +81,7 @@ public final class StopEventCommand implements SubCommand {
         if (args.length == 2) {
             return Arrays.stream(EventType.values())
                     .map(Enum::name)
+                    .map(String::toLowerCase)
                     .toList();
         }
 

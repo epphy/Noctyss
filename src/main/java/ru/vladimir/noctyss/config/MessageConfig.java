@@ -3,7 +3,6 @@ package ru.vladimir.noctyss.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -89,12 +88,18 @@ public final class MessageConfig implements IConfig {
     }
 
     private void loadInternalSettings() {
-        activeEventList = getWorldNamesWithActiveEvents();
         eventList = Arrays.stream(EventType.values())
                 .map(Enum::name)
+                .map(String::toLowerCase)
                 .toList()
                 .toString();
         usage = "/noctyss [start/stop/list/info/reload] <event> <world>";
+    }
+
+    private void parseInfoMessages() {
+        activeEventListMsg = getFormattedMessage(INFO + "active-events", "Currently active events: {0}", getWorldNamesWithActiveEvents());
+        commandUsage = getFormattedMessage(INFO + "command-usage", "Correct usage: {0}", usage);
+        configReloaded = getMessage(INFO + "config-reloaded", "#22222Configuration has been successfully reloaded.");
     }
 
     private Map<String, List<String>> getWorldNamesWithActiveEvents() {
@@ -107,12 +112,6 @@ public final class MessageConfig implements IConfig {
         }
 
         return worldNamesWithActiveEvents;
-    }
-
-    private void parseInfoMessages() {
-        activeEventListMsg = getFormattedMessage(INFO + "active-events", "Currently active events: {0}", activeEventList);
-        commandUsage = getFormattedMessage(INFO + "command-usage", "Correct usage: {0}", usage);
-        configReloaded = getMessage(INFO + "config-reloaded", "#22222Configuration has been successfully reloaded.");
     }
 
     private void parseErrorMessages() {
