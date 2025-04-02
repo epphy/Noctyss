@@ -13,7 +13,7 @@ public class ComponentAPI {
         message = message.replaceAll("&([0-9a-fA-Fk-oK-OrR])", "<$1>");
 
         // Convert hex codes {#xxxxxx} to MiniMessage format
-        message = message.replaceAll("\\{#([0-9A-Fa-f]{6})}", "<color:#$1>");
+        message = message.replaceAll("<#([0-9A-Fa-f]{6})>", "<color:#$1>");
 
         return MINI_MESSAGE.deserialize(message);
     }
