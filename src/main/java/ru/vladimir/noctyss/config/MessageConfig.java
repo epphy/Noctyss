@@ -41,6 +41,11 @@ public final class MessageConfig implements IConfig {
     private Component unknownCommand;
     private Component unknownEvent;
     private Component unknownWorld;
+    private Component eventAlreadyActive;
+    private Component eventInactive;
+    private Component eventDisallowed;
+    private Component eventStarted;
+    private Component eventStopped;
     private Component commandUsage;
     private Component reloadedConfig;
     private Component playerOnly;

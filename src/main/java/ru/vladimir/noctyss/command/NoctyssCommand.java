@@ -12,8 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.command.list.EventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
+import ru.vladimir.noctyss.command.list.StartEventCommand;
+import ru.vladimir.noctyss.command.list.StopEventCommand;
 import ru.vladimir.noctyss.command.list.eventinformation.EventInfoCommand;
 import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
 public class NoctyssCommand extends SubCommandManager implements TabExecutor {
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
+    private final EventManager eventManager;
     private final GlobalEventScheduler globalEventScheduler;
 
     public void init() {
@@ -69,7 +73,7 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
         addSubCommand(
                 new EventListCommand(),
                 "list",
-                new Permission("noctyss.eventlist")
+                new Permission("noctyss.event.list")
         );
 
         addSubCommand(
@@ -81,7 +85,19 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
         addSubCommand(
                 new EventInfoCommand(plugin, pluginManager),
                 "info",
-                new Permission("noctyss.eventinfo")
+                new Permission("noctyss.event.info")
+        );
+
+        addSubCommand(
+                new StartEventCommand(globalEventScheduler),
+                "start",
+                new Permission("noctyss.event.start")
+        );
+
+        addSubCommand(
+                new StopEventCommand(eventManager),
+                "stop",
+                new Permission("noctyss.event.stop")
         );
     }
 }

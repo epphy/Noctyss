@@ -77,7 +77,8 @@ public final class Noctyss extends JavaPlugin {
             return;
         }
 
-        final NoctyssCommand commandHandler = new NoctyssCommand(this, getServer().getPluginManager(), globalEventScheduler);
+        final NoctyssCommand commandHandler = new NoctyssCommand(
+                this, getServer().getPluginManager(), eventManager, globalEventScheduler);
         commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);

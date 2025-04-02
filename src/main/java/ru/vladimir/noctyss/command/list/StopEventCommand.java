@@ -6,11 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public final class StopEventCommand implements SubCommand {
             return;
         }
 
-        stopEvent(player.getWorld(), eventType);
+        attemptStopEvent(sender, player.getWorld(), eventType);
     }
 
     private void handleWithWorld(CommandSender sender, String[] args) {
@@ -52,19 +54,22 @@ public final class StopEventCommand implements SubCommand {
             return;
         }
 
-        stopEvent(world, eventType);
+        attemptStopEvent(sender, world, eventType);
     }
 
-    private void stopEvent(World world, EventType eventType) {
-        eventManager.stopEvent(world, eventType);
-    }
-
-    private EventType getEventType(String eventTypeName) {
-        try {
-            return EventType.valueOf(eventTypeName.toUpperCase().trim());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            return null;
+    private void attemptStopEvent(CommandSender sender, World world, EventType eventType) {
+        if (!EventAPI.isEventAllowed(world, eventType)) {
+            sendFeedback(sender, ConfigService.getMessageConfig().getEventDisallowed());
+            return;
         }
+
+        if (!EventAPI.isEventActive(world ,eventType)) {
+            sendFeedback(sender, ConfigService.getMessageConfig().getEventInactive());
+            return;
+        }
+
+        eventManager.stopEvent(world, eventType);
+        sendFeedback(sender, ConfigService.getMessageConfig().getEventStopped());
     }
 
     private void sendFeedback(CommandSender sender, Component message) {
@@ -74,7 +79,28 @@ public final class StopEventCommand implements SubCommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, String[] args) {
         if (args.length == 1) {
+            return Arrays.stream(EventType.values())
+                    .map(Enum::name)
+                    .toList();
+        }
 
+        if (args.length == 2) {
+            final EventType eventType = getEventType(args[1]);
+            return (eventType == null)
+                    ? List.of()
+                    : EventAPI.getWorldsWithSpecificActiveEvent(eventType).stream()
+                        .map(World::getName)
+                        .toList();
+        }
+
+        return List.of();
+    }
+
+    private EventType getEventType(String eventTypeName) {
+        try {
+            return EventType.valueOf(eventTypeName.toUpperCase().trim());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return null;
         }
     }
 }

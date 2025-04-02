@@ -67,6 +67,17 @@ public class EventAPI {
     }
 
     @NonNull
+    public static List<World> getWorldsWithSpecificInactiveEvent(@NonNull EventType eventType) {
+        List<World> result = new ArrayList<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (!entry.getValue().isEventActive(eventType)) result.add(entry.getKey());
+        }
+
+        return List.copyOf(result);
+    }
+
+    @NonNull
     public static List<World> getWorldsWithAnyActiveEvent() {
         List<World> result = new ArrayList<>();
 
