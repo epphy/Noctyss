@@ -21,7 +21,6 @@ public final class StartEventCommand implements SubCommand {
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
-        sender.sendMessage(Arrays.toString(args));
         if (args.length == 2) handleWithoutWorld(sender, args);
         else if (args.length == 3) handleWithWorld(sender, args);
         else sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
