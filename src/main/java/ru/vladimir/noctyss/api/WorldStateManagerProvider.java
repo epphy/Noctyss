@@ -8,7 +8,7 @@ import ru.vladimir.noctyss.event.EventType;
 import java.util.*;
 
 @UtilityClass
-public class WorldStateManagerProvider {
+class WorldStateManagerProvider {
     private static WorldStateManager worldStateManager;
 
     static WorldStateManager provide() {
