@@ -18,7 +18,7 @@ public class NightmareNightStartEvent extends WorldEvent implements ICustomEvent
         return handlers;
     }
 
-    public @NotNull HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 }
