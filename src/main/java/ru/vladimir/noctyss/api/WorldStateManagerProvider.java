@@ -9,8 +9,11 @@ import java.util.*;
 
 @UtilityClass
 public class WorldStateManagerProvider {
+    private static WorldStateManager worldStateManager;
 
     static WorldStateManager provide() {
+        if (worldStateManager != null) return worldStateManager;
+
         Map<World, WorldState> worldStates = new HashMap<>();
         Map<World, List<EventType>> worldAllowedEvents = ConfigService.getGeneralConfig().getAllowedEventWorlds();
 
@@ -24,6 +27,7 @@ public class WorldStateManagerProvider {
                     worldId, new EnumMap<>(EventType.class), new EnumMap<>(EventType.class), allowedEvents));
         }
 
-        return new WorldStateManager(worldStates);
+        worldStateManager = new WorldStateManager(worldStates);
+        return worldStateManager;
     }
 }
