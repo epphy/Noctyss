@@ -182,7 +182,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      * @return the last recorded day of the event type if available;
      *         otherwise, -1 if the event type has no record.
      */
-    public long getEventLastDay(@NonNull EventType eventType) {
+    long getEventLastDay(@NonNull EventType eventType) {
         return lastDayEvents.containsKey(eventType) ? lastDayEvents.get(eventType) : -1;
     }
 
@@ -195,7 +195,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *         the event types that had occurrences recorded in the last day.
      */
     @NonNull
-    public List<EventType> getLastDayEventTypes() {
+    List<EventType> getLastDayEventTypes() {
         return List.copyOf(lastDayEvents.keySet());
     }
 
@@ -208,7 +208,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *         days of event occurrences.
      */
     @NonNull
-    public List<Long> getLastDays() {
+    List<Long> getLastDays() {
         return List.copyOf(lastDayEvents.values());
     }
 
@@ -223,7 +223,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *         representing the event types and their last recorded days for the last day.
      */
     @NonNull
-    public Set<Map.Entry<EventType, Long>> getLastDayEventEntries() {
+    Set<Map.Entry<EventType, Long>> getLastDayEventEntries() {
         return Set.copyOf(lastDayEvents.entrySet());
     }
 
