@@ -62,7 +62,7 @@ public class EventInfoInventory {
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Instant</gold> nightfall </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Complete</gold> silence </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>Unsettling</gold> music </white>"),
-            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>All</gold> entities freeze< </white>"),
+            MiniMessage.miniMessage().deserialize("<!i><white> - <gold>All</gold> entities freeze </white>"),
             MiniMessage.miniMessage().deserialize("<!i><white> - <gold>No</gold> mobs will spawn </white>"),
             MiniMessage.miniMessage().deserialize(" "),
             MiniMessage.miniMessage().deserialize("<!i><gray> Something feels <gold>wrong</gold>... Stay alert. </gray>"),
