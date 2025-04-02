@@ -1,14 +1,11 @@
 package ru.vladimir.noctyss.event;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class EventManager {
 
@@ -46,7 +43,7 @@ public class EventManager {
         LoggerUtility.info(this, "Stopping all events in world '%s'".formatted(world.getName()));
 
         boolean allEventsStopped = true;
-        for (final EventType activeEvent : EventAPI.getActiveEventTypes(world)) {
+        for (final EventType activeEvent : EventAPI.getActiveEventsInWorld(world)) {
             if (!stopEvent(world, activeEvent)) {
                 allEventsStopped = false;
             }
@@ -63,31 +60,8 @@ public class EventManager {
         }
     }
 
-    public void stopEventInAllWorlds(EventType eventType) {
-        int stopped = 0;
-        for (final UUID worldId : EventAPI.getWorldIdsWithAllowedEvent(eventType)) {
-            final World world = Bukkit.getWorld(worldId);
-            if (world == null) {
-                LoggerUtility.info(this, "World is null");
-                continue;
-            }
-
-            stopEvent(world, eventType);
-            stopped++;
-        }
-        LoggerUtility.info(this, "Stopped event '%s' in '%d' worlds"
-                .formatted(eventType.name(), stopped));
-    }
-
     public void stopAllEvents() {
-        final Map<UUID, Set<EventType>> worldsAllowedEvents = EventAPI.getWorldsWithActiveEvents();
-        for (final UUID worldId : worldsAllowedEvents.keySet()) {
-            final World world = Bukkit.getWorld(worldId);
-            if (world == null) {
-                LoggerUtility.warn(this, "Failed to stop events for world because it's null");
-                continue;
-            }
-            stopAllEventsForWorld(world);
-        }
+        final Set<World> worlds = EventAPI.getActiveEventsPerWorld().keySet();
+        worlds.forEach(this::stopAllEventsForWorld);
     }
 }

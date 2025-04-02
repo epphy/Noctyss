@@ -75,13 +75,13 @@ public final class StartEventCommand implements SubCommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            return EventAPI.getWorldWithActiveEvents().keySet().stream()
+            return EventAPI.getWorldsWithAnyActiveEvent().stream()
                     .map(World::getName)
                     .toList();
         } else if (args.length == 2) {
             final World world = Bukkit.getWorld(args[1]);
             if (world == null) return List.of();
-            return EventAPI.getActiveEventTypes(world).stream()
+            return EventAPI.getActiveEventsInWorld(world).stream()
                     .map(EventType::name)
                     .toList();
         } else {

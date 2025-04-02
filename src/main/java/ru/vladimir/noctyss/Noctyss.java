@@ -6,7 +6,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
-import ru.vladimir.noctyss.api.WorldStateConfigurer;
+import ru.vladimir.noctyss.api.WorldStateManagerProvider;
 import ru.vladimir.noctyss.command.NoctyssCommand;
 import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
@@ -57,8 +57,8 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void loadAPI() {
-        WorldStateConfigurer worldStateConfigurer = new WorldStateConfigurer();
-        EventAPI.init(worldStateConfigurer);
+        WorldStateManagerProvider worldStateManagerProvider = new WorldStateManagerProvider();
+        EventAPI.init(worldStateManagerProvider);
     }
 
     private void loadScheduler() {

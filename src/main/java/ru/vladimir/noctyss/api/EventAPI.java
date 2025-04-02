@@ -1,129 +1,152 @@
 package ru.vladimir.noctyss.api;
 
-import lombok.ToString;
-import org.bukkit.Bukkit;
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import org.bukkit.World;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
-import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.*;
 
-/**
- * The EventAPI class provides a centralized interface for managing events within
- * different worlds. It allows initialization, querying, starting, stopping,
- * and retrieving active events through the use of a {@code WorldStateManager}.
- * <p>
- * This class is final and cannot be instantiated. Events are managed at the
- * world level, with individual states tracked per {@code World} instance.
- */
-@ToString
-public final class EventAPI {
+@UtilityClass
+public class EventAPI {
+    private static final String CLASS_NAME = "EventAPI";
     private static WorldStateManager worldStateManager;
 
-    private EventAPI() {}
-
-    public static void init(WorldStateConfigurer worldStateConfigurer) {
-        if (EventAPI.worldStateManager == null) {
-            worldStateManager = worldStateConfigurer.configure();
-            LoggerUtility.info("EventAPI", "EventAPI has been initialised");
+    public static void init(WorldStateManagerProvider worldStateManagerProvider) {
+        if (worldStateManager == null) {
+            worldStateManager = worldStateManagerProvider.provide();
+            LoggerUtility.info(CLASS_NAME, "initialised");
         } else {
-            LoggerUtility.info("EventAPI", "EventAPI is already initialized");
+            LoggerUtility.info(CLASS_NAME, "already initialized");
         }
     }
 
     // ================================
-    // WORLD STATE MANAGER OPERATIONS
+    // ACTIVE EVENTS
     // ================================
 
-    public static boolean startEvent(World world, EventType eventType, EventInstance eventInstance) {
-        LoggerUtility.debug("EventAPI", "startEvent method has been called called with parameters: %s, %s, %s"
-                .formatted(world, eventType, eventInstance));
-
-        if (world == null || eventType == null || eventInstance == null) {
-            LoggerUtility.warn("EventAPI",
-                    "Failed to add event. One or more arguments are null: World=%s, EventType=%s, EventInstance=%s"
-                    .formatted(world, eventType, eventInstance));
+    public static boolean startEvent(@NonNull World world, @NonNull EventType eventType, @NonNull EventInstance eventInstance) {
+        WorldState worldState = worldStateManager.getWorldState(world);
+        if (!worldState.addActiveEvent(eventType, eventInstance)) {
             return false;
         }
-
-        final WorldState worldState = worldStateManager.getWorldState(world);
-        if (worldState.addActiveEvent(eventType, eventInstance)) {
-            eventInstance.start();
-            return true;
-        }
-
-        return false;
+        eventInstance.start();
+        return true;
     }
 
-    public static boolean stopEvent(World world, EventType eventType) {
-        LoggerUtility.debug("EventAPI", "stopEvent method has been called called with parameters: %s, %s"
-                .formatted(world, eventType));
-
-        if (world == null || eventType == null) {
-            LoggerUtility.warn("EventAPI",
-                    "Failed to remove event. World or EventType is null: World=%s, EventType=%s"
-                    .formatted(world, eventType));
+    public static boolean stopEvent(@NonNull World world, @NonNull EventType eventType) {
+        WorldState worldState = worldStateManager.getWorldState(world);
+        EventInstance eventInstance = worldState.getActiveEvent(eventType);
+        if (eventInstance == null || !worldState.removeActiveEvent(eventType)) {
             return false;
         }
-
-        final long day = GameTimeUtility.getDay(world);
-        final WorldState worldState = worldStateManager.getWorldState(world);
-        final EventInstance eventInstance = worldState.getActiveEvent(eventType);
-        if (worldState.removeActiveEvent(eventType, day)) {
-            eventInstance.stop();
-            return true;
-        }
-
-        return false;
+        eventInstance.stop();
+        return true;
     }
 
-    public static boolean isEventActive(World world, EventType eventType) {
-        if (world == null || eventType == null) {
-            LoggerUtility.warn("EventAPI",
-                    "Failed to check if active event exists. World or EventType is null: World=%s, EventType=%s"
-                    .formatted(world, eventType));
-            return false;
-        }
-
+    public static boolean isEventActive(@NonNull World world, @NonNull EventType eventType) {
         return worldStateManager.getWorldState(world).isEventActive(eventType);
     }
 
-    public static Map<UUID, Set<EventType>> getWorldIdsWithActiveEvents() {
-        return worldStateManager.getWorldsWithActiveEvents();
+    @NonNull
+    public static List<EventType> getActiveEventsInWorld(@NonNull World world) {
+        return worldStateManager.getWorldState(world).allowedEvents();
     }
 
-    public static Map<World, Set<EventType>> getWorldWithActiveEvents() {
-        Map<World, Set<EventType>> activeEventWorlds = new HashMap<>();
-        for (Map.Entry<UUID, Set<EventType>> entry : getWorldIdsWithActiveEvents().entrySet()) {
+    @NonNull
+    public static List<World> getWorldsWithSpecificActiveEvent(@NonNull EventType eventType) {
+        List<World> result = new ArrayList<>();
 
-            World world = Bukkit.getWorld(entry.getKey());
-            if (world == null) {
-                LoggerUtility.warn("EventAPI", "World is null when retrieving worlds with active events: %s"
-                        .formatted(entry.getKey().toString()));
-                continue;
-            }
-
-            activeEventWorlds.put(world, entry.getValue());
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (entry.getValue().isEventActive(eventType)) result.add(entry.getKey());
         }
 
-        return activeEventWorlds;
+        return List.copyOf(result);
     }
 
-    public static List<EventType> getActiveEventTypes(World world) {
-        return worldStateManager.getWorldState(world).getActiveEventTypes();
+    @NonNull
+    public static List<World> getWorldsWithAnyActiveEvent() {
+        List<World> result = new ArrayList<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (!entry.getValue().getActiveEventTypes().isEmpty()) result.add(entry.getKey());
+        }
+
+        return List.copyOf(result);
     }
 
-    public static Set<UUID> getWorldIdsWithAllowedEvent(EventType eventType) {
-        return worldStateManager.getWorldsIdsWithAllowedEvent(eventType);
+    @NonNull
+    public static Map<World, List<EventType>> getActiveEventsPerWorld() {
+        Map<World, List<EventType>> result = new HashMap<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            WorldState worldState = entry.getValue();
+            List<EventType> activeEventTypes = worldState.getActiveEventTypes();
+            if (activeEventTypes.isEmpty()) continue;
+            World world = entry.getKey();
+            result.put(world, activeEventTypes);
+        }
+
+        return Map.copyOf(result);
     }
 
-    public static Set<World> getWorldsWithAllowedEvent(EventType eventType) {
-        return worldStateManager.getWorldsWithAllowedEvent(eventType);
+    // ================================
+    // ALLOWED EVENTS
+    // ================================
+
+    public static boolean isEventAllowed(@NonNull World world, @NonNull EventType eventType) {
+        return worldStateManager.getWorldState(world).isEventAllowed(eventType);
     }
 
-    public static long getLastDayTheEventWas(World world, EventType eventType) {
+    @NonNull
+    public static List<EventType> getAllowedEventsInWorld(@NonNull World world) {
+        return worldStateManager.getWorldState(world).allowedEvents();
+    }
+
+    @NonNull
+    public static List<World> getWorldsWithSpecificAllowedEvent(@NonNull EventType eventType) {
+        List<World> result = new ArrayList<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (entry.getValue().isEventAllowed(eventType)) result.add(entry.getKey());
+        }
+
+        return List.copyOf(result);
+    }
+
+    @NonNull
+    public static List<World> getWorldsWithAnyAllowedEvent() {
+        List<World> result = new ArrayList<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            if (!entry.getValue().allowedEvents().isEmpty()) result.add(entry.getKey());
+        }
+
+        return List.copyOf(result);
+    }
+
+    @NonNull
+    public static Map<World, List<EventType>> getAllowedEventsPerWorld() {
+        Map<World, List<EventType>> result = new HashMap<>();
+
+        for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
+            WorldState worldState = entry.getValue();
+            List<EventType> allowedEventTypes = worldState.allowedEvents();
+            if (allowedEventTypes.isEmpty()) continue;
+            World world = entry.getKey();
+            result.put(world, allowedEventTypes);
+        }
+
+        return Map.copyOf(result);
+    }
+
+    // ================================
+    // OTHER
+    // ================================
+
+    public static long getLastDayTheEventWas(@NonNull World world, @NonNull EventType eventType) {
         return worldStateManager.getWorldState(world).getEventLastDay(eventType);
     }
 }

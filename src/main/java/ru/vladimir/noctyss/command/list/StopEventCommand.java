@@ -12,10 +12,7 @@ import ru.vladimir.noctyss.config.ConfigService;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public final class StopEventCommand implements SubCommand {

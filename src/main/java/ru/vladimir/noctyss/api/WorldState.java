@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.api;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.GameTimeUtility;
@@ -20,6 +21,34 @@ import java.util.*;
  * states of events.
  */
 record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<EventType, Long> lastDayEvents, List<EventType> allowedEvents) {
+
+    // ================================
+    // WORLD
+    // ================================
+
+    /**
+     * Retrieves the {@code World} instance associated with the current {@code WorldState}.
+     *
+     * @return the non-null {@code World} instance corresponding to the current {@code worldId}.
+     * @throws IllegalStateException if the associated {@code World} cannot be found.
+     */
+    @NonNull
+    private World getWorld() {
+        World world = Bukkit.getWorld(worldId);
+        if (world == null)
+            throw new IllegalStateException("World must not be null for: %s".formatted(this));
+        return world;
+    }
+
+    /**
+     * Retrieves the unique identifier of the world associated with this {@code WorldState}.
+     *
+     * @return a non-null {@code UUID} representing the unique identifier of the world.
+     */
+    @Override
+    public UUID worldId() {
+        return UUID.fromString(worldId.toString());
+    }
 
     // ================================
     // ACTIVE EVENTS
@@ -49,7 +78,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      */
     boolean removeActiveEvent(@NonNull EventType eventType) {
         if (!isEventActive(eventType) || !isEventAllowed(eventType)) return false;
-        updateEventLasyDay(eventType, GameTimeUtility.getDay(getWorld()));
+        updateEventLastDay(eventType, GameTimeUtility.getDay(getWorld()));
         activeEvents.remove(eventType);
         return true;
     }
@@ -70,8 +99,9 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *
      * @param eventType the type of the event whose active instance is to be retrieved.
      * @return the active {@code EventInstance} associated with the specified event type.
+     *         if event is not active, {@code null} will be returned instead.
      */
-    @NonNull
+    @Nullable
     EventInstance getActiveEvent(@NonNull EventType eventType) {
         return activeEvents.get(eventType);
     }
@@ -139,7 +169,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *                  Must not be null.
      * @param day       the day to be recorded as the last occurrence of the event type.
      */
-    private void updateEventLasyDay(@NonNull EventType eventType, long day) {
+    private void updateEventLastDay(@NonNull EventType eventType, long day) {
         lastDayEvents.put(eventType, day);
     }
 
@@ -154,6 +184,64 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      */
     public long getEventLastDay(@NonNull EventType eventType) {
         return lastDayEvents.containsKey(eventType) ? lastDayEvents.get(eventType) : -1;
+    }
+
+    /**
+     * Retrieves a list of the event types that last occurred in the past day.
+     * The returned list is an immutable copy of the keys from the map
+     * tracking last day's events and their occurrences in the world state.
+     *
+     * @return a non-null, immutable list of {@code EventType} instances representing
+     *         the event types that had occurrences recorded in the last day.
+     */
+    @NonNull
+    public List<EventType> getLastDayEventTypes() {
+        return List.copyOf(lastDayEvents.keySet());
+    }
+
+    /**
+     * Retrieves a list of the last recorded days for event occurrences in the current world state.
+     * The returned list is an immutable copy of the values from the map that tracks the last day
+     * each event type occurred.
+     *
+     * @return a non-null, immutable list of {@code Long} values representing the last recorded
+     *         days of event occurrences.
+     */
+    @NonNull
+    public List<Long> getLastDays() {
+        return List.copyOf(lastDayEvents.values());
+    }
+
+    /**
+     * Retrieves a set of entries representing the events and their corresponding
+     * last recorded days in the current world state for the last day.
+     * <p>
+     * Each entry in the returned set contains an {@code EventType} as the key
+     * and a {@code Long} value representing the last recorded day of the event.
+     *
+     * @return a non-null, immutable {@code Set} of {@code Map.Entry<EventType, Long>}
+     *         representing the event types and their last recorded days for the last day.
+     */
+    @NonNull
+    public Set<Map.Entry<EventType, Long>> getLastDayEventEntries() {
+        return Set.copyOf(lastDayEvents.entrySet());
+    }
+
+    /**
+     * Retrieves a map of event types and their corresponding last recorded days
+     * for events that occurred in the past day within the current world state.
+     * <p>
+     * The returned map is an immutable copy of the internal tracking map for
+     * last day's events, where each key represents an {@code EventType} that
+     * has occurred, and each value corresponds to the day on which it last occurred.
+     *
+     * @return a non-null, immutable map where the keys are {@code EventType}
+     *         instances representing the types of events, and the values are
+     *         {@code Long} values representing the last recorded days of those events.
+     */
+    @Override @NonNull
+    public Map<EventType, Long> lastDayEvents() {
+        return Map.copyOf(lastDayEvents);
     }
 
     // ================================
@@ -200,28 +288,14 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      * @return a non-null, immutable list of {@code EventType} instances representing
      *         the event types that are allowed in the current world state.
      */
-    @NonNull
-    List<EventType> getAllowedEvents() {
+    @Override @NonNull
+    public List<EventType> allowedEvents() {
         return List.copyOf(allowedEvents);
     }
 
     // ================================
     // OTHER
     // ================================
-
-    /**
-     * Retrieves the {@code World} instance associated with the current {@code WorldState}.
-     *
-     * @return the non-null {@code World} instance corresponding to the current {@code worldId}.
-     * @throws IllegalStateException if the associated {@code World} cannot be found.
-     */
-    @NonNull
-    private World getWorld() {
-        World world = Bukkit.getWorld(worldId);
-        if (world == null)
-            throw new IllegalStateException("World must not be null for: %s".formatted(this));
-        return world;
-    }
 
     @Override
     public boolean equals(Object o) {
