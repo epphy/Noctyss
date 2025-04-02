@@ -19,7 +19,7 @@ public final class ReloadConfigCommand implements SubCommand {
             sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
         } else {
             ConfigService.reload(globalEventScheduler);
-            sendFeedback(sender, ConfigService.getMessageConfig().getReloadedConfig());
+            sendFeedback(sender, ConfigService.getMessageConfig().getConfigReloaded());
         }
     }
 
