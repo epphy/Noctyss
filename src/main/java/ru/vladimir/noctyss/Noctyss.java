@@ -2,6 +2,8 @@ package ru.vladimir.noctyss;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,9 +19,15 @@ import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.logging.Level;
 
 public final class Noctyss extends JavaPlugin {
+    private static final String CURRENT_VERSION = "v1.0.1";
     private EventManager eventManager;
     private GlobalEventScheduler globalEventScheduler;
 
@@ -31,6 +39,7 @@ public final class Noctyss extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        checkUpdateVersion();
         loadUtilities();
         configureLogger();
         loadScheduler();
@@ -80,6 +89,47 @@ public final class Noctyss extends JavaPlugin {
         commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);
+    }
+
+    private void checkUpdateVersion() {
+        TaskUtil.runTaskAsync(this, () -> {
+            LoggerUtility.info(this, "Checking the latest version...");
+
+            final String latestVersion = getLatestVersion();
+            if (latestVersion == null) {
+                LoggerUtility.err(this, "Failed to check update version");
+                return;
+            }
+
+            if (isNewerVersion(latestVersion)) {
+                LoggerUtility.info(this, "A new update is available! Latest version: " + latestVersion);
+                LoggerUtility.info(this, "Download it here: https://github.com/epphy/Noctyss/releases/latest");
+            } else {
+                LoggerUtility.info(this, "You're running the latest version!");
+            }
+        });
+    }
+
+    private String getLatestVersion() {
+        try (final HttpClient httpClient = HttpClient.newHttpClient();) {
+            final HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.github.com/repos/epphy/Noctyss/releases/latest"))
+                    .header("Accept", "application/vnd.github.v3+json")
+                    .build();
+
+            final HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) return null;
+
+            final JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+            return json.get("tag_name").getAsString();
+        } catch (IOException | InterruptedException e) {
+            LoggerUtility.err(this, "Error fetching latest version: %s".formatted(e.getMessage()));
+            return null;
+        }
+    }
+
+    private boolean isNewerVersion(String latestVersion) {
+        return latestVersion.compareToIgnoreCase(CURRENT_VERSION) > 0;
     }
 
     private void startupMessage() {

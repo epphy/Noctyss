@@ -51,4 +51,20 @@ public class TaskUtil {
             Bukkit.getScheduler().runTask(plugin, task);
         }
     }
+
+    public static void runTaskAsync(JavaPlugin plugin, Runnable task) {
+        if (shuttingDown || plugin == null) {
+            runTask(task);
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        }
+    }
+
+    public static void runTaskAsync(Runnable task) {
+        if (shuttingDown || plugin == null) {
+            runTask(task);
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        }
+    }
 }
