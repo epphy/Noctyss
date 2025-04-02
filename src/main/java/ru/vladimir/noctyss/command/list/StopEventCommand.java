@@ -59,17 +59,20 @@ public final class StopEventCommand implements SubCommand {
 
     private void attemptStopEvent(CommandSender sender, World world, EventType eventType) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getEventDisallowed());
+            final Component message = ConfigService.getMessageConfig().getEventDisallowed();
+            sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
             return;
         }
 
         if (!EventAPI.isEventActive(world ,eventType)) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getEventInactive());
+            final Component message = ConfigService.getMessageConfig().getEventInactive();
+            sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
             return;
         }
 
         eventManager.stopEvent(world, eventType);
-        sendFeedback(sender, ConfigService.getMessageConfig().getEventStopped());
+        final Component message = ConfigService.getMessageConfig().getEventStopped();
+        sendFeedback(sender, ConfigService.getMessageConfig().retrieveMessageNeedingFormat(message, world.getName()));
     }
 
     private void sendFeedback(CommandSender sender, Component message) {

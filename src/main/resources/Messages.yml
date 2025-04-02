@@ -12,9 +12,9 @@ messages:
     player-only: "This command can only be used by players."
 
   events:
-    event-active: "The event {0} is already running in world {1}."
-    event-inactive: "The event {0} is not currently active in world {1}."
-    event-disallowed: "The event {0} is not allowed in world {1}."
-    event-started: "The event {0} has started in world {1}."
-    event-stopped: "The event {0} has been stopped in world {1}."
+    event-active: "This event is already running in world {0}."
+    event-inactive: "This event is not currently active in world {0}."
+    event-disallowed: "This event is not allowed in world {0}."
+    event-started: "The event has started in world {0}."
+    event-stopped: "The event has been stopped in world {0}."
     sleep-prevention: "I don't want to sleep"

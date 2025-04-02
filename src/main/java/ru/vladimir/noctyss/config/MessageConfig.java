@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,7 +37,6 @@ public final class MessageConfig implements IConfig {
     private File file;
 
     // Internal Values
-    private Map<String, List<String>> activeEventList;
     private String eventList;
     private String usage;
 
@@ -99,7 +99,7 @@ public final class MessageConfig implements IConfig {
     private void parseInfoMessages() {
         activeEventListMsg = getFormattedMessage(INFO + "active-events", "Currently active events: {0}", getWorldNamesWithActiveEvents());
         commandUsage = getFormattedMessage(INFO + "command-usage", "Correct usage: {0}", usage);
-        configReloaded = getMessage(INFO + "config-reloaded", "#22222Configuration has been successfully reloaded.");
+        configReloaded = getMessage(INFO + "config-reloaded", "Configuration has been successfully reloaded.");
     }
 
     private Map<String, List<String>> getWorldNamesWithActiveEvents() {
@@ -140,6 +140,11 @@ public final class MessageConfig implements IConfig {
         return parseColors(message);
     }
 
+    private Component getFormattedMessage(String text, Object... values) {
+        text = MessageFormat.format(text, values);
+        return parseColors(text);
+    }
+
     /**
      * Converts color codes (&6, &a, etc.) and hex colors (#FFA500) into MiniMessage format.
      */
@@ -147,6 +152,10 @@ public final class MessageConfig implements IConfig {
         message = message.replace('&', '§'); // Convert '&' to Bukkit color codes
         message = message.replaceAll("#([A-Fa-f0-9]{6})", "<#$1>"); // Convert hex codes to MiniMessage format
         return MiniMessage.miniMessage().deserialize(message);
+    }
+
+    public Component retrieveMessageNeedingFormat(Component message, Object... values) {
+        return getFormattedMessage(PlainTextComponentSerializer.plainText().serialize(message), values);
     }
 
     @Override
