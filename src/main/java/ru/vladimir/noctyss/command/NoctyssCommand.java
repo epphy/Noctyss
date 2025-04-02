@@ -10,7 +10,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.vladimir.noctyss.command.list.EventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.command.list.StartEventCommand;
 import ru.vladimir.noctyss.command.list.StopEventCommand;

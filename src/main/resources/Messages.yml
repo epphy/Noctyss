@@ -10,12 +10,12 @@ messages:
     unknown-command: "This command does not exist. Please try again."
     unknown-event: "The specified event type does not exist."
     unknown-world: "The specified world could not be found."
-    event-active: "The event {0} is already running in world {1}."
-    event-inactive: "The event {0} is not currently active in world {1}."
-    event-disallowed: "The event {0} is not allowed in world {1}."
     player-only: "This command can only be used by players."
 
   events:
+    event-active: "The event {0} is already running in world {1}."
+    event-inactive: "The event {0} is not currently active in world {1}."
+    event-disallowed: "The event {0} is not allowed in world {1}."
     event-started: "The event {0} has started in world {1}."
     event-stopped: "The event {0} has been stopped in world {1}."
-    sleep-prevention: "I don't want to sleep..."
+    sleep-prevention: "I don't want to sleep"
