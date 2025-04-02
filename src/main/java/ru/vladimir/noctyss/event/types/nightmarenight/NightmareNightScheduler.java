@@ -78,7 +78,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worlds = EventAPI.getWorldsWithSpecificAllowedEvent(EVENT_TYPE);
+        worlds = EventAPI.getWorldsAllowingEvent(EVENT_TYPE);
         checkFrequency = ConfigService.getNightmareNightConfig().getCheckFrequency();
         eventChance = ConfigService.getNightmareNightConfig().getEventChance();
     }

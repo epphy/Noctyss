@@ -92,7 +92,7 @@ public final class StartEventCommand implements SubCommand {
             final EventType eventType = getEventType(args[1]);
             return (eventType == null)
                     ? List.of()
-                    : EventAPI.getWorldsWithSpecificInactiveEvent(eventType).stream()
+                    : EventAPI.getWorldsWithoutEvent(eventType).stream()
                         .map(World::getName)
                         .toList();
         }

@@ -23,6 +23,15 @@ public class EventAPI {
     private static final String CLASS_NAME = "EventAPI";
     private static WorldStateManager worldStateManager;
 
+    /**
+     * Initializes the EventAPI by setting up the required {@code WorldStateManager}.
+     * This method ensures that the necessary components are prepared for use in the system.
+     * If the initialization has already been performed, it logs that the system is already initialized.
+     * Otherwise, it creates and assigns a {@code WorldStateManager} instance using
+     * {@code WorldStateManagerProvider.provide()} and marks the system as initialized.
+     * <p>
+     * If you try to use anything without initialising first, {code IllegalStateException} will be thrown.
+     */
     public static void init() {
         if (worldStateManager == null) {
             worldStateManager = WorldStateManagerProvider.provide();
@@ -45,6 +54,7 @@ public class EventAPI {
      * @return true if the event was successfully started, false otherwise
      */
     public static boolean startEvent(@NonNull World world, @NonNull EventType eventType, @NonNull EventInstance eventInstance) {
+        checkInitialized();
         WorldState worldState = worldStateManager.getWorldState(world);
         if (!worldState.addActiveEvent(eventType, eventInstance)) {
             return false;
@@ -61,6 +71,7 @@ public class EventAPI {
      * @return true if the event was successfully stopped, false otherwise
      */
     public static boolean stopEvent(@NonNull World world, @NonNull EventType eventType) {
+        checkInitialized();
         WorldState worldState = worldStateManager.getWorldState(world);
         EventInstance eventInstance = worldState.getActiveEvent(eventType);
         if (eventInstance == null || !worldState.removeActiveEvent(eventType)) {
@@ -78,6 +89,7 @@ public class EventAPI {
      * @return true if the specified event is currently active in the given world, false otherwise
      */
     public static boolean isEventActive(@NonNull World world, @NonNull EventType eventType) {
+        checkInitialized();
         return worldStateManager.getWorldState(world).isEventActive(eventType);
     }
 
@@ -89,7 +101,8 @@ public class EventAPI {
      */
     @NonNull
     public static List<EventType> getActiveEventsInWorld(@NonNull World world) {
-        return worldStateManager.getWorldState(world).allowedEvents();
+        checkInitialized();
+        return worldStateManager.getWorldState(world).getActiveEventTypes();
     }
 
     /**
@@ -99,7 +112,8 @@ public class EventAPI {
      * @return a non-null, immutable list of {@code World} instances where the specified event is active
      */
     @NonNull
-    public static List<World> getWorldsWithSpecificActiveEvent(@NonNull EventType eventType) {
+    public static List<World> getWorldsWithActiveEvent(@NonNull EventType eventType) {
+        checkInitialized();
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -117,7 +131,8 @@ public class EventAPI {
      * @return a non-null, immutable list of {@code World} instances where the specified event type is inactive
      */
     @NonNull
-    public static List<World> getWorldsWithSpecificInactiveEvent(@NonNull EventType eventType) {
+    public static List<World> getWorldsWithoutEvent(@NonNull EventType eventType) {
+        checkInitialized();
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -135,6 +150,7 @@ public class EventAPI {
      */
     @NonNull
     public static List<World> getWorldsWithAnyActiveEvent() {
+        checkInitialized();
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -153,6 +169,7 @@ public class EventAPI {
      */
     @NonNull
     public static Set<Map.Entry<World, List<EventType>>> getActiveEventsPerWorldEntries() {
+        checkInitialized();
         return Set.copyOf(getActiveEventsPerWorld().entrySet());
     }
 
@@ -165,6 +182,7 @@ public class EventAPI {
      */
     @NonNull
     public static Map<World, List<EventType>> getActiveEventsPerWorld() {
+        checkInitialized();
         Map<World, List<EventType>> result = new HashMap<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -190,6 +208,7 @@ public class EventAPI {
      * @return {@code true} if the event type is allowed in the specified world; {@code false} otherwise
      */
     public static boolean isEventAllowed(@NonNull World world, @NonNull EventType eventType) {
+        checkInitialized();
         return worldStateManager.getWorldState(world).isEventAllowed(eventType);
     }
 
@@ -201,6 +220,7 @@ public class EventAPI {
      */
     @NonNull
     public static List<EventType> getAllowedEventsInWorld(@NonNull World world) {
+        checkInitialized();
         return worldStateManager.getWorldState(world).allowedEvents();
     }
 
@@ -211,7 +231,8 @@ public class EventAPI {
      * @return a non-null, immutable list of {@code World} instances where the specified event type is allowed
      */
     @NonNull
-    public static List<World> getWorldsWithSpecificAllowedEvent(@NonNull EventType eventType) {
+    public static List<World> getWorldsAllowingEvent(@NonNull EventType eventType) {
+        checkInitialized();
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -229,6 +250,7 @@ public class EventAPI {
      */
     @NonNull
     public static List<World> getWorldsWithAnyAllowedEvent() {
+        checkInitialized();
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -248,6 +270,7 @@ public class EventAPI {
      */
     @NonNull
     public static Map<World, List<EventType>> getAllowedEventsPerWorld() {
+        checkInitialized();
         Map<World, List<EventType>> result = new HashMap<>();
 
         for (Map.Entry<World, WorldState> entry : worldStateManager.getWorldStatesEntries()) {
@@ -277,4 +300,18 @@ public class EventAPI {
     public static long getLastDayTheEventWas(@NonNull World world, @NonNull EventType eventType) {
         return worldStateManager.getWorldState(world).getEventLastDay(eventType);
     }
+
+    /**
+     * Verifies that the EventAPI has been properly initialized before allowing
+     * further operations. This method ensures that the essential components of the system
+     * are initialized and ready to use.
+     *
+     * @throws IllegalStateException if the EventAPI has not been properly initialized.
+     */
+    private static void checkInitialized() {
+        if (worldStateManager == null) {
+            throw new IllegalStateException("EventAPI has not been initialized. Call init() first.");
+        }
+    }
+
 }

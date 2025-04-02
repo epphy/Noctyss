@@ -12,6 +12,10 @@ import java.util.*;
  * This allows tracking and maintaining the states of different worlds in a structured
  * manner. The class provides functionalities to retrieve, list, and manage the states
  * of the worlds it oversees.
+ * <p></p>
+ * It's important to notice that this class is partially immutable. It means that
+ * data can be changed internally through provided methods. However, users won't
+ * see a change because all return data is copied and immutable.
  */
 record WorldStateManager(Map<World, WorldState> worldStates) {
 
@@ -29,10 +33,9 @@ record WorldStateManager(Map<World, WorldState> worldStates) {
      */
     @NonNull
     WorldState getWorldState(@NonNull World world) {
-        WorldState worldState = worldStates.get(world);
-        if (worldState == null) return new WorldState(
-                world.getUID(), new EnumMap<>(EventType.class), new EnumMap<>(EventType.class), new ArrayList<>());
-        return worldState;
+        worldStates.computeIfAbsent(world, newWorld -> new WorldState(
+                world.getUID(), new EnumMap<>(EventType.class), new EnumMap<>(EventType.class), new ArrayList<>()));
+        return worldStates.get(world);
     }
 
     /**
@@ -88,18 +91,6 @@ record WorldStateManager(Map<World, WorldState> worldStates) {
     // ================================
     // OTHER
     // ================================
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        WorldStateManager that = (WorldStateManager) o;
-        return Objects.equals(worldStates, that.worldStates);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(worldStates);
-    }
 
     @Override
     public String toString() {

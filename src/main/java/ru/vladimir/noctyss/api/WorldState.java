@@ -163,7 +163,7 @@ record WorldState(UUID worldId, Map<EventType, EventInstance> activeEvents, Map<
      *                  Must not be null.
      * @param day       the day to be recorded as the last occurrence of the event type.
      */
-    private void updateEventLastDay(@NonNull EventType eventType, long day) {
+    public void updateEventLastDay(@NonNull EventType eventType, long day) {
         lastDayEvents.put(eventType, day);
     }
 

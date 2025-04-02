@@ -92,7 +92,7 @@ public final class StopEventCommand implements SubCommand {
             final EventType eventType = getEventType(args[1]);
             return (eventType == null)
                     ? List.of()
-                    : EventAPI.getWorldsWithSpecificActiveEvent(eventType).stream()
+                    : EventAPI.getWorldsWithActiveEvent(eventType).stream()
                         .map(World::getName)
                         .toList();
         }

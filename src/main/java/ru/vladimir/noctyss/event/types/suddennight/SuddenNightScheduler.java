@@ -78,7 +78,7 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private void cache() {
-        worlds = EventAPI.getWorldsWithSpecificAllowedEvent(EVENT_TYPE);
+        worlds = EventAPI.getWorldsAllowingEvent(EVENT_TYPE);
         checkFrequencyTicks = ConfigService.getSuddenNightConfig().getCheckFrequencyTicks();
         eventChance = ConfigService.getSuddenNightConfig().getEventChance();
         cooldownDays = ConfigService.getSuddenNightConfig().getCooldownDays();
