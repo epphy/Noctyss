@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.vladimir.noctyss.command.list.ActiveEventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.command.list.StartEventCommand;
 import ru.vladimir.noctyss.command.list.StopEventCommand;
@@ -70,9 +71,9 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
 
     private void registerCommands() {
         addSubCommand(
-                new EventListCommand(),
+                new ActiveEventListCommand(),
                 "list",
-                new Permission("noctyss.event.list")
+                new Permission("noctyss.event.info")
         );
 
         addSubCommand(
