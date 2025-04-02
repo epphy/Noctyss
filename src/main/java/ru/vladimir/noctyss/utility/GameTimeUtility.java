@@ -1,127 +1,101 @@
 package ru.vladimir.noctyss.utility;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A utility class providing various methods for managing and manipulating in-game time
- * within a Minecraft server. This class is designed for use with the Bukkit/Spigot API.
+ * Utility class for managing and interacting with time-related operations in a Minecraft world.
+ * This class provides methods to check the current time of day, set the world's time, and perform
+ * smooth time transitions dynamically.
  * <p>
- * The utility is a singleton and requires initialization with a Bukkit {@code JavaPlugin} instance.
- * <p>
- * Note:
- * - The class uses predefined constants for time-related calculations such as day duration,
- *   nighttime intervals, and midnight time range.
- * - Thread-safe mechanisms are implemented when scheduling asynchronous or task-based
- *   operations to modify the in-game time dynamically.
+ * All methods operate on the concept of ticks, where 1 day in Minecraft consists of 24000 ticks.
+ * Additional constants define specific time ranges for various parts of the day.
  */
 @UtilityClass
 public class GameTimeUtility {
+
     private static final String CLASS_NAME = "GameTimeUtility";
-    private static final long DAY_DURATION_TICKS = 24000L;
+    private static final long FULL_DAY_DURATION_TICKS = 24000L;
+    private static final long DAY_END_TIME_TICKS = 10000L;
     private static final long NIGHT_START_TIME_TICKS = 13000L;
-    private static final long[] MIDNIGHT_TICKS_TIME_RANGE = new long[] {17500L, 18500L};
+    private static final long[] MIDNIGHT_TICKS_TIME_RANGE = {17500L, 18500L};
     private static final long DYNAMIC_TIME_CHANGE_TICKS = 5L;
-    private static JavaPlugin plugin;
 
     /**
-     * Initializes the {@code GameTimeUtility} with the given {@code JavaPlugin} instance.
-     * Ensures that the utility is only initialized once.
-     *
-     * @param plugin the {@code JavaPlugin} instance required for initialization
-     */
-    public static void init(JavaPlugin plugin) {
-        if (GameTimeUtility.plugin == null) {
-            GameTimeUtility.plugin = plugin;
-            LoggerUtility.info(CLASS_NAME, "GameTimeUtility has been initialised");
-        } else {
-            LoggerUtility.info(CLASS_NAME, "GameTimeUtility is already initialised");
-        }
-    }
-
-    /**
-     * Checks whether it's a day for the provided {@code world}.
+     * Checks if it is daytime in the given world.
      *
      * @param world the {@code World} to check the time of day
-     * @return {@code true} if it is day in the specified world, otherwise {@code false}
+     * @return {@code true} if it is day, {@code false} if it is night
      */
-    public static boolean isDay(World world) {
-        final long worldTime = world.getTime();
-        return worldTime <= 10000L;
+    public static boolean isDay(@NonNull World world) {
+        return world.getTime() <= DAY_END_TIME_TICKS;
     }
 
     /**
-     * Checks whether it's a night for the provided {@code world}.
+     * Checks if it is nighttime in the given world.
      *
      * @param world the {@code World} to check the time of day
-     * @return {@code true} if it is night in the specified world, otherwise {@code false}
+     * @return {@code true} if it is night, {@code false} if it is day
      */
-    public static boolean isNight(World world) {
-        final long worldTime = world.getTime();
-        return worldTime >= NIGHT_START_TIME_TICKS;
+    public static boolean isNight(@NonNull World world) {
+        return world.getTime() >= NIGHT_START_TIME_TICKS;
     }
 
     /**
-     * Checks whether it's a midnight for the provided {@code world}.
+     * Checks if it is midnight in the given world.
      *
-     * @param world the {@code World} whose time is to be checked
-     * @return {@code true} if the current time in the world falls within the defined midnight tick range,
-     *         otherwise {@code false}
+     * @param world the {@code World} to check the time of day
+     * @return {@code true} if the time is within the defined midnight range, otherwise {@code false}
      */
-    public static boolean isMidnight(World world) {
-        final long worldTime = world.getTime();
+    public static boolean isMidnight(@NonNull World world) {
+        long worldTime = world.getTime();
         return worldTime >= MIDNIGHT_TICKS_TIME_RANGE[0] && worldTime <= MIDNIGHT_TICKS_TIME_RANGE[1];
     }
 
     /**
-     * Sets the full time of the specified {@code World} to the given {@code newTime}.
-     * The time adjustment is calculated based on the world's current full time and
-     * the pre-defined day duration in ticks to ensure consistency.
+     * Sets the time of the world to a specific tick.
+     * This method calculates the world's updated time based on the requested time.
      *
      * @param world the {@code World} whose time is to be updated
-     * @param newTime the new time in ticks to set in the specified world
+     * @param newTime the new time in ticks to set in the world
      */
-    public static void setTime(World world, long newTime) {
-        final long updatedWorldTime = getUpdatedTime(world, newTime);
-        TaskUtil.runTask(plugin, () -> world.setFullTime(updatedWorldTime));
+    public static void setTime(@NonNull World world, long newTime) {
+        long updatedWorldTime = getUpdatedTime(world, newTime);
+        TaskUtil.runTask(() -> world.setFullTime(updatedWorldTime));
     }
 
     /**
-     * Dynamically adjusts the time of the specified {@code World} over a given duration.
-     * The transition to the target time is spread out across the specified time interval,
-     * allowing for smooth progression, controlled by the {@code DYNAMIC_TIME_CHANGE_TICKS}.
-     * If the provided transition time is less than {@code DYNAMIC_TIME_CHANGE_TICKS}, the
-     * operation is aborted, and a warning is logged.
+     * Dynamically adjusts the time of the world over a given duration.
+     * This method ensures the transition occurs smoothly with small time increments.
      *
-     * @param world the {@code World} whose time is to be transitioned dynamically
+     * @param world the {@code World} whose time is to be transitioned
      * @param newTime the target time in ticks to transition to
-     * @param time the duration in ticks over which the time transition occurs
+     * @param duration the duration in ticks over which the transition should happen
      */
-    public static void setTimeDynamically(World world, long newTime, long time) {
-        final long worldTime = world.getTime();
-        final long difference = newTime - worldTime;
+    public static void setTimeDynamically(@NonNull World world, long newTime, long duration) {
+        long worldTime = world.getTime();
+        long difference = newTime - worldTime;
 
-        if (time < DYNAMIC_TIME_CHANGE_TICKS) {
-            LoggerUtility.warn(CLASS_NAME,
-                    "Failed to change time dynamically because provided time is less " +
-                             "than the change constant. Time: %d. Constant: %d"
-                                     .formatted(time, DYNAMIC_TIME_CHANGE_TICKS));
+        if (duration < DYNAMIC_TIME_CHANGE_TICKS) {
+            LoggerUtility.warn(CLASS_NAME, "Failed to change time dynamically. Duration: %d is too short."
+                    .formatted(duration));
             return;
         }
-        final long timeChangeChange = Math.abs(difference / (time / DYNAMIC_TIME_CHANGE_TICKS));
+
+        long timeChange = Math.abs(difference / (duration / DYNAMIC_TIME_CHANGE_TICKS));
 
         final AtomicLong elapsedTime = new AtomicLong();
-        final AtomicLong timeChange = new AtomicLong();
+        final AtomicLong timeChangeAccumulator = new AtomicLong();
         final AtomicInteger taskId = new AtomicInteger();
 
-        taskId.set(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            setTime(world, worldTime + timeChange.addAndGet(timeChangeChange));
-            if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= time) {
+        taskId.set(TaskUtil.runTaskTimer(() -> {
+            setTime(world, worldTime + timeChangeAccumulator.addAndGet(timeChange));
+            if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= duration) {
                 setTime(world, newTime);
                 Bukkit.getScheduler().cancelTask(taskId.get());
             }
@@ -129,27 +103,26 @@ public class GameTimeUtility {
     }
 
     /**
-     * Calculates the updated full-time for the specified {@code World} using the current full time
-     * and the provided {@code newTime}, ensuring it aligns with the day duration in ticks.
+     * Calculates the adjusted time for the world based on the current time and the new requested time.
+     * This ensures that the time remains consistent with the world's day cycle.
      *
-     * @param world the {@code World} whose time is being updated
-     * @param newTime the desired new time in ticks relative to the current day
-     * @return the updated full-time in ticks for the specified {@code World}
+     * @param world the {@code World} whose time is being adjusted
+     * @param newTime the requested time in ticks
+     * @return the adjusted full time in ticks
      */
-    private static long getUpdatedTime(World world, long newTime) {
-        final long worldFullTime = world.getFullTime();
-        final long dayNumber = worldFullTime / DAY_DURATION_TICKS;
-        return dayNumber * DAY_DURATION_TICKS + newTime;
+    private static long getUpdatedTime(@NonNull World world, long newTime) {
+        long worldFullTime = world.getFullTime();
+        long dayNumber = worldFullTime / FULL_DAY_DURATION_TICKS;
+        return dayNumber * FULL_DAY_DURATION_TICKS + newTime;
     }
 
     /**
-     * Calculates the number of days have passed in {@code World} based on the world's full
-     * time and the predefined duration of a day in ticks.
+     * Gets the current day number in the world based on the world's full time.
      *
-     * @param world the {@code World} whose current day is to be determined
-     * @return the current day as a {@code long} value, calculated relative to the world's full time
+     * @param world the {@code World} to get the current day number from
+     * @return the current day number
      */
-    public static long getDay(World world) {
-        return world.getFullTime() / DAY_DURATION_TICKS;
+    public static long getDay(@NonNull World world) {
+        return world.getFullTime() / FULL_DAY_DURATION_TICKS;
     }
 }

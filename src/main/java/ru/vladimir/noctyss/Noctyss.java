@@ -14,7 +14,6 @@ import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.event.modules.notification.senders.NotificationManager;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
-import ru.vladimir.noctyss.utility.GameTimeUtility;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
@@ -49,7 +48,6 @@ public final class Noctyss extends JavaPlugin {
     private void loadUtilities() {
         LoggerUtility.init(getLogger());
         TaskUtil.init(this);
-        GameTimeUtility.init(this);
         PlayerNotificationService.init(this);
         NotificationManager.init();
         ConfigService.init(this);
@@ -78,7 +76,7 @@ public final class Noctyss extends JavaPlugin {
     private void loadCommand() {
         final PluginCommand command = getServer().getPluginCommand("noctyss");
         if (command == null) {
-            LoggerUtility.err(this, "Failed to load the main command");
+            LoggerUtility.error(this, "Failed to load the main command");
             return;
         }
 
@@ -95,7 +93,7 @@ public final class Noctyss extends JavaPlugin {
 
             final String latestVersion = getLatestVersion();
             if (latestVersion == null) {
-                LoggerUtility.err(this, "Failed to check update version");
+                LoggerUtility.error(this, "Failed to check update version");
                 return;
             }
 
@@ -121,7 +119,7 @@ public final class Noctyss extends JavaPlugin {
             final JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
             return json.get("tag_name").getAsString();
         } catch (IOException | InterruptedException e) {
-            LoggerUtility.err(this, "Error fetching latest version: %s".formatted(e.getMessage()));
+            LoggerUtility.error(this, "Error fetching latest version: %s".formatted(e.getMessage()));
             return null;
         }
     }

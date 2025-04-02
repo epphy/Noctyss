@@ -313,5 +313,4 @@ public class EventAPI {
             throw new IllegalStateException("EventAPI has not been initialized. Call init() first.");
         }
     }
-
 }

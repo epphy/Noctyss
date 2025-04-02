@@ -40,7 +40,7 @@ class PlayerNotificationStorage {
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write(gson.toJson(playerNotifications));
         } catch (IOException e) {
-            LoggerUtility.err(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
+            LoggerUtility.error(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -55,7 +55,7 @@ class PlayerNotificationStorage {
             if (data == null) return new HashMap<>();
             else return data;
         } catch (IOException e) {
-            LoggerUtility.err(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
+            LoggerUtility.error(this, "Could not store player ids in the storage: %s".formatted(e.getMessage()));
             e.printStackTrace();
             return new HashMap<>();
         }

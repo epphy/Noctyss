@@ -1,71 +1,81 @@
 package ru.vladimir.noctyss.utility;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A utility class for managing logging operations within the application.
- * <p>
- * This class provides static methods to initialize the logger, set logging levels,
- * and log messages with various levels of severity (info, warning, severe). It also allows
- * for custom log entries with user-defined levels and context.
- * <p>
- * The {@code LoggerUtility} is intended to centralize logging operations,
- * offering a convenient way to use a shared {@code Logger} instance across multiple components of the application.
- * <p>
- * The class ensures thread safety and enforces a singleton pattern for the logger instance,
- * restricting external instantiation.
+ * A utility class for managing logging functionality across the application.
+ * Provides easy-to-use methods for logging messages at various levels such as DEBUG, INFO, WARN, and ERROR.
+ * Contains initialization methods to set up the logging mechanism and utility checks to ensure logging is properly configured.
  */
 @UtilityClass
 public class LoggerUtility {
+
     private static final String CLASS_NAME = "LoggerUtility";
     private static final String LOGGER_TEMPLATE = "%s: %s";
     private static Logger logger;
 
-    public static void init(Logger logger) {
+    public static void init(@NonNull Logger logger) {
         if (LoggerUtility.logger == null) {
             LoggerUtility.logger = logger;
-            info(CLASS_NAME,"LoggerUtility has been initialised");
+            info(CLASS_NAME, "initialised");
         } else {
-            info(CLASS_NAME, "LoggerUtility is already initialised");
+            info(CLASS_NAME, "already initialised");
         }
     }
 
-    public static void setLevel(Level level) {
+    public static void setLevel(@NonNull Level level) {
+        checkInitialized();
         logger.setLevel(level);
-        logger.getParent().getHandlers()[0].setLevel(level);
+
+        if (logger.getParent().getHandlers().length > 0) {
+            logger.getParent().getHandlers()[0].setLevel(level);
+        }
         info(CLASS_NAME, "Logger level updated to %s".formatted(level));
     }
 
     public static void debug(Object object, String debug) {
-        logger.fine(LOGGER_TEMPLATE.formatted(getSender(object), debug));
+        log(object, Level.FINE, debug);
     }
 
     public static void info(Object object, String information) {
-        logger.info(LOGGER_TEMPLATE.formatted(getSender(object), information));
+        log(object, Level.INFO, information);
     }
 
     public static void warn(Object object, String warning) {
-        logger.warning(LOGGER_TEMPLATE.formatted(getSender(object), warning));
+        log(object, Level.WARNING, warning);
     }
 
-    public static void err(Object object, String error) {
-        logger.severe(LOGGER_TEMPLATE.formatted(getSender(object), error));
-    }
-
-    public static void log(Object object, Level level, String message) {
-        logger.log(level, LOGGER_TEMPLATE.formatted(getSender(object), message));
+    public static void error(Object object, String error) {
+        log(object, Level.SEVERE, error);
     }
 
     public static void announce(String announcement) {
-        logger.info(announcement);
+        checkInitialized();
+        log(Level.INFO, announcement);
+    }
+
+    public static void log(Object object, @NonNull Level level, String message) {
+        log(level, LOGGER_TEMPLATE.formatted(getSender(object), message));
+    }
+
+    private static void log(@NonNull Level level, String message) {
+        checkInitialized();
+        logger.log(level, message);
     }
 
     private static String getSender(Object o) {
         if (o == null) return "UnknownSender";
         if (o instanceof String) return o.toString();
         return o.getClass().getSimpleName();
+    }
+
+    private static void checkInitialized() {
+        if (logger == null) {
+            throw new IllegalStateException("LoggerUtility has not been initialized. Call init() first.");
+        }
     }
 }
