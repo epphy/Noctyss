@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.event.EventType;
+import ru.vladimir.noctyss.utility.ComponentAPI;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -24,10 +25,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class MessageConfig implements IConfig {
     private static final String FILE_NAME = "Messages.yml";
-
-    // Settings
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
 
     // Section paths
     private static final String INFO = "messages.info.";
@@ -151,8 +148,7 @@ public final class MessageConfig implements IConfig {
      * Converts color codes (&6, &a, etc.) and hex colors (#FFA500) into MiniMessage format.
      */
     private Component parseColors(String message) {
-        message = LEGACY_SERIALIZER.serialize(Component.text(message));
-        return MINI_MESSAGE.deserialize(message);
+        return ComponentAPI.parseColor(message);
     }
 
     public Component retrieveMessageNeedingFormat(Component message, Object... values) {

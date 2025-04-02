@@ -23,9 +23,9 @@ public class EventAPI {
     private static final String CLASS_NAME = "EventAPI";
     private static WorldStateManager worldStateManager;
 
-    public static void init(WorldStateManagerProvider worldStateManagerProvider) {
+    public static void init() {
         if (worldStateManager == null) {
-            worldStateManager = worldStateManagerProvider.provide();
+            worldStateManager = WorldStateManagerProvider.provide();
             LoggerUtility.info(CLASS_NAME, "initialised");
         } else {
             LoggerUtility.info(CLASS_NAME, "already initialized");

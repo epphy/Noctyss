@@ -12,9 +12,7 @@ import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @RequiredArgsConstructor
 final class AmbientSoundScheduler implements SoundManager, Controllable {
@@ -25,6 +23,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     private final EventType eventType;
     private final List<Sound> sounds;
     private final Random random;
+    private final List<UUID> alreadyPlayedPlayers = new ArrayList<>();
     private long delay;
     private long frequency;
     private int taskId = -1;
@@ -50,8 +49,11 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
         }
 
         for (final Player player : world.getPlayers()) {
+            final UUID playerId = player.getUniqueId();
+            if (alreadyPlayedPlayers.contains(playerId)) continue;
             TaskUtil.runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
+            alreadyPlayedPlayers.add(playerId);
         }
     }
 
@@ -88,6 +90,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
                 ", delay=" + delay +
                 ", sounds=" + sounds +
                 ", world=" + world.getName() +
+                ", alreadyPlayedPlayers=" + alreadyPlayedPlayers +
                 ", frequencyRange=" + Arrays.toString(frequencyRange) +
                 ", delayRange=" + Arrays.toString(delayRange) +
                 ", eventType=" + eventType.name() +

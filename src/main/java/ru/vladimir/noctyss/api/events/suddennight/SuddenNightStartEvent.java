@@ -6,7 +6,7 @@ import org.bukkit.event.world.WorldEvent;
 import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.api.events.ICustomEvent;
 
-public class SuddenNightStartEvent extends WorldEvent implements ICustomEvent {
+public final class SuddenNightStartEvent extends WorldEvent implements ICustomEvent {
     private static final HandlerList handlers = new HandlerList();
 
     public SuddenNightStartEvent(@NotNull World world, boolean isAsync) {
@@ -18,7 +18,7 @@ public class SuddenNightStartEvent extends WorldEvent implements ICustomEvent {
         return handlers;
     }
 
-    public @NotNull HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return handlers;
     }
 }
