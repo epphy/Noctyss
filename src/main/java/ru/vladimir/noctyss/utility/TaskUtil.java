@@ -10,11 +10,11 @@ import org.jetbrains.annotations.Nullable;
 @UtilityClass
 public class TaskUtil {
 
-    private static final String CLASS_NAME = "TaskUtil";
-    private static JavaPlugin plugin;
-    private static boolean shuttingDown = false;
+    private final String CLASS_NAME = "TaskUtil";
+    private JavaPlugin plugin;
+    private boolean shuttingDown = false;
 
-    public static void init(@NonNull JavaPlugin plugin) {
+    public void init(@NonNull JavaPlugin plugin) {
         if (TaskUtil.plugin == null) {
             TaskUtil.plugin = plugin;
             LoggerUtility.info(CLASS_NAME, "initialised");
@@ -23,14 +23,14 @@ public class TaskUtil {
         }
     }
 
-    public static void setShuttingDown(boolean shuttingDown) {
+    public void setShuttingDown(boolean shuttingDown) {
         TaskUtil.shuttingDown = shuttingDown;
         LoggerUtility.info(CLASS_NAME, "Plugin state is marked as: %s"
                 .formatted((shuttingDown ? "disabling" : "working")));
     }
 
     @Nullable
-    public static BukkitTask runTask(@NonNull Runnable task) {
+    public BukkitTask runTask(@NonNull Runnable task) {
         checkInitialized();
         if (shuttingDown) {
             task.run();
@@ -41,7 +41,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runTask(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
+    public BukkitTask runTask(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule a task. Running without any scheduler now");
             task.run();
@@ -52,7 +52,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runTaskAsync(@NonNull Runnable task) {
+    public BukkitTask runTaskAsync(@NonNull Runnable task) {
         checkInitialized();
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule an async task. Running without any scheduler now");
@@ -64,7 +64,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runTaskAsync(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
+    public BukkitTask runTaskAsync(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule an async task. Running without any scheduler now");
             task.run();
@@ -75,7 +75,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runTaskTimer(@NonNull Runnable task, long delay, long period) {
+    public BukkitTask runTaskTimer(@NonNull Runnable task, long delay, long period) {
         checkInitialized();
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule a timer task. Running without any scheduler now");
@@ -87,7 +87,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runTaskTimerAsync(@NonNull Runnable task, long delay, long period) {
+    public BukkitTask runTaskTimerAsync(@NonNull Runnable task, long delay, long period) {
         checkInitialized();
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule an async timer task. Running without any scheduler now");
@@ -99,7 +99,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runDelayedTask(@NonNull Runnable task, long delay) {
+    public BukkitTask runDelayedTask(@NonNull Runnable task, long delay) {
         checkInitialized();
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule a delayed task. Running without any scheduler now");
@@ -111,7 +111,7 @@ public class TaskUtil {
     }
 
     @Nullable
-    public static BukkitTask runDelayedTaskAsync(@NonNull Runnable task, long delay) {
+    public BukkitTask runDelayedTaskAsync(@NonNull Runnable task, long delay) {
         checkInitialized();
         if (shuttingDown) {
             LoggerUtility.warn(CLASS_NAME, "Failed to schedule an async delayed task. Running without any scheduler now");
@@ -122,7 +122,7 @@ public class TaskUtil {
         }
     }
 
-    private static void checkInitialized() {
+    private void checkInitialized() {
         if (plugin == null) {
             throw new IllegalStateException("TaskUtil has not been initialized. Call init() first.");
         }

@@ -9,9 +9,9 @@ import java.util.*;
 
 @UtilityClass
 class WorldStateManagerProvider {
-    private static WorldStateManager worldStateManager;
+    private WorldStateManager worldStateManager;
 
-    static WorldStateManager provide() {
+    WorldStateManager provide() {
         if (worldStateManager != null) return worldStateManager;
 
         Map<World, WorldState> worldStates = new HashMap<>();

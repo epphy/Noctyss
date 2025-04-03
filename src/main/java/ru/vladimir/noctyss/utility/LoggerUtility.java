@@ -14,11 +14,11 @@ import java.util.logging.Logger;
 @UtilityClass
 public class LoggerUtility {
 
-    private static final String CLASS_NAME = "LoggerUtility";
-    private static final String LOGGER_TEMPLATE = "%s: %s";
-    private static Logger logger;
+    private final String CLASS_NAME = "LoggerUtility";
+    private final String LOGGER_TEMPLATE = "%s: %s";
+    private Logger logger;
 
-    public static void init(@NonNull Logger logger) {
+    public void init(@NonNull Logger logger) {
         if (LoggerUtility.logger == null) {
             LoggerUtility.logger = logger;
             info(CLASS_NAME, "initialised");
@@ -27,7 +27,7 @@ public class LoggerUtility {
         }
     }
 
-    public static void setLevel(@NonNull Level level) {
+    public void setLevel(@NonNull Level level) {
         checkInitialized();
         logger.setLevel(level);
 
@@ -37,43 +37,43 @@ public class LoggerUtility {
         info(CLASS_NAME, "Logger level updated to %s".formatted(level));
     }
 
-    public static void debug(Object object, String debug) {
+    public void debug(Object object, String debug) {
         log(object, Level.FINE, debug);
     }
 
-    public static void info(Object object, String information) {
+    public void info(Object object, String information) {
         log(object, Level.INFO, information);
     }
 
-    public static void warn(Object object, String warning) {
+    public void warn(Object object, String warning) {
         log(object, Level.WARNING, warning);
     }
 
-    public static void error(Object object, String error) {
+    public void error(Object object, String error) {
         log(object, Level.SEVERE, error);
     }
 
-    public static void announce(String announcement) {
+    public void announce(String announcement) {
         checkInitialized();
         log(Level.INFO, announcement);
     }
 
-    public static void log(Object object, @NonNull Level level, String message) {
+    public void log(Object object, @NonNull Level level, String message) {
         log(level, LOGGER_TEMPLATE.formatted(getSender(object), message));
     }
 
-    private static void log(@NonNull Level level, String message) {
+    private void log(@NonNull Level level, String message) {
         checkInitialized();
         logger.log(level, message);
     }
 
-    private static String getSender(Object o) {
+    private String getSender(Object o) {
         if (o == null) return "UnknownSender";
         if (o instanceof String) return o.toString();
         return o.getClass().getSimpleName();
     }
 
-    private static void checkInitialized() {
+    private void checkInitialized() {
         if (logger == null) {
             throw new IllegalStateException("LoggerUtility has not been initialized. Call init() first.");
         }

@@ -10,26 +10,26 @@ import java.util.Map;
 
 @UtilityClass
 public class ConfigService {
-    private static final String CLASS_NAME = "ConfigService";
-    private static final Map<Configs, IConfig> CONFIGS = new EnumMap<>(Configs.class);
+    private final String CLASS_NAME = "ConfigService";
+    private final Map<Configs, IConfig> CONFIGS = new EnumMap<>(Configs.class);
 
     private enum Configs {
         GENERAL, SUDDEN_NIGHT, NIGHTMARE_NIGHT, MESSAGES
     }
 
-    public static void init(JavaPlugin plugin) {
+    public void init(JavaPlugin plugin) {
         register(plugin);
     }
 
-    public static void loadGeneralConfig() {
+    public void loadGeneralConfig() {
         getGeneralConfig().load();
     }
 
-    public static void loadOtherConfigs() {
+    public void loadOtherConfigs() {
         load();
     }
 
-    private static void register(JavaPlugin plugin) {
+    private void register(JavaPlugin plugin) {
         final GeneralConfig generalConfig = new GeneralConfig(plugin, plugin.getConfig());
         final MessageConfig messageConfig = new MessageConfig(plugin);
         final NightmareNightConfig nightmareNightConfig = new NightmareNightConfig(plugin);
@@ -43,31 +43,31 @@ public class ConfigService {
         LoggerUtility.info(CLASS_NAME, "All configs have been registered");
     }
 
-    private static void load() {
+    private void load() {
         CONFIGS.values().forEach(IConfig::load);
         LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
     }
 
-    public static void reload(GlobalEventScheduler globalEventScheduler) {
+    public void reload(GlobalEventScheduler globalEventScheduler) {
         CONFIGS.values().forEach(IConfig::reload);
         globalEventScheduler.stop();
         globalEventScheduler.start();
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 
-    public static GeneralConfig getGeneralConfig() {
+    public GeneralConfig getGeneralConfig() {
         return (GeneralConfig) CONFIGS.get(Configs.GENERAL);
     }
 
-    public static MessageConfig getMessageConfig() {
+    public MessageConfig getMessageConfig() {
         return (MessageConfig) CONFIGS.get(Configs.MESSAGES);
     }
 
-    public static NightmareNightConfig getNightmareNightConfig() {
+    public NightmareNightConfig getNightmareNightConfig() {
         return (NightmareNightConfig) CONFIGS.get(Configs.NIGHTMARE_NIGHT);
     }
 
-    public static SuddenNightConfig getSuddenNightConfig() {
+    public SuddenNightConfig getSuddenNightConfig() {
         return (SuddenNightConfig) CONFIGS.get(Configs.SUDDEN_NIGHT);
     }
 }

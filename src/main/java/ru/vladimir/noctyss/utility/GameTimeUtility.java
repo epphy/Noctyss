@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -19,12 +20,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @UtilityClass
 public class GameTimeUtility {
 
-    private static final String CLASS_NAME = "GameTimeUtility";
-    private static final long FULL_DAY_DURATION_TICKS = 24000L;
-    private static final long DAY_END_TIME_TICKS = 10000L;
-    private static final long NIGHT_START_TIME_TICKS = 13000L;
-    private static final long[] MIDNIGHT_TICKS_TIME_RANGE = {17500L, 18500L};
-    private static final long DYNAMIC_TIME_CHANGE_TICKS = 5L;
+    private final String CLASS_NAME = "GameTimeUtility";
+    private final long FULL_DAY_DURATION_TICKS = 24000L;
+    private final long DAY_END_TIME_TICKS = 10000L;
+    private final long NIGHT_START_TIME_TICKS = 13000L;
+    private final long[] MIDNIGHT_TICKS_TIME_RANGE = {17500L, 18500L};
+    private final long DYNAMIC_TIME_CHANGE_TICKS = 5L;
 
     /**
      * Checks if it is daytime in the given world.
@@ -32,7 +33,7 @@ public class GameTimeUtility {
      * @param world the {@code World} to check the time of day
      * @return {@code true} if it is day, {@code false} if it is night
      */
-    public static boolean isDay(@NonNull World world) {
+    public boolean isDay(@NonNull World world) {
         return world.getTime() <= DAY_END_TIME_TICKS;
     }
 
@@ -42,7 +43,7 @@ public class GameTimeUtility {
      * @param world the {@code World} to check the time of day
      * @return {@code true} if it is night, {@code false} if it is day
      */
-    public static boolean isNight(@NonNull World world) {
+    public boolean isNight(@NonNull World world) {
         return world.getTime() >= NIGHT_START_TIME_TICKS;
     }
 
@@ -52,7 +53,7 @@ public class GameTimeUtility {
      * @param world the {@code World} to check the time of day
      * @return {@code true} if the time is within the defined midnight range, otherwise {@code false}
      */
-    public static boolean isMidnight(@NonNull World world) {
+    public boolean isMidnight(@NonNull World world) {
         long worldTime = world.getTime();
         return worldTime >= MIDNIGHT_TICKS_TIME_RANGE[0] && worldTime <= MIDNIGHT_TICKS_TIME_RANGE[1];
     }
@@ -64,7 +65,7 @@ public class GameTimeUtility {
      * @param world the {@code World} whose time is to be updated
      * @param newTime the new time in ticks to set in the world
      */
-    public static void setTime(@NonNull World world, long newTime) {
+    public void setTime(@NonNull World world, long newTime) {
         long updatedWorldTime = getUpdatedTime(world, newTime);
         TaskUtil.runTask(() -> world.setFullTime(updatedWorldTime));
     }
@@ -77,7 +78,7 @@ public class GameTimeUtility {
      * @param newTime the target time in ticks to transition to
      * @param duration the duration in ticks over which the transition should happen
      */
-    public static void setTimeDynamically(@NonNull World world, long newTime, long duration) {
+    public void setTimeDynamically(@NonNull World world, long newTime, long duration) {
         long worldTime = world.getTime();
         long difference = newTime - worldTime;
 
@@ -93,13 +94,20 @@ public class GameTimeUtility {
         final AtomicLong timeChangeAccumulator = new AtomicLong();
         final AtomicInteger taskId = new AtomicInteger();
 
-        taskId.set(TaskUtil.runTaskTimer(() -> {
+        final BukkitTask bukkitTask = TaskUtil.runTaskTimer(() -> {
             setTime(world, worldTime + timeChangeAccumulator.addAndGet(timeChange));
             if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= duration) {
                 setTime(world, newTime);
                 Bukkit.getScheduler().cancelTask(taskId.get());
             }
-        }, 0L, DYNAMIC_TIME_CHANGE_TICKS).getTaskId());
+        }, 0L, DYNAMIC_TIME_CHANGE_TICKS);
+
+        if (bukkitTask == null) {
+            LoggerUtility.warn(CLASS_NAME, "Task is null");
+            return;
+        }
+
+        taskId.set(bukkitTask.getTaskId());
     }
 
     /**
@@ -110,7 +118,7 @@ public class GameTimeUtility {
      * @param newTime the requested time in ticks
      * @return the adjusted full time in ticks
      */
-    private static long getUpdatedTime(@NonNull World world, long newTime) {
+    public long getUpdatedTime(@NonNull World world, long newTime) {
         long worldFullTime = world.getFullTime();
         long dayNumber = worldFullTime / FULL_DAY_DURATION_TICKS;
         return dayNumber * FULL_DAY_DURATION_TICKS + newTime;
@@ -122,7 +130,7 @@ public class GameTimeUtility {
      * @param world the {@code World} to get the current day number from
      * @return the current day number
      */
-    public static long getDay(@NonNull World world) {
+    public long getDay(@NonNull World world) {
         return world.getFullTime() / FULL_DAY_DURATION_TICKS;
     }
 }
