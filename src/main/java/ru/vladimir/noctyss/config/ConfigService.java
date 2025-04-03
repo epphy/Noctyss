@@ -1,23 +1,42 @@
 package ru.vladimir.noctyss.config;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.EnumMap;
 import java.util.Map;
 
+// ToDo: Deal with the conflict between EventAPI, MessageConfig, and GeneralConfig loading.
+/**
+ * A utility class that manages the registration, loading, and reloading of
+ * various configuration types within the application. The configurations are
+ * stored in an internal map and accessed or modified as needed.
+ * <p>
+ * This class provides methods to initialize, load, and reload configurations
+ * such as general settings, message configurations, and specific event-related
+ * configurations. The `ConfigService` class ensures configurations are properly
+ * loaded and validated before usage.
+ * <p>
+ * The configurations are represented by implementations of the `IConfig` interface.
+ * <p>
+ * Lastly, it's important to notice that currently to load the plugin properly,
+ * general config should be loaded separately and only then we load the rest.
+ * The reason is we need {@code EventAPI} for {@code MessageConfig} while
+ * {@code EventAPI} needs {@code GeneralConfig} to be loaded. Hence, we have
+ * a little problem here which should be addressed later on.
+ */
 @UtilityClass
 public class ConfigService {
     private final String CLASS_NAME = "ConfigService";
-    private final Map<Configs, IConfig> CONFIGS = new EnumMap<>(Configs.class);
+    private final Map<ConfigType, IConfig> CONFIGS = new EnumMap<>(ConfigType.class);
 
-    private enum Configs {
+    private enum ConfigType {
         GENERAL, SUDDEN_NIGHT, NIGHTMARE_NIGHT, MESSAGES
     }
 
-    public void init(JavaPlugin plugin) {
+    public void init(@NonNull JavaPlugin plugin) {
         register(plugin);
     }
 
@@ -25,49 +44,58 @@ public class ConfigService {
         getGeneralConfig().load();
     }
 
-    public void loadOtherConfigs() {
-        load();
+    public void loadOtherConfigs(@NonNull JavaPlugin plugin) {
+        load(plugin);
     }
 
-    private void register(JavaPlugin plugin) {
-        final GeneralConfig generalConfig = new GeneralConfig(plugin, plugin.getConfig());
-        final MessageConfig messageConfig = new MessageConfig(plugin);
-        final NightmareNightConfig nightmareNightConfig = new NightmareNightConfig(plugin);
-        final SuddenNightConfig suddenNightConfig = new SuddenNightConfig(plugin);
-
-        CONFIGS.put(Configs.GENERAL, generalConfig);
-        CONFIGS.put(Configs.MESSAGES, messageConfig);
-        CONFIGS.put(Configs.NIGHTMARE_NIGHT, nightmareNightConfig);
-        CONFIGS.put(Configs.SUDDEN_NIGHT, suddenNightConfig);
-
-        LoggerUtility.info(CLASS_NAME, "All configs have been registered");
+    private void register(@NonNull JavaPlugin plugin) {
+        CONFIGS.put(ConfigType.GENERAL, new GeneralConfig(plugin, plugin.getConfig()));
+        CONFIGS.put(ConfigType.MESSAGES, new MessageConfig(plugin));
+        CONFIGS.put(ConfigType.NIGHTMARE_NIGHT, new NightmareNightConfig(plugin));
+        CONFIGS.put(ConfigType.SUDDEN_NIGHT, new SuddenNightConfig(plugin));
     }
 
-    private void load() {
+    private void load(@NonNull JavaPlugin plugin) {
+        plugin.saveDefaultConfig();
         CONFIGS.values().forEach(IConfig::load);
         LoggerUtility.info(CLASS_NAME, "Configs have been loaded");
     }
 
-    public void reload(GlobalEventScheduler globalEventScheduler) {
+    public void reload() {
         CONFIGS.values().forEach(IConfig::reload);
-        globalEventScheduler.stop();
-        globalEventScheduler.start();
         LoggerUtility.info(CLASS_NAME, "Configs have been reloaded");
     }
 
+    @NonNull
     public GeneralConfig getGeneralConfig() {
-        return (GeneralConfig) CONFIGS.get(Configs.GENERAL);
+        return getConfig(ConfigType.GENERAL, GeneralConfig.class);
     }
 
+    @NonNull
     public MessageConfig getMessageConfig() {
-        return (MessageConfig) CONFIGS.get(Configs.MESSAGES);
+        return getConfig(ConfigType.MESSAGES, MessageConfig.class);
     }
 
+    @NonNull
     public NightmareNightConfig getNightmareNightConfig() {
-        return (NightmareNightConfig) CONFIGS.get(Configs.NIGHTMARE_NIGHT);
+        return getConfig(ConfigType.NIGHTMARE_NIGHT, NightmareNightConfig.class);
     }
 
+    @NonNull
     public SuddenNightConfig getSuddenNightConfig() {
-        return (SuddenNightConfig) CONFIGS.get(Configs.SUDDEN_NIGHT);
+        return getConfig(ConfigType.SUDDEN_NIGHT, SuddenNightConfig.class);
+    }
+
+    @NonNull
+    @SuppressWarnings("unchecked")
+    private <T extends IConfig> T getConfig(@NonNull ConfigType configType, @NonNull Class<T> clazz) {
+        IConfig config = CONFIGS.get(configType);
+
+        if (!(clazz.isInstance(config))) {
+            throw new IllegalStateException("Config '%s' is not of expected type: %s"
+                    .formatted(config, clazz.getSimpleName()));
+        }
+
+        return (T) config;
     }
 }

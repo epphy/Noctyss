@@ -1,5 +1,6 @@
 package ru.vladimir.noctyss.event.modules.notification.storage;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,11 +12,11 @@ import java.util.*;
 
 @UtilityClass
 public class PlayerNotificationService {
-    private static PlayerNotificationStorage storage;
-    private static PlayerNotificationSerializer serializer;
-    private static Map<World, EnumMap<EventType, Map<String, Set<UUID>>>> data = new HashMap<>();
+    private PlayerNotificationStorage storage;
+    private PlayerNotificationSerializer serializer;
+    private Map<World, EnumMap<EventType, Map<String, Set<UUID>>>> data = new HashMap<>();
 
-    public static void init(JavaPlugin plugin) {
+    public void init(@NonNull JavaPlugin plugin) {
         if (storage == null || serializer == null) {
             loadInstances(plugin);
             storage.save();
@@ -26,9 +27,15 @@ public class PlayerNotificationService {
         }
     }
 
-    private static void loadInstances(JavaPlugin plugin) {
+    private static void loadInstances(@NonNull JavaPlugin plugin) {
         storage = new PlayerNotificationStorage(plugin);
         serializer = new PlayerNotificationSerializer();
+    }
+
+    public void unload() {
+        storage = null;
+        serializer = null;
+        data = null;
     }
 
     public static void updateStorage() {

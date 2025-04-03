@@ -27,6 +27,10 @@ public class LoggerUtility {
         }
     }
 
+    public void unload() {
+        logger = null;
+    }
+
     public void setLevel(@NonNull Level level) {
         checkInitialized();
         logger.setLevel(level);

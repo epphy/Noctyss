@@ -53,7 +53,7 @@ public final class Noctyss extends JavaPlugin {
         ConfigService.init(this);
         ConfigService.loadGeneralConfig();
         EventAPI.init();
-        ConfigService.loadOtherConfigs();
+        ConfigService.loadOtherConfigs(this);
     }
 
     private void configureLogger() {
@@ -81,7 +81,7 @@ public final class Noctyss extends JavaPlugin {
         }
 
         final NoctyssCommand commandHandler = new NoctyssCommand(
-                this, getServer().getPluginManager(), eventManager, globalEventScheduler);
+                this, this, getServer().getPluginManager(), eventManager, globalEventScheduler);
         commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);
@@ -136,6 +136,18 @@ public final class Noctyss extends JavaPlugin {
 
     /*
 
+    RELOAD LOGIC
+
+     */
+
+    public void onReload() {
+        ConfigService.reload();
+        globalEventScheduler.stop();
+        globalEventScheduler.start();
+    }
+
+    /*
+
     SHUTDOWN LOGIC
 
      */
@@ -143,24 +155,22 @@ public final class Noctyss extends JavaPlugin {
     @Override
     public void onDisable() {
         TaskUtil.setShuttingDown(true);
-        stopScheduler();
         stopAllEvents();
-        unloadNecessaryUtilities();
         shutdownMessage();
-    }
-
-    private void stopScheduler() {
-        if (globalEventScheduler != null) {
-            globalEventScheduler.stop();
-        }
+        unloadUtilities();
     }
 
     private void stopAllEvents() {
+        globalEventScheduler.stop();
         eventManager.stopAllEvents();
     }
 
-    private void unloadNecessaryUtilities() {
+    private void unloadUtilities() {
+        EventAPI.unload();
         PlayerNotificationService.updateStorage();
+        PlayerNotificationService.unload();
+        TaskUtil.unload();
+        LoggerUtility.unload();
     }
 
     private void shutdownMessage() {

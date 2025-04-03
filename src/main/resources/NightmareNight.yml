@@ -7,24 +7,11 @@ settings:
   event-chance: 5
   check-frequency: 100 # How often should be checked for night
 
-  effect:
-    enabled: true
-    give-effect-frequency: 200
-    effects: ["darkness", "blindness"]
-
-  sound:
-    enabled: true
-    play-sound-frequency: 1200
-    sounds: ["ambient.cave"]
+  light:
+    darkness: false # Determines the approach to darken the screen. If true, using darkness effect; changing light otherwise.
 
   time:
-    enabled: true
     time-modification-frequency: 100 # Too high (like above 1,000) will lead to unexpected behaviour
-    night-length: 22000 # Default night duration: 11,000 ( 24,000 - 13,000 )
-
-  spawnrate:
-    enabled: true
-    monster-multiplier: 2
 
   notification:
     enabled: true

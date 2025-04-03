@@ -23,6 +23,10 @@ public class TaskUtil {
         }
     }
 
+    public void unload() {
+        plugin = null;
+    }
+
     public void setShuttingDown(boolean shuttingDown) {
         TaskUtil.shuttingDown = shuttingDown;
         LoggerUtility.info(CLASS_NAME, "Plugin state is marked as: %s"

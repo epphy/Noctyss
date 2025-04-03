@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ru.vladimir.noctyss.Noctyss;
 import ru.vladimir.noctyss.command.list.ActiveEventListCommand;
 import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.command.list.StartEventCommand;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class NoctyssCommand extends SubCommandManager implements TabExecutor {
+    private final Noctyss noctyss;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
@@ -77,7 +79,7 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
         );
 
         addSubCommand(
-                new ReloadConfigCommand(globalEventScheduler),
+                new ReloadConfigCommand(noctyss),
                 "reload",
                 new Permission("noctyss.reload")
         );

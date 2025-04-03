@@ -98,7 +98,7 @@ public final class SuddenNightInstance implements EventInstance {
                         world,
                         EVENT_TYPE)
                         .addAbruptNight(
-                                ConfigService.getSuddenNightConfig().getNightTimeModifyFrequency(),
+                                ConfigService.getSuddenNightConfig().getNightModifyFrequency(),
                                 ConfigService.getSuddenNightConfig().getNightLength(),
                                 new Random())
                         .build()
@@ -111,7 +111,7 @@ public final class SuddenNightInstance implements EventInstance {
         soundServiceBuilder.addSoundMuter(
                 ConfigService.getSuddenNightConfig().getDisallowedSounds(),
                 ConfigService.getSuddenNightConfig().getAllowedSounds(),
-                ConfigService.getSuddenNightConfig().getRewindSound(),
+                ConfigService.getSuddenNightConfig().getR(),
                 ConfigService.getSuddenNightConfig().getAmbientStopFrequency());
 
         if (ConfigService.getSuddenNightConfig().isMusicEnabled()) {

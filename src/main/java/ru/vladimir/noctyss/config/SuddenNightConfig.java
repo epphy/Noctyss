@@ -5,6 +5,7 @@ import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,29 +26,46 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public final class SuddenNightConfig implements IConfig {
     private static final String FILE_NAME = "SuddenNight.yml";
+
+    // Sections
     private static final String SETTINGS = "settings.";
     private static final String LIGHT_SETTINGS = SETTINGS + "light.";
     private static final String SOUND_SETTINGS = SETTINGS + "sound.";
     private static final String NOTIFICATION_SETTINGS = SETTINGS + "notification.";
-    private final JavaPlugin plugin;
+
+    // Dependency
+    private final @NonNull JavaPlugin plugin;
+
+    // Configs
     private File file;
     private FileConfiguration fileConfig;
-    private final long[] ambientPlayFrequencyTicks = new long[] {2400L, 3600L};
-    private final long[] ambientPlayDelayTicks = new long[] {200L, 1200L};
-    private final List<Sound> allowedSounds = new ArrayList<>();
-    private final Set<Sound> disallowedSounds = new HashSet<>();
-    private final Sound rewindSound = Sound.UI_TOAST_IN;
-    private final long ambientStopFrequency = 20L;
-    private final long nightTimeModifyFrequency = 100L;
-    private final long[] nightLength = new long[] {2400L, 8400L};
-    private boolean isEventEnabled;
+
+    // General
+    private boolean eventEnabled;
     private double eventChance;
     private long checkFrequencyTicks;
     private long cooldownDays;
-    private boolean isMusicEnabled;
-    private boolean isLightDimEnabled;
-    private boolean isEndToastEnabled;
-    private boolean isEndToastOneTime;
+
+    // Sound
+    private final long[] ambientPlayFrequencyTicks = {2400L, 3600L};
+    private final long[] ambientPlayDelayTicks = {200L, 1200L};
+    private final long ambientStopFrequency = 20L;
+    private final Sound rewindSound = Sound.UI_TOAST_IN;
+
+    private boolean musicEnabled;
+    private final List<Sound> allowedSounds = new ArrayList<>();
+    private final Set<Sound> disallowedSounds = new HashSet<>();
+
+    // Time
+    private final long nightModifyFrequency = 100L;
+    private final long[] nightLength = {2400L, 8400L};
+
+    // Light
+    private boolean lightDimEnabled;
+
+    // Notification
+    private boolean endToastEnabled;
+    private boolean endToastOneTime;
     private ToastNotification endToast;
 
     @Override
@@ -77,15 +95,14 @@ public final class SuddenNightConfig implements IConfig {
         parseNotification();
     }
 
-//    INTERNAL
-
+    //    INTERNAL
     private void loadInternalSettings() {
-        final Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
+        Registry<@NotNull Sound> soundRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT);
         loadAllowedSounds(soundRegistry);
         loadDisallowedSounds(soundRegistry);
     }
 
-    private void loadAllowedSounds(Registry<@NotNull Sound> soundRegistry) {
+    private void loadAllowedSounds(@NotNull Registry<@NotNull Sound> soundRegistry) {
         allowedSounds.addAll(soundRegistry.stream()
                 .map(soundRegistry::getKey)
                 .filter(Objects::nonNull)
@@ -98,16 +115,11 @@ public final class SuddenNightConfig implements IConfig {
         );
     }
 
-    private boolean isAllowedSound(String soundName) {
+    private boolean isAllowedSound(@NotNull String soundName) {
         return soundName.startsWith("minecraft:music.nether");
     }
 
-    private void loadDisallowedSounds(Registry<@NotNull Sound> soundRegistry) {
-        loadSoundsFromRegistry(soundRegistry);
-        loadHardcodedSounds();
-    }
-
-    private void loadSoundsFromRegistry(Registry<@NotNull Sound> soundRegistry) {
+    private void loadDisallowedSounds(@NotNull Registry<@NotNull Sound> soundRegistry) {
         disallowedSounds.addAll(soundRegistry.stream()
                 .map(soundRegistry::getKey)
                 .filter(Objects::nonNull)
@@ -117,79 +129,84 @@ public final class SuddenNightConfig implements IConfig {
                 .filter(Objects::nonNull)
                 .map(soundRegistry::get)
                 .collect(Collectors.toSet()));
+        addHardcodedDisallowedSounds();
     }
 
-    private boolean isDisallowedSound(String soundName) {
+    private boolean isDisallowedSound(@NotNull String soundName) {
         return soundName.startsWith("minecraft:music_disc") ||
-                soundName.startsWith("minecraft:music.overworld");
+               soundName.startsWith("minecraft:music.overworld");
     }
 
-        private void loadHardcodedSounds() {
+    private void addHardcodedDisallowedSounds() {
         disallowedSounds.addAll(Set.of(
                 Sound.MUSIC_CREATIVE, Sound.MUSIC_GAME, Sound.MUSIC_CREDITS, Sound.MUSIC_DRAGON,
-                Sound.MUSIC_END, Sound.MUSIC_MENU, Sound.MUSIC_UNDER_WATER));
+                Sound.MUSIC_END, Sound.MUSIC_MENU, Sound.MUSIC_UNDER_WATER)
+        );
     }
 
-//    EXTERNAL
-
+    //    EXTERNAL
     private void parseGeneral() {
-        isEventEnabled = fileConfig.getBoolean(SETTINGS + "enabled", true);
+        eventEnabled = fileConfig.getBoolean(SETTINGS + "enabled", true);
         eventChance = fileConfig.getDouble(SETTINGS + "event-chance", 0.05);
         checkFrequencyTicks = fileConfig.getInt(SETTINGS + "check-frequency", 3000);
         cooldownDays = fileConfig.getInt(SETTINGS + "cooldown-in-days", 10);
     }
 
     private void parseLight() {
-        isLightDimEnabled = fileConfig.getBoolean(LIGHT_SETTINGS + "dim-light", true);
+        lightDimEnabled = fileConfig.getBoolean(LIGHT_SETTINGS + "dim-light", true);
     }
 
     private void parseSound() {
-        isMusicEnabled = fileConfig.getBoolean(SOUND_SETTINGS + "music", true);
+        musicEnabled = fileConfig.getBoolean(SOUND_SETTINGS + "music", true);
     }
 
     private void parseNotification() {
-        parseEndToastNotification();
-    }
-
-    private void parseEndToastNotification() {
-        final ConfigurationSection section = fileConfig.getConfigurationSection(NOTIFICATION_SETTINGS + "end");
+        ConfigurationSection section = fileConfig.getConfigurationSection(NOTIFICATION_SETTINGS + "end");
         if (section == null) {
-            LoggerUtility.warn(this, "Failed to parse end notification because its section is null");
-            isEndToastEnabled = true;
-            isEndToastOneTime = true;
+            LoggerUtility.warn(this, "End notification section is missing, using defaults.");
+            endToastEnabled = true;
+            endToastOneTime = true;
             endToast = new ToastNotification(Material.CLOCK, "Did it seem to me?", AdvancementDisplay.AdvancementFrame.TASK);
-        } else {
-            isEndToastEnabled = section.getBoolean("enabled", true);
-            isEndToastOneTime = section.getBoolean("one-time", true);
-            endToast = getToastNotification(section);
+            return;
         }
+        endToastEnabled = section.getBoolean("enabled", true);
+        endToastOneTime = section.getBoolean("one-time", true);
+        endToast = getToastNotification(section);
     }
 
     @NotNull
-    private ToastNotification getToastNotification(ConfigurationSection section) {
-        final Material icon = getIcon(section.getString("icon", "clock"));
-        final String text = section.getString("text", "Did it seem to me?");
-        final AdvancementDisplay.AdvancementFrame frame = getFrame(section.getString("frame", "task"));
+    private ToastNotification getToastNotification(@NotNull ConfigurationSection section) {
+        Material icon = getIcon(section.getString("icon", "clock"), Material.CLOCK);
+        String text = section.getString("text", "Did it seem to me?");
+        AdvancementDisplay.AdvancementFrame frame = getFrame(section.getString("frame", "task"), AdvancementDisplay.AdvancementFrame.TASK);
         return new ToastNotification(icon, text, frame);
     }
 
     @NotNull
-    private Material getIcon(String materialName) {
+    private Material getIcon(@NotNull String materialName, @NotNull Material defaultMaterial) {
         try {
+            if (materialName.isBlank()) {
+                LoggerUtility.warn(this, "Invalid icon for end toast: empty string");
+                return defaultMaterial;
+            }
             return Material.valueOf(materialName.toUpperCase().trim());
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             LoggerUtility.warn(this, "Invalid icon for end toast: %s".formatted(materialName));
-            return Material.CLOCK;
+            return defaultMaterial;
         }
     }
 
     @NotNull
-    private AdvancementDisplay.AdvancementFrame getFrame(String frameName) {
+    private AdvancementDisplay.AdvancementFrame getFrame(@NotNull String frameName, @NotNull AdvancementDisplay.AdvancementFrame defaultFrame) {
         try {
+            if (frameName.isBlank()) {
+                LoggerUtility.warn(this, "Invalid frame for end toast: empty string");
+                return defaultFrame;
+            }
             return AdvancementDisplay.AdvancementFrame.valueOf(frameName.toUpperCase().trim());
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             LoggerUtility.warn(this, "Invalid frame for end toast: %s".formatted(frameName));
-            return AdvancementDisplay.AdvancementFrame.TASK;
+            return defaultFrame;
         }
     }
 

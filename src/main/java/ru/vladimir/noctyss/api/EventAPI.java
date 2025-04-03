@@ -41,6 +41,19 @@ public class EventAPI {
         }
     }
 
+    /**
+     * Unloads the current state of the EventAPI by clearing its {@code WorldStateManager}.
+     * This method is used to release resources and reset the system state associated
+     * with the {@code WorldStateManager}.
+     * <p>
+     * If the {@code WorldStateManager} is not null, it is set to {@code null}, and a log entry
+     * indicating that the EventAPI has been unloaded is recorded.
+     */
+    public void unload() {
+        worldStateManager = null;
+        LoggerUtility.info(CLASS_NAME, "unloaded");
+    }
+
     // ================================
     // ACTIVE EVENTS
     // ================================
