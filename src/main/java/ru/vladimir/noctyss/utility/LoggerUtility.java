@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.utility;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,32 +15,8 @@ import java.util.logging.Logger;
 @UtilityClass
 public class LoggerUtility {
 
-    private final String CLASS_NAME = "LoggerUtility";
+    private final String LOGGER_NAME = "Noctyss";
     private final String LOGGER_TEMPLATE = "%s: %s";
-    private Logger logger;
-
-    /**
-     * Initializes the LoggerUtility with a provided logger. If the LoggerUtility has
-     * already been initialized, this method logs that it is already initialized and does not override the current logger.
-     *
-     * @param logger the {@code Logger} instance to be set as the internal logger for the utility.
-     */
-    public void init(@NonNull Logger logger) {
-        if (LoggerUtility.logger == null) {
-            LoggerUtility.logger = logger;
-            info(CLASS_NAME, "initialised");
-        } else {
-            info(CLASS_NAME, "already initialised");
-        }
-    }
-
-    /**
-     * Unloads the LoggerUtility by setting the internal logger instance to null.
-     * This method effectively renders the utility inactive until re-initialized.
-     */
-    public void unload() {
-        logger = null;
-    }
 
     /**
      * Sets the logging level for the internal logger and its parent handlers.
@@ -49,12 +26,14 @@ public class LoggerUtility {
      */
     public void setLevel(@NonNull Level level) {
         checkInitialized();
+        Logger logger = Logger.getLogger(LOGGER_NAME);
         logger.setLevel(level);
 
-        if (logger.getParent().getHandlers().length > 0) {
-            logger.getParent().getHandlers()[0].setLevel(level);
+        Handler[] handlers = logger.getParent().getHandlers();
+        if (handlers.length > 0) {
+            handlers[0].setLevel(level);
         }
-        info(CLASS_NAME, "Logger level updated to %s".formatted(level));
+        info("LoggerUtility", "Logger level updated to %s".formatted(level));
     }
 
     /**
@@ -133,7 +112,7 @@ public class LoggerUtility {
      */
     private void log(@NonNull Level level, @NonNull String message) {
         checkInitialized();
-        logger.log(level, message);
+        Logger.getLogger(LOGGER_NAME).log(level, message);
     }
 
     /**
@@ -161,7 +140,7 @@ public class LoggerUtility {
      * @throws IllegalStateException if the logger has not been initialized via the {@code init(Logger logger)} method.
      */
     private void checkInitialized() {
-        if (logger == null) {
+        if (Logger.getLogger(LOGGER_NAME) == null) {
             throw new IllegalStateException("LoggerUtility has not been initialized. Call init() first.");
         }
     }

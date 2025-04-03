@@ -46,14 +46,10 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void loadUtilities() {
-        LoggerUtility.init(getLogger());
-        TaskUtil.init(this);
         PlayerNotificationService.init(this);
         NotificationManager.init();
         ConfigService.init(this);
-        ConfigService.loadGeneralConfig();
-        EventAPI.init();
-        ConfigService.loadOtherConfigs(this);
+        ConfigService.init(this);
     }
 
     private void configureLogger() {
@@ -88,7 +84,7 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void checkUpdateVersion() {
-        TaskUtil.runTaskAsync(this, () -> {
+        TaskUtil.getInstance().runTaskAsync(this, () -> {
             LoggerUtility.info(this, "Checking the latest version...");
 
             final String latestVersion = getLatestVersion();
@@ -154,7 +150,7 @@ public final class Noctyss extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        TaskUtil.setShuttingDown(true);
+        TaskUtil.getInstance().setShuttingDown(true);
         stopAllEvents();
         shutdownMessage();
         unloadUtilities();
@@ -167,10 +163,8 @@ public final class Noctyss extends JavaPlugin {
 
     private void unloadUtilities() {
         EventAPI.unload();
-        PlayerNotificationService.updateStorage();
         PlayerNotificationService.unload();
         TaskUtil.unload();
-        LoggerUtility.unload();
     }
 
     private void shutdownMessage() {

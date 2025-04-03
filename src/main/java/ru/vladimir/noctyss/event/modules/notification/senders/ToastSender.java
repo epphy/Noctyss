@@ -39,12 +39,12 @@ final class ToastSender {
     }
 
     private Set<UUID> getExcludedPlayerIds(World world, EventType eventType) {
-        return PlayerNotificationService.getExcludedPlayersFor(
+        return PlayerNotificationService.getInstance().getExcludedPlayerIdsFor(
                 world, eventType, getClass().getSimpleName());
     }
 
     private void storeNewExcludedPlayerIds(World world, EventType eventType, String className, Set<UUID> playerIds) {
-        PlayerNotificationService.addNewExcludedPlayerIds(
+        PlayerNotificationService.getInstance().addNewExcludedPlayerIds(
                 world, eventType, className, playerIds);
     }
 }

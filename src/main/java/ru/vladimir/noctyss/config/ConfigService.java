@@ -38,13 +38,6 @@ public class ConfigService {
 
     public void init(@NonNull JavaPlugin plugin) {
         register(plugin);
-    }
-
-    public void loadGeneralConfig() {
-        getGeneralConfig().load();
-    }
-
-    public void loadOtherConfigs(@NonNull JavaPlugin plugin) {
         load(plugin);
     }
 

@@ -20,10 +20,12 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
             {PacketType.Play.Server.LIGHT_UPDATE, PacketType.Play.Server.MAP_CHUNK};
     private static final long DELAY = 10L;
     private static final byte LIGHT_LEVEL = 0x01;
+    private final JavaPlugin pluginInstance;
     private final World world;
 
     public LightingPacketModifier(JavaPlugin pluginInstance, World world) {
         super(pluginInstance, ListenerPriority.HIGH, LIGHT_PACKET_TYPES);
+        this.pluginInstance = pluginInstance;
         this.world = world;
     }
 
@@ -81,7 +83,7 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
     }
 
     private void refreshChunks() {
-        TaskUtil.runDelayedTask(() -> {
+        TaskUtil.getInstance().runDelayedTask(pluginInstance, ()  -> {
             for (final Player player : world.getPlayers()) {
                 for (final Chunk chunk : player.getSentChunks()) {
                     refreshChunk(chunk);
@@ -91,6 +93,6 @@ public final class LightingPacketModifier extends PacketAdapter implements Envir
     }
 
     private void refreshChunk(Chunk chunk) {
-        TaskUtil.runTask(() -> world.refreshChunk(chunk.getX(), chunk.getZ()));
+        TaskUtil.getInstance().runTask(pluginInstance, () -> world.refreshChunk(chunk.getX(), chunk.getZ()));
     }
 }
