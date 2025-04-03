@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,9 +66,9 @@ public class GameTimeUtility {
      * @param world the {@code World} whose time is to be updated
      * @param newTime the new time in ticks to set in the world
      */
-    public void setTime(@NonNull World world, long newTime) {
+    public void setTime(@NonNull JavaPlugin plugin, @NonNull World world, long newTime) {
         long updatedWorldTime = getUpdatedTime(world, newTime);
-        TaskUtil.runTask(() -> world.setFullTime(updatedWorldTime));
+        TaskUtil.getInstance().runTask(plugin, () -> world.setFullTime(updatedWorldTime));
     }
 
     /**
@@ -78,7 +79,7 @@ public class GameTimeUtility {
      * @param newTime the target time in ticks to transition to
      * @param duration the duration in ticks over which the transition should happen
      */
-    public void setTimeDynamically(@NonNull World world, long newTime, long duration) {
+    public void setTimeDynamically(@NonNull JavaPlugin plugin, @NonNull World world, long newTime, long duration) {
         long worldTime = world.getTime();
         long difference = newTime - worldTime;
 
@@ -94,10 +95,10 @@ public class GameTimeUtility {
         final AtomicLong timeChangeAccumulator = new AtomicLong();
         final AtomicInteger taskId = new AtomicInteger();
 
-        final BukkitTask bukkitTask = TaskUtil.runTaskTimer(() -> {
-            setTime(world, worldTime + timeChangeAccumulator.addAndGet(timeChange));
+        final BukkitTask bukkitTask = TaskUtil.getInstance().runTaskTimer(plugin, () -> {
+            setTime(plugin, world, worldTime + timeChangeAccumulator.addAndGet(timeChange));
             if (elapsedTime.addAndGet(DYNAMIC_TIME_CHANGE_TICKS) >= duration) {
-                setTime(world, newTime);
+                setTime(plugin, world, newTime);
                 Bukkit.getScheduler().cancelTask(taskId.get());
             }
         }, 0L, DYNAMIC_TIME_CHANGE_TICKS);

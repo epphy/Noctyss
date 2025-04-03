@@ -55,7 +55,7 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
 
         if (world.getTime() != MIDNIGHT_TIME) {
             setDoDaylightCycle(false);
-            GameTimeUtility.setTime(world, MIDNIGHT_TIME);
+            GameTimeUtility.setTime(plugin, world, MIDNIGHT_TIME);
         }
     }
 
@@ -70,11 +70,11 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
             setDoDaylightCycle(true);
-            GameTimeUtility.setTime(world, originalWorldTime);
+            GameTimeUtility.setTime(plugin, world, originalWorldTime);
         }
     }
 
     private void setDoDaylightCycle(boolean value) {
-        TaskUtil.runTask(plugin, () -> world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, value));
+        TaskUtil.getInstance().runTask(plugin, () -> world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, value));
     }
 }

@@ -7,7 +7,8 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.api.EventAPI;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
+import ru.vladimir.noctyss.config.NightmareNightConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventScheduler;
@@ -28,6 +29,8 @@ public final class NightmareNightScheduler implements EventScheduler {
     private final ProtocolManager protocolManager;
     private final PluginManager pluginManager;
     private final EventManager eventManager;
+    private final NightmareNightConfig config;
+    private final MessageConfig messageConfig;
     private final Random random;
     private final Set<World> checkedWorlds = new HashSet<>();
     private List<World> worlds;
@@ -65,7 +68,7 @@ public final class NightmareNightScheduler implements EventScheduler {
     @Override
     public void startEvent(World world) {
         final var eventInstance = new NightmareNightInstance(
-                plugin, protocolManager, eventManager, pluginManager, world);
+                plugin, protocolManager, eventManager, pluginManager, config, messageConfig, world);
         eventManager.startEvent(world, EVENT_TYPE, eventInstance);
         LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
     }
@@ -79,7 +82,7 @@ public final class NightmareNightScheduler implements EventScheduler {
 
     private void cache() {
         worlds = EventAPI.getWorldsAllowingEvent(EVENT_TYPE);
-        checkFrequency = ConfigService.getNightmareNightConfig().getCheckFrequency();
-        eventChance = ConfigService.getNightmareNightConfig().getEventChance();
+        checkFrequency = config.getCheckFrequency();
+        eventChance = config.getEventChance();
     }
 }

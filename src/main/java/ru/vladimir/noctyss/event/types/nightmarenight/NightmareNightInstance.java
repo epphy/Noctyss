@@ -5,14 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightStartEvent;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
+import ru.vladimir.noctyss.config.NightmareNightConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
 import ru.vladimir.noctyss.event.modules.effects.EffectService;
+import ru.vladimir.noctyss.event.modules.environment.EnvironmentService;
 import ru.vladimir.noctyss.event.modules.notification.NotificationService;
 import ru.vladimir.noctyss.event.modules.sounds.SoundService;
 import ru.vladimir.noctyss.event.modules.spawnrate.SpawnRateService;
@@ -32,6 +36,8 @@ public final class NightmareNightInstance implements EventInstance {
     private final ProtocolManager protocolManager;
     private final EventManager eventManager;
     private final PluginManager pluginManager;
+    private final NightmareNightConfig config;
+    private final MessageConfig messageConfig;
     private final World world;
 
     @Override
@@ -67,79 +73,99 @@ public final class NightmareNightInstance implements EventInstance {
     }
 
     private void registerModules() {
-        if (ConfigService.getNightmareNightConfig().isEffectEnabled()) {
-            modules.add(new EffectService.Builder(
-                    plugin,
-                    pluginManager,
-                    world,
-                    EVENT_TYPE)
-                    .addEffectGiveScheduler(
-                            ConfigService.getNightmareNightConfig().getEffects(),
-                            ConfigService.getNightmareNightConfig().getEffectGiveFrequency())
-                    .build()
+        registerEnvironmentModule();
+        registerSoundModule();
+        registerTimeModule();
+        registerSpawnRateModule();
+        registerNotificationModule();
+        registerBukkitEventModule();
+    }
+
+    private void registerEnvironmentModule() {
+        final var environmentService = new EnvironmentService.Builder(
+                plugin,
+                pluginManager,
+                protocolManager,
+                world,
+                EVENT_TYPE
+        );
+
+        final var effectService = new EffectService.Builder(
+                plugin,
+                pluginManager,
+                world,
+                EVENT_TYPE
+        );
+
+        if (config.isDarkness()) {
+            effectService.addEffectGiveScheduler(
+                    List.of(new PotionEffect(
+                    PotionEffectType.DARKNESS, 300, 0, false, false)),
+                    config.getDarknessGiveFrequency()
             );
+        } else {
+            environmentService.addLightingPacketModifier((byte) 0x01);
         }
 
-        if (ConfigService.getNightmareNightConfig().isSoundEnabled()) {
-            modules.add(new SoundService.Builder(
-                    plugin,
-                    pluginManager,
-                    protocolManager,
-                    world,
-                    EVENT_TYPE)
-                    .addSoundPlayScheduler(new Random(),
-                            ConfigService.getNightmareNightConfig().getSounds(),
-                            ConfigService.getNightmareNightConfig().getSoundPlayFrequency())
-                    .build()
-            );
-        }
+        modules.add(effectService.build());
+        modules.add(environmentService.build());
+    }
 
-        if (ConfigService.getNightmareNightConfig().isTimeEnabled()) {
-            modules.add(new TimeService.Builder(
-                    plugin,
-                    pluginManager,
-                    eventManager,
-                    world,
-                    EventType.NIGHTMARE_NIGHT)
-                    .addMidnightLoopModifier(
-                            ConfigService.getNightmareNightConfig().getTimeModifyFrequency(),
-                            ConfigService.getNightmareNightConfig().getNightLength())
-                    .build()
-            );
-        }
+    private void registerSoundModule() {
+        modules.add(new SoundService.Builder(
+                plugin,
+                pluginManager,
+                protocolManager,
+                world,
+                EVENT_TYPE)
+                .addSoundPlayScheduler(new Random(), config.getSounds(), config.getSoundPlayFrequency())
+                .build()
+        );
+    }
 
+    private void registerTimeModule() {
+        modules.add(
+                new TimeService.Builder(
+                        plugin,
+                        pluginManager,
+                        eventManager,
+                        world,
+                        EVENT_TYPE)
+                        .addMidnightLoopModifier(config.getTimeModifyFrequency(), config.getNightLength())
+                        .build()
+        );
+    }
+
+    private void registerSpawnRateModule() {
+        modules.add(new SpawnRateService.Builder(
+                plugin,
+                pluginManager,
+                EVENT_TYPE,
+                world)
+                .addMonsterSpawnMultiplier(config.getMonsterMultiplier())
+                .build()
+        );
+    }
+
+    private void registerNotificationModule() {
+        modules.add(new NotificationService.Builder(
+                plugin,
+                pluginManager,
+                EVENT_TYPE,
+                world)
+                .addToastEndEvent(config.isEndToastOneTime(), config.getEndToast())
+                .build()
+        );
+    }
+
+    private void registerBukkitEventModule() {
         modules.add(new BukkitEventService.Builder(
                 plugin,
                 pluginManager,
                 EVENT_TYPE,
                 world)
-                .addBedCancelEvent(ConfigService.getMessageConfig().getCannotSleep())
+                .addBedCancelEvent(messageConfig.getCannotSleep())
                 .build()
         );
-
-        if (ConfigService.getNightmareNightConfig().isSpawnRateEnabled()) {
-            modules.add(new SpawnRateService.Builder(
-                    plugin,
-                    pluginManager,
-                    EVENT_TYPE,
-                    world)
-                    .addMonsterSpawnMultiplier(
-                            ConfigService.getNightmareNightConfig().getMonsterMultiplier())
-                    .build()
-            );
-        }
-
-        if (ConfigService.getNightmareNightConfig().isNotificationsEnabled()) {
-            modules.add(new NotificationService.Builder(
-                    plugin,
-                    pluginManager,
-                    EventType.NIGHTMARE_NIGHT,
-                    world)
-                    .addToastEndEvent(
-                            ConfigService.getNightmareNightConfig().isEndToastOneTime(),
-                            ConfigService.getNightmareNightConfig().getToastNotification())
-                    .build()
-            );
-        }
     }
 }

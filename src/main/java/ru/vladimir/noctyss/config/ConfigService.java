@@ -1,44 +1,41 @@
 package ru.vladimir.noctyss.config;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-// ToDo: Deal with the conflict between EventAPI, MessageConfig, and GeneralConfig loading.
-/**
- * A utility class that manages the registration, loading, and reloading of
- * various configuration types within the application. The configurations are
- * stored in an internal map and accessed or modified as needed.
- * <p>
- * This class provides methods to initialize, load, and reload configurations
- * such as general settings, message configurations, and specific event-related
- * configurations. The `ConfigService` class ensures configurations are properly
- * loaded and validated before usage.
- * <p>
- * The configurations are represented by implementations of the `IConfig` interface.
- * <p>
- * Lastly, it's important to notice that currently to load the plugin properly,
- * general config should be loaded separately and only then we load the rest.
- * The reason is we need {@code EventAPI} for {@code MessageConfig} while
- * {@code EventAPI} needs {@code GeneralConfig} to be loaded. Hence, we have
- * a little problem here which should be addressed later on.
- */
-@UtilityClass
-public class ConfigService {
-    private final String CLASS_NAME = "ConfigService";
-    private final Map<ConfigType, IConfig> CONFIGS = new EnumMap<>(ConfigType.class);
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ConfigService {
+
+    private static final String CLASS_NAME = ConfigService.class.getSimpleName();
+    private static final Map<ConfigType, IConfig> CONFIGS = new EnumMap<>(ConfigType.class);
+    private static ConfigService instance;
 
     private enum ConfigType {
         GENERAL, SUDDEN_NIGHT, NIGHTMARE_NIGHT, MESSAGES
     }
 
-    public void init(@NonNull JavaPlugin plugin) {
-        register(plugin);
-        load(plugin);
+    public static ConfigService getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("%s is not initialised yet. Call init method first");
+        }
+        return instance;
+    }
+
+    public static void init(@NonNull JavaPlugin plugin) {
+        instance = new ConfigService();
+        instance.register(plugin);
+        instance.load(plugin);
+    }
+
+    public static void unload() {
+        CONFIGS.clear();
+        instance = null;
     }
 
     private void register(@NonNull JavaPlugin plugin) {

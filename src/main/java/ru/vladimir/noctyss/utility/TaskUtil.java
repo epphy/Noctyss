@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A utility class for managing and scheduling tasks in a Bukkit environment. This
+ * A singleton class for managing and scheduling tasks in a Bukkit environment. This
  * class provides methods for scheduling synchronous and asynchronous tasks, as
  * well as tasks with delays and repeating tasks, using the Bukkit scheduler.
  * <p>
@@ -36,6 +36,7 @@ public final class TaskUtil {
     public static TaskUtil getInstance() {
         if (taskUtil == null) {
             taskUtil = new TaskUtil();
+            taskUtil.setShuttingDown(false);
         }
         return taskUtil;
     }

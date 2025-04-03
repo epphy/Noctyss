@@ -42,6 +42,7 @@ public final class NightmareNightConfig implements IConfig {
 
     // Light
     private boolean darkness;
+    private final long darknessGiveFrequency = 300L;
 
     // Sound
     private final long soundPlayFrequency = 1200L;

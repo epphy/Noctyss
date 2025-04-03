@@ -14,9 +14,9 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 import java.util.EnumMap;
 import java.util.Random;
 
+@Getter
 @RequiredArgsConstructor
 public class GlobalEventScheduler implements Controllable {
-    @Getter
     private final EnumMap<EventType, EventScheduler> eventSchedulers = new EnumMap<>(EventType.class);
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
@@ -31,9 +31,15 @@ public class GlobalEventScheduler implements Controllable {
     }
 
     private void addNightmareNight() {
-        if (ConfigService.getNightmareNightConfig().isEventEnabled()) {
+        if (ConfigService.getInstance().getNightmareNightConfig().isEventEnabled()) {
             final var scheduler = new NightmareNightScheduler(
-                    plugin, protocolManager, pluginManager, eventManager, new Random());
+                    plugin,
+                    protocolManager,
+                    pluginManager,
+                    eventManager,
+                    ConfigService.getInstance().getNightmareNightConfig(),
+                    ConfigService.getInstance().getMessageConfig(),
+                    new Random());
             scheduler.start();
             eventSchedulers.put(EventType.NIGHTMARE_NIGHT, scheduler);
             LoggerUtility.info(this, "NightmareNight event has been enabled");
@@ -43,9 +49,15 @@ public class GlobalEventScheduler implements Controllable {
     }
 
     private void addSuddenNight() {
-        if (ConfigService.getSuddenNightConfig().isEventEnabled()) {
+        if (ConfigService.getInstance().getSuddenNightConfig().isEventEnabled()) {
             final var scheduler = new SuddenNightScheduler(
-                    plugin, pluginManager, protocolManager, eventManager, new Random());
+                    plugin,
+                    pluginManager,
+                    protocolManager,
+                    eventManager,
+                    ConfigService.getInstance().getSuddenNightConfig(),
+                    ConfigService.getInstance().getMessageConfig(),
+                    new Random());
             scheduler.start();
             eventSchedulers.put(EventType.SUDDEN_NIGHT, scheduler);
             LoggerUtility.info(this, "SuddenNight event has been enabled");
@@ -62,7 +74,7 @@ public class GlobalEventScheduler implements Controllable {
     }
 
     private void removeNightmareNight() {
-        if (ConfigService.getNightmareNightConfig().isEventEnabled() &&
+        if (ConfigService.getInstance().getNightmareNightConfig().isEventEnabled() &&
             eventSchedulers.containsKey(EventType.NIGHTMARE_NIGHT)) {
 
             eventSchedulers.get(EventType.NIGHTMARE_NIGHT).stop();
@@ -71,7 +83,7 @@ public class GlobalEventScheduler implements Controllable {
     }
 
     private void removeSuddenNight() {
-        if (ConfigService.getSuddenNightConfig().isEventEnabled() &&
+        if (ConfigService.getInstance().getSuddenNightConfig().isEventEnabled() &&
             eventSchedulers.containsKey(EventType.SUDDEN_NIGHT)) {
 
             eventSchedulers.get(EventType.SUDDEN_NIGHT).stop();

@@ -104,8 +104,8 @@ public final class EnvironmentService implements Module {
         private final EventType eventType;
         private final List<EnvironmentModifier> modifiers = new ArrayList<>();
 
-        public Builder addLightingPocketModifier() {
-            modifiers.add(new LightingPacketModifier(plugin, world));
+        public Builder addLightingPacketModifier(byte lightLevel) {
+            modifiers.add(new LightingPacketModifier(plugin, world, lightLevel));
             return this;
         }
 

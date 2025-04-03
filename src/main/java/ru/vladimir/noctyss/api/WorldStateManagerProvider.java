@@ -27,11 +27,11 @@ class WorldStateManagerProvider {
      * @return The singleton instance of {@link WorldStateManager} containing
      *         the mapping of {@link World} instances to their corresponding {@link WorldState}.
      */
-    static WorldStateManager provide() {
+    WorldStateManager provide() {
         if (worldStateManager != null) return worldStateManager;
 
         Map<World, WorldState> worldStates = new HashMap<>();
-        Map<World, List<EventType>> worldAllowedEvents = ConfigService.getGeneralConfig().getAllowedEventWorlds();
+        Map<World, List<EventType>> worldAllowedEvents = ConfigService.getInstance().getGeneralConfig().getAllowedEventWorlds();
 
         for (Map.Entry<World, List<EventType>> entry : worldAllowedEvents.entrySet()) {
 
@@ -52,7 +52,7 @@ class WorldStateManagerProvider {
      * This effectively clears any previously maintained state and ensures that the next
      * call to {@link #provide()} will reinitialize a new instance of {@link WorldStateManager}.
      */
-    static void unload() {
+    void unload() {
         worldStateManager = null;
     }
 }

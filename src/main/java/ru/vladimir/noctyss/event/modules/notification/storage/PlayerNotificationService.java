@@ -89,21 +89,15 @@ public final class PlayerNotificationService {
 
     /**
      * Updates the file storage using the {@link #data} map.
-     *
-     * @throws IllegalStateException if the class has not been initialized properly before invoking this method.
      */
     public void updateStorage() {
-        checkInitialized();
         storage.store(serializer.serialize(data));
     }
 
     /**
      * Updates the {@link #data} map using the data from the storage file.
-     *
-     * @throws IllegalStateException if the class has not been properly initialized before calling this method.
      */
     public void updateData() {
-        checkInitialized();
         data = serializer.deserialize(storage.retrieve());
     }
 
@@ -114,11 +108,9 @@ public final class PlayerNotificationService {
      * @param world the world for which the event data is being retrieved
      * @return a non-null map where the keys are event types and the values are maps containing event rules
      *         and the sets of associated player UUIDs
-     * @throws IllegalStateException if the class has not been properly initialized
      */
     @NotNull
     private Map<EventType, Map<String, Set<UUID>>> getDataOfWorld(@NotNull World world) {
-        checkInitialized();
         data.computeIfAbsent(world, newWorld -> new EnumMap<>(EventType.class));
         return data.get(world);
     }
@@ -130,7 +122,6 @@ public final class PlayerNotificationService {
      * @param world the world for which the event data is being retrieved
      * @param eventType the specific event type for which the data is being accessed
      * @return a non-null map where the keys are rule identifiers and the values are sets of associated player UUIDs
-     * @throws IllegalStateException if the class has not been properly initialized
      */
     @NotNull
     private Map<String, Set<UUID>> getDataOfWorldEvent(@NotNull World world, @NotNull EventType eventType) {
@@ -147,7 +138,6 @@ public final class PlayerNotificationService {
      * @param eventType the specific event type for which the rule data is being accessed
      * @param rule the rule identifier specifying the context of the data
      * @return a non-null set of UUIDs representing the players associated with the specified rule
-     * @throws IllegalStateException if the underlying data structure has not been properly initialized
      */
     @NotNull
     private Set<UUID> getDataOfWorldEventRule(@NotNull World world, @NotNull EventType eventType, @NotNull String rule) {
@@ -185,16 +175,5 @@ public final class PlayerNotificationService {
         Set<UUID> excludedPlayerIds = getDataOfWorldEventRule(world, eventType, rule);
         excludedPlayerIds.addAll(playerIds);
         updateStorage();
-    }
-
-    /**
-     * Validates that all required components of the class have been properly initialized.
-     *
-     * @throws IllegalStateException if the class has not been fully initialized.
-     */
-    private void checkInitialized() {
-        if (instance == null || storage == null || serializer == null || data == null) {
-            throw new IllegalStateException("%s has not been initialized".formatted(CLASS_NAME));
-        }
     }
 }

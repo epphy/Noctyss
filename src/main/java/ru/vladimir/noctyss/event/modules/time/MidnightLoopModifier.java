@@ -31,7 +31,7 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
 
     @Override
     public void start() {
-        GameTimeUtility.setTime(world, NIGHT_START_TIME);
+        GameTimeUtility.setTime(plugin, world, NIGHT_START_TIME);
         taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::processTime, frequency, frequency).getTaskId();
     }
@@ -50,12 +50,12 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
 
         if ((nightLength - elapsedTime) <= 6000L && nightState != NightState.FINAL) {
             nightState = NightState.FINAL;
-            GameTimeUtility.setTime(world, (FULL_DAY_TICKS_TIME - (nightLength - elapsedTime)));
+            GameTimeUtility.setTime(plugin, world, (FULL_DAY_TICKS_TIME - (nightLength - elapsedTime)));
             return;
         }
 
         if (nightState == NightState.PAUSE) {
-            GameTimeUtility.setTime(world, MIDNIGHT_TICKS_TIME);
+            GameTimeUtility.setTime(plugin, world, MIDNIGHT_TICKS_TIME);
         }
     }
 
@@ -63,7 +63,7 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
     public void stop() {
         if (taskId != -1) {
             Bukkit.getScheduler().cancelTask(taskId);
-            GameTimeUtility.setTime(world, MORNING_TICKS_TIME);
+            GameTimeUtility.setTime(plugin, world, MORNING_TICKS_TIME);
         }
     }
 }
