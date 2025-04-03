@@ -4,6 +4,7 @@ import eu.endercentral.crazy_advancements.advancement.ToastNotification;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.notification.storage.PlayerNotificationService;
 import ru.vladimir.noctyss.utility.TaskUtil;
@@ -14,6 +15,8 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 final class ToastSender {
+    private final JavaPlugin plugin;
+
     void send(EventType eventType, World world, boolean oneTime, String className, ToastNotification toast) {
         if (oneTime) sendToPlayersOneTime(world, eventType, className, toast);
         else sendToPlayers(world, toast);
@@ -31,7 +34,7 @@ final class ToastSender {
             final UUID playerId = player.getUniqueId();
             if (excludedPlayerIds.contains(playerId)) continue;
 
-            TaskUtil.runTask(() -> toast.send(player));
+            TaskUtil.getInstance().runTask(plugin, () -> toast.send(player));
             newExcludedPlayerIds.add(playerId);
         }
 

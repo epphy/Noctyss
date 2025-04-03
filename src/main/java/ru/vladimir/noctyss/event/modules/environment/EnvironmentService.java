@@ -48,12 +48,12 @@ public final class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) modifier, plugin));
             }
 
             if (modifier instanceof PacketAdapter) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         protocolManager.addPacketListener((PacketListener) modifier));
             }
 
@@ -76,12 +76,12 @@ public final class EnvironmentService implements Module {
             }
 
             if (modifier instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) modifier));
             }
 
             if (modifier instanceof PacketAdapter) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         protocolManager.removePacketListener((PacketListener) modifier));
             }
 

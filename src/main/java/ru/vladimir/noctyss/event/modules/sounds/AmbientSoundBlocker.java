@@ -59,7 +59,7 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     private void stopDisallowedSounds() {
         for (final Player player : world.getPlayers()) {
             for (final Sound disallowedSound : disallowedSounds) {
-                TaskUtil.runTask(plugin, () -> {
+                TaskUtil.getInstance().runTask(plugin, () -> {
                         player.stopSound(disallowedSound, SoundCategory.RECORDS);
                         player.stopSound(disallowedSound, SoundCategory.MUSIC);
                 });
@@ -77,13 +77,13 @@ final class AmbientSoundBlocker extends PacketAdapter implements SoundManager, C
     }
 
     private void stopAllSounds() {
-        TaskUtil.runTask(plugin, () ->
+        TaskUtil.getInstance().runTask(plugin, () ->
                 world.getPlayers().forEach(Player::stopAllSounds));
     }
 
     private void playRewindSound() {
         for (final Player player : world.getPlayers()) {
-            TaskUtil.runTask(() -> player.playSound(player, rewindSound, 1.0f, 1.0f));
+            TaskUtil.getInstance().runTask(plugin, () -> player.playSound(player, rewindSound, 1.0f, 1.0f));
         }
     }
 }

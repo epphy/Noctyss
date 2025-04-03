@@ -35,7 +35,7 @@ public final class BukkitEventService implements Module {
     public void start() {
         int started = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            TaskUtil.runTask(plugin, () ->
+            TaskUtil.getInstance().runTask(plugin, () ->
                     pluginManager.registerEvents(bukkitEvent, plugin));
             started++;
             LoggerUtility.info(this, "Started '%s' in '%s' for '%s'"
@@ -49,7 +49,7 @@ public final class BukkitEventService implements Module {
     public void stop() {
         int stopped = 0;
         for (final BukkitEvent bukkitEvent : bukkitEvents) {
-            TaskUtil.runTask(plugin, () ->
+            TaskUtil.getInstance().runTask(plugin, () ->
                     HandlerList.unregisterAll(bukkitEvent));
             stopped++;
             LoggerUtility.info(this, "Stopped '%s' in '%s' for '%s'"

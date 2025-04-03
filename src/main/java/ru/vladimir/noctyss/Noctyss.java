@@ -47,7 +47,7 @@ public final class Noctyss extends JavaPlugin {
 
     private void loadUtilities() {
         PlayerNotificationService.init(this);
-        NotificationManager.init();
+        NotificationManager.init(this);
         ConfigService.init(this);
         ConfigService.init(this);
     }
@@ -77,7 +77,12 @@ public final class Noctyss extends JavaPlugin {
         }
 
         final NoctyssCommand commandHandler = new NoctyssCommand(
-                this, this, getServer().getPluginManager(), eventManager, globalEventScheduler);
+                this,
+                this,
+                getServer().getPluginManager(),
+                eventManager,
+                globalEventScheduler,
+                ConfigService.getInstance().getMessageConfig());
         commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);
@@ -163,6 +168,7 @@ public final class Noctyss extends JavaPlugin {
 
     private void unloadUtilities() {
         EventAPI.unload();
+        NotificationManager.unload();
         PlayerNotificationService.unload();
         ConfigService.unload();
         TaskUtil.unload();

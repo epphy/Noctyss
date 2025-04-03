@@ -1,26 +1,27 @@
 package ru.vladimir.noctyss.command.list;
 
+import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventType;
 
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public final class ActiveEventListCommand implements SubCommand {
+    private final MessageConfig messageConfig;
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            Component message = ConfigService.getMessageConfig().getCommandUsage();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
         } else {
-            Component message = ConfigService.getMessageConfig().getActiveEventListMsg();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, getActiveEvents()));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getActiveEventListMsg(), getActiveEvents()));
         }
     }
 

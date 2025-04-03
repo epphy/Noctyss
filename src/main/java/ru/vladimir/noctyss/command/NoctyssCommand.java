@@ -16,7 +16,7 @@ import ru.vladimir.noctyss.command.list.ReloadConfigCommand;
 import ru.vladimir.noctyss.command.list.StartEventCommand;
 import ru.vladimir.noctyss.command.list.StopEventCommand;
 import ru.vladimir.noctyss.command.list.eventinformation.EventInfoCommand;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 
@@ -29,6 +29,7 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
     private final PluginManager pluginManager;
     private final EventManager eventManager;
     private final GlobalEventScheduler globalEventScheduler;
+    private final MessageConfig messageConfig;
 
     public void init() {
         registerCommands();
@@ -37,18 +38,18 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (args.length < 1) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
             return true;
         }
 
         final SubCommandWrapper wrapper = getWrapper(args[0]);
         if (wrapper == null) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getUnknownCommand());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownCommand()));
             return true;
         }
 
         if (!wrapper.hasPermission(sender)) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getNoPermission());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getNoPermission()));
             return true;
         }
 
@@ -73,31 +74,31 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
 
     private void registerCommands() {
         addSubCommand(
-                new ActiveEventListCommand(),
+                new ActiveEventListCommand(messageConfig),
                 "list",
                 new Permission("noctyss.event.info")
         );
 
         addSubCommand(
-                new ReloadConfigCommand(noctyss),
+                new ReloadConfigCommand(noctyss, messageConfig),
                 "reload",
                 new Permission("noctyss.reload")
         );
 
         addSubCommand(
-                new EventInfoCommand(plugin, pluginManager),
+                new EventInfoCommand(plugin, pluginManager, messageConfig),
                 "info",
                 new Permission("noctyss.event.info")
         );
 
         addSubCommand(
-                new StartEventCommand(globalEventScheduler),
+                new StartEventCommand(globalEventScheduler, messageConfig),
                 "start",
                 new Permission("noctyss.event.start")
         );
 
         addSubCommand(
-                new StopEventCommand(eventManager),
+                new StopEventCommand(eventManager, messageConfig),
                 "stop",
                 new Permission("noctyss.event.stop")
         );

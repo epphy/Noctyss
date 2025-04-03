@@ -51,7 +51,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
         for (final Player player : world.getPlayers()) {
             final UUID playerId = player.getUniqueId();
             if (alreadyPlayedPlayers.contains(playerId)) continue;
-            TaskUtil.runTask(plugin, () ->
+            TaskUtil.getInstance().runTask(plugin, () ->
                     player.playSound(player, sound, 1.0f, 1.0f));
             alreadyPlayedPlayers.add(playerId);
         }
@@ -76,7 +76,7 @@ final class AmbientSoundScheduler implements SoundManager, Controllable {
     private void stopAmbient() {
         for (final Player player : world.getPlayers()) {
             for (final Sound sound : sounds) {
-                TaskUtil.runTask(plugin, () -> player.stopSound(sound));
+                TaskUtil.getInstance().runTask(plugin, () -> player.stopSound(sound));
                 plugin.getServer().getScheduler();
             }
         }

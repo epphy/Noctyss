@@ -42,7 +42,7 @@ public final class SpawnRateService implements Module {
             }
 
             if (spawnRule instanceof Listener) {
-                TaskUtil.runTask(plugin, () -> pluginManager.registerEvents((Listener) spawnRule, plugin));
+                TaskUtil.getInstance().runTask(plugin, () -> pluginManager.registerEvents((Listener) spawnRule, plugin));
             }
 
             started++;
@@ -63,7 +63,7 @@ public final class SpawnRateService implements Module {
             }
 
             if (rule instanceof Listener) {
-                TaskUtil.runTask(plugin, () -> HandlerList.unregisterAll((Listener) rule));
+                TaskUtil.getInstance().runTask(plugin, () -> HandlerList.unregisterAll((Listener) rule));
             }
 
             stopped++;

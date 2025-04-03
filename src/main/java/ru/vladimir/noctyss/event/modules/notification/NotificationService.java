@@ -44,7 +44,7 @@ public final class NotificationService implements Module {
             }
 
             if (rule instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) rule, plugin));
             }
 
@@ -63,7 +63,7 @@ public final class NotificationService implements Module {
         for (final NotificationRule rule : notificationRules) {
 
             if (rule instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) rule));
             }
 

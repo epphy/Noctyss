@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.command.SubCommand;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.List;
@@ -14,22 +14,24 @@ import java.util.List;
 public final class EventInfoCommand implements SubCommand {
     private final EventInfoInventory eventInfoInventory;
     private final EventInfoClickListener eventInfoClickListener;
+    private final MessageConfig messageConfig;
 
-    public EventInfoCommand(JavaPlugin plugin, PluginManager pluginManager) {
+    public EventInfoCommand(JavaPlugin plugin, PluginManager pluginManager, MessageConfig messageConfig) {
         eventInfoInventory = new EventInfoInventory();
         eventInfoClickListener = new EventInfoClickListener(eventInfoInventory);
-        TaskUtil.runTask(() -> pluginManager.registerEvents(eventInfoClickListener, plugin));
+        TaskUtil.getInstance().runTask(plugin, () -> pluginManager.registerEvents(eventInfoClickListener, plugin));
+        this.messageConfig = messageConfig;
     }
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
             return;
         }
 
         if (!(sender instanceof final Player player)) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getPlayerOnly());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getPlayerOnly()));
             return;
         }
 

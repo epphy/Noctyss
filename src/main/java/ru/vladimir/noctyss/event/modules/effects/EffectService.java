@@ -43,7 +43,7 @@ public final class EffectService implements Module {
             }
 
             if (effectManager instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) effectManager, plugin));
             }
 
@@ -66,7 +66,7 @@ public final class EffectService implements Module {
             }
 
             if (effectManager instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) effectManager));
             }
 

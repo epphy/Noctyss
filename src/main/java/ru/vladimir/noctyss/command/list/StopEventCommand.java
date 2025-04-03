@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
-import ru.vladimir.noctyss.config.ConfigService;
+import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 
@@ -18,23 +18,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class StopEventCommand implements SubCommand {
     private final EventManager eventManager;
+    private final MessageConfig messageConfig;
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length == 2) handleWithoutWorld(sender, args);
         else if (args.length == 3) handleWithWorld(sender, args);
-        else sendFeedback(sender, ConfigService.getMessageConfig().getCommandUsage());
+        else sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
     }
 
     private void handleWithoutWorld(CommandSender sender, String[] args) {
         if (!(sender instanceof final Player player)) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getPlayerOnly());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getPlayerOnly()));
             return;
         }
 
         final EventType eventType = getEventType(args[1]);
         if (eventType == null) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getUnknownEvent());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownEvent()));
             return;
         }
 
@@ -44,13 +45,13 @@ public final class StopEventCommand implements SubCommand {
     private void handleWithWorld(CommandSender sender, String[] args) {
         final EventType eventType = getEventType(args[1]);
         if (eventType == null) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getUnknownEvent());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownEvent()));
             return;
         }
 
         final World world = Bukkit.getWorld(args[2]);
         if (world == null) {
-            sendFeedback(sender, ConfigService.getMessageConfig().getUnknownWorld());
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownWorld()));
             return;
         }
 
@@ -59,20 +60,17 @@ public final class StopEventCommand implements SubCommand {
 
     private void attemptStopEvent(CommandSender sender, World world, EventType eventType) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
-            final Component message = ConfigService.getMessageConfig().getEventDisallowed();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventDisallowed()));
             return;
         }
 
         if (!EventAPI.isEventActive(world ,eventType)) {
-            final Component message = ConfigService.getMessageConfig().getEventInactive();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventInactive()));
             return;
         }
 
         eventManager.stopEvent(world, eventType);
-        final Component message = ConfigService.getMessageConfig().getEventStopped();
-        sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message, world.getName()));
+        sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventStopped()));
     }
 
     private void sendFeedback(CommandSender sender, Component message) {

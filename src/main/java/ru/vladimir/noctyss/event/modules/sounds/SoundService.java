@@ -50,12 +50,12 @@ public final class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         pluginManager.registerEvents((Listener) soundManager, plugin));
             }
 
             if (soundManager instanceof PacketListener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         protocolManager.addPacketListener((PacketListener) soundManager));
             }
 
@@ -78,12 +78,12 @@ public final class SoundService implements Module {
             }
 
             if (soundManager instanceof Listener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         HandlerList.unregisterAll((Listener) soundManager));
             }
 
             if (soundManager instanceof PacketListener) {
-                TaskUtil.runTask(plugin, () ->
+                TaskUtil.getInstance().runTask(plugin, () ->
                         protocolManager.removePacketListener((PacketListener) soundManager));
             }
 

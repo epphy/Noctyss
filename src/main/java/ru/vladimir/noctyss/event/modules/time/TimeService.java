@@ -44,7 +44,7 @@ public final class TimeService implements Module {
             }
 
             if (rule instanceof Listener) {
-                TaskUtil.runTask(() -> pluginManager.registerEvents((Listener) rule, plugin));
+                TaskUtil.getInstance().runTask(plugin, () -> pluginManager.registerEvents((Listener) rule, plugin));
             }
 
             started++;
@@ -65,7 +65,7 @@ public final class TimeService implements Module {
             }
 
             if (rule instanceof Listener) {
-                TaskUtil.runTask(() -> HandlerList.unregisterAll((Listener) rule));
+                TaskUtil.getInstance().runTask(plugin, () -> HandlerList.unregisterAll((Listener) rule));
             }
 
             stopped++;

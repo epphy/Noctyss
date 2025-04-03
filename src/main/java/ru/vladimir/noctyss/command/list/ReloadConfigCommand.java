@@ -5,24 +5,22 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import ru.vladimir.noctyss.Noctyss;
 import ru.vladimir.noctyss.command.SubCommand;
-import ru.vladimir.noctyss.config.ConfigService;
-import ru.vladimir.noctyss.event.GlobalEventScheduler;
+import ru.vladimir.noctyss.config.MessageConfig;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public final class ReloadConfigCommand implements SubCommand {
     private final Noctyss noctyss;
+    private final MessageConfig messageConfig;
 
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            Component message = ConfigService.getMessageConfig().getCommandUsage();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
         } else {
             noctyss.onReload();
-            Component message = ConfigService.getMessageConfig().getConfigReloaded();
-            sendFeedback(sender, ConfigService.getMessageConfig().getMessage(message));
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getConfigReloaded()));
         }
     }
 

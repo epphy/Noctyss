@@ -31,7 +31,7 @@ final class EntityAIKiller implements EnvironmentModifier, Controllable {
     }
 
     private void updateEntitiesAI(boolean value) {
-        TaskUtil.runTask(plugin, () -> {
+        TaskUtil.getInstance().runTask(plugin, () -> {
             for (final LivingEntity entity : world.getLivingEntities()) {
                 if (entity.isDead()) continue; // Skip dead entities
                 entity.setAI(value);
