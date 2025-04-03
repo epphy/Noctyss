@@ -137,7 +137,7 @@ public final class NightmareNightInstance implements EventInstance {
                     world)
                     .addToastEndEvent(
                             ConfigService.getNightmareNightConfig().isEndToastOneTime(),
-                            ConfigService.getNightmareNightConfig().getEndToast())
+                            ConfigService.getNightmareNightConfig().getToastNotification())
                     .build()
             );
         }

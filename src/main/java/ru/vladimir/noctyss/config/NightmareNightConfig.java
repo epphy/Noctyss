@@ -2,23 +2,20 @@ package ru.vladimir.noctyss.config;
 
 import eu.endercentral.crazy_advancements.advancement.AdvancementDisplay;
 import eu.endercentral.crazy_advancements.advancement.ToastNotification;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
@@ -27,14 +24,12 @@ public final class NightmareNightConfig implements IConfig {
 
     // Sections
     private static final String SETTINGS = "settings.";
-    private static final String EFFECT_SETTINGS = "settings.effect.";
-    private static final String SOUND_SETTINGS = "settings.sound.";
+    private static final String LIGHT_SETTINGS = "settings.light.";
     private static final String TIME_SETTINGS = "settings.time.";
-    private static final String SPAWNRATE_SETTINGS = "settings.spawnrate.";
     private static final String NOTIFICATION_SETTINGS = "settings.notification.";
 
     // Dependency
-    private final JavaPlugin plugin;
+    private final @NonNull JavaPlugin plugin;
 
     // Configs
     private FileConfiguration fileConfig;
@@ -45,28 +40,23 @@ public final class NightmareNightConfig implements IConfig {
     private long checkFrequency;
     private int eventChance;
 
-    // Effect
-    private boolean effectEnabled;
-    private long effectGiveFrequency;
-    private List<PotionEffect> effects;
+    // Light
+    private boolean darkness;
 
     // Sound
-    private boolean soundEnabled;
-    private long soundPlayFrequency;
-    private List<Sound> sounds;
+    private final long soundPlayFrequency = 1200L;
+    private final List<Sound> sounds = List.of(Sound.AMBIENT_CAVE);
 
     // Time
-    private boolean timeEnabled;
+    private final long nightLength = 22000L;
     private long timeModifyFrequency;
-    private long nightLength;
 
     // Spawn rate
-    private boolean spawnRateEnabled;
-    private int monsterMultiplier;
+    private final int monsterMultiplier = 2;
 
     // Notification
     private boolean notificationsEnabled;
-    private boolean isEndToastOneTime;
+    private boolean endToastOneTime;
     private ToastNotification endToast;
 
     @Override
@@ -89,10 +79,8 @@ public final class NightmareNightConfig implements IConfig {
 
     private void parse() {
         parseGeneralSettings();
-        parseEffectSettings();
-        parseSoundSettings();
+        parseLightSettings();
         parseTimeSettings();
-        parseSpawnrateSettings();
         parseNotificationSettings();
     }
 
@@ -102,94 +90,66 @@ public final class NightmareNightConfig implements IConfig {
         eventChance = fileConfig.getInt(SETTINGS + "event-chance", 5);
     }
 
-    private void parseEffectSettings() {
-        effectEnabled = fileConfig.getBoolean(EFFECT_SETTINGS + "enabled", true);
-        effectGiveFrequency = fileConfig.getInt(EFFECT_SETTINGS + "give-effect-frequency", 200);
-        effects = getEffects(
-                fileConfig.getStringList(EFFECT_SETTINGS + "effects"));
-    }
-
-    private List<PotionEffect> getEffects(List<String> effectNames) {
-        return effectNames.stream()
-                .filter(Objects::nonNull)
-                .map(this::getKey)
-                .map(key -> RegistryAccess.registryAccess().getRegistry(RegistryKey.MOB_EFFECT).get(key))
-                .filter(Objects::nonNull)
-                .map(type -> new PotionEffect(type, (int) effectGiveFrequency + 100, 0))
-                .toList();
-    }
-
-    private void parseSoundSettings() {
-        soundEnabled = fileConfig.getBoolean(SOUND_SETTINGS + "enabled", true);
-        soundPlayFrequency = fileConfig.getInt(SOUND_SETTINGS + "sound-play-frequency", 1200);
-        sounds = getSounds(
-                fileConfig.getStringList(SOUND_SETTINGS + "sounds"));
-    }
-
-    private List<Sound> getSounds(List<String> soundNames) {
-        return soundNames.stream()
-                .filter(Objects::nonNull)
-                .map(this::getKey)
-                .map(key -> RegistryAccess.registryAccess().getRegistry(RegistryKey.SOUND_EVENT).get(key))
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    private NamespacedKey getKey(String name) {
-        return new NamespacedKey("minecraft", name.toLowerCase().trim());
+    private void parseLightSettings() {
+        darkness = fileConfig.getBoolean(LIGHT_SETTINGS + "darkness", false);
     }
 
     private void parseTimeSettings() {
-        timeEnabled = fileConfig.getBoolean(TIME_SETTINGS + "enabled", true);
         timeModifyFrequency = fileConfig.getInt(TIME_SETTINGS + "time-modification-frequency", 100);
-        nightLength = fileConfig.getInt(TIME_SETTINGS + "night-length", 22000);
-    }
-
-    private void parseSpawnrateSettings() {
-        spawnRateEnabled = fileConfig.getBoolean(SPAWNRATE_SETTINGS + "enabled", true);
-        monsterMultiplier = fileConfig.getInt(SPAWNRATE_SETTINGS + "monster-multiplier", 2);
     }
 
     private void parseNotificationSettings() {
         notificationsEnabled = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "enabled", true);
-        isEndToastOneTime = fileConfig.getBoolean(NOTIFICATION_SETTINGS + "end.one-time", true);
-        endToast = getToast();
+        parseEndNotification();
     }
 
-    @Nullable
-    private ToastNotification getToast() {
-        final AdvancementDisplay.AdvancementFrame frame = getFrame(
-                fileConfig.getString(NOTIFICATION_SETTINGS + "end.frame", "TASK"));
-        final Material icon = getIcon(
-                fileConfig.getString(NOTIFICATION_SETTINGS + "end.icon", "COAL_BLOCK"));
-        final String text = fileConfig.getString(NOTIFICATION_SETTINGS + "end.text", "What was that?");
+    private void parseEndNotification() {
+        ConfigurationSection section = fileConfig.getConfigurationSection(NOTIFICATION_SETTINGS + "end");
 
-        if (frame == null || icon == null) {
-            LoggerUtility.warn(this, "Failed to load end toast because either frame or icon are null: %s, %s"
-                    .formatted(frame, icon));
-            return null;
+        if (section == null) {
+            LoggerUtility.warn(this, "End notification section is missing, using default values.");
+            endToastOneTime = true;
+            endToast = new ToastNotification(Material.COAL_BLOCK, "What was that?", AdvancementDisplay.AdvancementFrame.TASK);
+            return;
         }
 
+        endToastOneTime = section.getBoolean("one-time", true);
+        endToast = getToastNotification(section);
+    }
+
+    @NotNull
+    private ToastNotification getToastNotification(@NotNull ConfigurationSection section) {
+        Material icon = getIcon(section.getString("icon", "COAL_BLOCK"), Material.COAL_BLOCK);
+        String text = section.getString("text", "What was that?");
+        AdvancementDisplay.AdvancementFrame frame = getFrame(section.getString("frame", "TASK"), AdvancementDisplay.AdvancementFrame.TASK);
         return new ToastNotification(icon, text, frame);
     }
 
-    @Nullable
-    private AdvancementDisplay.AdvancementFrame getFrame(String frameName) {
+    @NotNull
+    private AdvancementDisplay.AdvancementFrame getFrame(@NotNull String frameName, @NotNull AdvancementDisplay.AdvancementFrame defaultFrame) {
         try {
+            if (frameName.isBlank()) {
+                LoggerUtility.warn(this, "Invalid frame for end toast: empty string");
+                return defaultFrame;
+            }
             return AdvancementDisplay.AdvancementFrame.valueOf(frameName);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            LoggerUtility.warn(this, "Failed to load frame for end toast because it is null");
-            return null;
+        } catch (IllegalArgumentException e) {
+            LoggerUtility.warn(this, "Invalid frame for end toast: %s".formatted(frameName));
+            return defaultFrame;
         }
     }
 
-    @Nullable
-    private Material getIcon(String materialName) {
+    @NotNull
+    private Material getIcon(@NotNull String materialName, @NotNull Material defaultMaterial) {
         try {
+            if (materialName.isBlank()) {
+                LoggerUtility.warn(this, "Invalid icon for end toast: empty string");
+                return defaultMaterial;
+            }
             return Material.valueOf(materialName.toUpperCase().trim());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            LoggerUtility.warn(this, "Failed to load icon for end toast because it is null");
-            return null;
+        } catch (IllegalArgumentException e) {
+            LoggerUtility.warn(this, "Invalid icon for end toast: %s".formatted(materialName));
+            return defaultMaterial;
         }
     }
 

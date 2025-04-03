@@ -8,7 +8,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.utility.LoggerUtility;
 
@@ -18,8 +18,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public final class GeneralConfig implements IConfig {
     private static final String SETTINGS = "settings.";
-    private final JavaPlugin plugin;
-    private final FileConfiguration fileConfig;
+    private final @NonNull JavaPlugin plugin;
+    private final @NonNull FileConfiguration fileConfig;
     private int debugLevel;
     private Map<World, List<EventType>> allowedEventWorlds;
 
@@ -31,16 +31,19 @@ public final class GeneralConfig implements IConfig {
 
     private void parse() {
         debugLevel = fileConfig.getInt(SETTINGS + "debug-level", 0);
-        allowedEventWorlds = getWorldMap(fileConfig.getConfigurationSection(SETTINGS + "allowed-worlds"));
-    }
 
-    @NonNull
-    private Map<World, List<EventType>> getWorldMap(@Nullable ConfigurationSection section) {
+        ConfigurationSection section = fileConfig.getConfigurationSection(SETTINGS + "allowed-worlds");
         if (section == null) {
             LoggerUtility.warn(this, "List of worlds for allowed events is empty. No events will be handled.");
-            return Collections.emptyMap();
+            allowedEventWorlds = Collections.emptyMap();
+            return;
         }
 
+        allowedEventWorlds = getWorldMap(section);
+    }
+
+    @NotNull
+    private Map<World, List<EventType>> getWorldMap(@NotNull ConfigurationSection section) {
         Map<World, List<EventType>> worldMap = new HashMap<>();
 
         for (String worldName : section.getKeys(false)) {
@@ -57,12 +60,12 @@ public final class GeneralConfig implements IConfig {
         return worldMap;
     }
 
-    @NonNull
-    private List<EventType> getEventTypes(@NonNull List<String> eventTypeNames) {
+    @NotNull
+    private List<EventType> getEventTypes(@NotNull List<String> eventTypeNames) {
         List<EventType> eventTypes = new ArrayList<>();
 
-        for (String eventTypeName : eventTypeNames) {
-            if (eventTypeName == null || eventTypeName.isBlank()) {
+        for (@NotNull String eventTypeName : eventTypeNames) {
+            if (eventTypeName.isBlank()) {
                 LoggerUtility.warn(this, "Invalid event type name: (empty or null)");
                 continue;
             }
@@ -86,13 +89,13 @@ public final class GeneralConfig implements IConfig {
         }
 
         if (allowedEventWorlds.isEmpty()) {
-            plugin.reloadConfig();
             LoggerUtility.warn(this, "List of allowed event worlds is empty. No events will be handled.");
         }
     }
 
     @Override
     public void reload() {
+        plugin.reloadConfig();
         load();
     }
 }
