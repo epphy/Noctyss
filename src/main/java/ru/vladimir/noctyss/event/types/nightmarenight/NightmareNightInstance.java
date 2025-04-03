@@ -100,7 +100,7 @@ public final class NightmareNightInstance implements EventInstance {
         if (config.isDarkness()) {
             effectService.addEffectGiveScheduler(
                     List.of(new PotionEffect(
-                    PotionEffectType.DARKNESS, 300, 0, false, false)),
+                    PotionEffectType.DARKNESS, (int) config.getDarknessGiveFrequency() - 20, 0, false, false)),
                     config.getDarknessGiveFrequency()
             );
         } else {

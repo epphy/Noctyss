@@ -95,7 +95,7 @@ public final class GeneralConfig implements IConfig {
 
     @Override
     public void reload() {
-        plugin.reloadConfig();
+        plugin.saveConfig();
         load();
     }
 }

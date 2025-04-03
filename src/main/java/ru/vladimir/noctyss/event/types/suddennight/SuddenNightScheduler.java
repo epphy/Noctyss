@@ -49,10 +49,15 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private boolean isEligible(World world) {
-        return !EventAPI.isEventActive(world, EVENT_TYPE) && // Whether the event is already active
+        return isAllowed(world) &&
                GameTimeUtility.isDay(world) &&               // Whether there is a day
                isPassingChance() &&                          // Whether the chance is passing
                !isCooldown(world);                           // Whether the world is in cooldown
+    }
+
+    private boolean isAllowed(World world) {
+        return !EventAPI.isEventActive(world, EVENT_TYPE) &&  // Whether the event is already active
+               !EventAPI.isAnyEventActive(world);        // Whether there's already an ongoing event
     }
 
     private boolean isPassingChance() {

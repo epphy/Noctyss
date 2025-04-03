@@ -53,7 +53,7 @@ public final class NightmareNightScheduler implements EventScheduler {
                 continue;
             }
             if (checkedWorlds.contains(world)) continue;
-            if (!passesChance() || EventAPI.isEventActive(world, EVENT_TYPE)) continue;
+            if (!isAllowed(world) || !passesChance()) continue;
 
             checkedWorlds.add(world);
             startEvent(world);
@@ -63,6 +63,11 @@ public final class NightmareNightScheduler implements EventScheduler {
     private boolean passesChance() {
         final int randomNumber = random.nextInt(CHANCE_RANGE);
         return randomNumber <= eventChance;
+    }
+
+    private boolean isAllowed(World world) {
+        return !EventAPI.isEventActive(world, EVENT_TYPE) &&  // Whether the event is already active
+               !EventAPI.isAnyEventActive(world);        // Whether there's already an ongoing event
     }
 
     @Override

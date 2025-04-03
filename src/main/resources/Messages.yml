@@ -14,6 +14,7 @@ messages:
   events:
     event-active: "This event is already running in world {0}."
     event-inactive: "This event is not currently active in world {0}."
+    different-event-active: "There is already an ongoing event in the world {0}."
     event-disallowed: "This event is not allowed in world {0}."
     event-started: "The event has started in world {0}."
     event-stopped: "The event has been stopped in world {0}."
