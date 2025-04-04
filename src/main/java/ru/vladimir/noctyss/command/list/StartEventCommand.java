@@ -7,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
@@ -24,7 +23,7 @@ public final class StartEventCommand implements SubCommand {
     private final MessageConfig messageConfig;
 
     @Override
-    public void onCommand(@NotNull CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 2) handleWithoutWorld(sender, args);
         else if (args.length == 3) handleWithWorld(sender, args);
         else sendFeedback(sender, messageConfig.getCommandUsage());
@@ -67,8 +66,13 @@ public final class StartEventCommand implements SubCommand {
             return;
         }
 
-        if (EventAPI.isEventActive(world ,eventType)) {
+        if (EventAPI.isEventActive(world, eventType)) {
             sendFeedback(sender, messageConfig.getEventAlreadyActive(), world.getName());
+            return;
+        }
+
+        if (EventAPI.isAnyEventActive(world)) {
+            sendFeedback(sender, messageConfig.getOtherEventActive(), world.getName());
             return;
         }
 
@@ -81,7 +85,7 @@ public final class StartEventCommand implements SubCommand {
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length == 2) {
             return Arrays.stream(EventType.values())
                     .map(Enum::name)
@@ -101,7 +105,6 @@ public final class StartEventCommand implements SubCommand {
         return List.of();
     }
 
-    @Nullable
     private EventType getEventType(String eventTypeName) {
         try {
             if (eventTypeName == null) return null;

@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 @RequiredArgsConstructor
-public class EventInfoClickListener implements Listener {
+public final class EventInfoClickListener implements Listener {
     private final EventInfoInventory eventInfoInventory;
 
     @EventHandler

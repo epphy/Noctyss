@@ -9,7 +9,6 @@ import ru.vladimir.noctyss.api.events.suddennight.SuddenNightEndEvent;
 import ru.vladimir.noctyss.api.events.suddennight.SuddenNightStartEvent;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.config.SuddenNightConfig;
-import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
@@ -26,13 +25,12 @@ import java.util.Random;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public final class SuddenNightInstance implements EventInstance {
+final class SuddenNightInstance implements EventInstance {
     private static final EventType EVENT_TYPE = EventType.SUDDEN_NIGHT;
     private final Set<Module> modules = new HashSet<>();
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
-    private final EventManager eventManager;
     private final SuddenNightConfig config;
     private final MessageConfig messageConfig;
     private final World world;
@@ -96,7 +94,6 @@ public final class SuddenNightInstance implements EventInstance {
                 new TimeService.Builder(
                         plugin,
                         pluginManager,
-                        eventManager,
                         world,
                         EVENT_TYPE)
                         .addAbruptNight(

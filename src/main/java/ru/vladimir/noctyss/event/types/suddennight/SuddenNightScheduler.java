@@ -17,29 +17,31 @@ import ru.vladimir.noctyss.utility.LoggerUtility;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public final class SuddenNightScheduler implements EventScheduler {
     private static final EventType EVENT_TYPE = EventType.SUDDEN_NIGHT;
-    private static final long DELAY = 0L;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
     private final ProtocolManager protocolManager;
-    private final EventManager eventManager;
     private final SuddenNightConfig config;
     private final MessageConfig messageConfig;
     private final Random random;
     private List<World> worlds;
-    private long checkFrequencyTicks;
+    private long periodTicks;
     private double eventChance;
     private long cooldownDays;
     private int taskId = -1;
 
+    {
+        cache();
+    }
+
     @Override
     public void start() {
-        cache();
         taskId = Bukkit.getScheduler().runTaskTimer(
-                plugin, this::processWorlds, DELAY, checkFrequencyTicks).getTaskId();
+                plugin, this::processWorlds, 0L, periodTicks).getTaskId();
     }
 
     private void processWorlds() {
@@ -49,18 +51,18 @@ public final class SuddenNightScheduler implements EventScheduler {
     }
 
     private boolean isEligible(World world) {
-        return isAllowed(world) &&
-               GameTimeUtility.isDay(world) &&               // Whether there is a day
-               isPassingChance() &&                          // Whether the chance is passing
-               !isCooldown(world);                           // Whether the world is in cooldown
+        return isAvailableForEvent(world) &&     // Whether it is available
+               GameTimeUtility.isDay(world) &&   // Whether there is a day
+               isChancePassed() &&               // Whether the chance is passing
+               !isCooldown(world);               // Whether the world is in cooldown
     }
 
-    private boolean isAllowed(World world) {
+    private boolean isAvailableForEvent(World world) {
         return !EventAPI.isEventActive(world, EVENT_TYPE) &&  // Whether the event is already active
-               !EventAPI.isAnyEventActive(world);        // Whether there's already an ongoing event
+               !EventAPI.isAnyEventActive(world);             // Whether there's already an ongoing event
     }
 
-    private boolean isPassingChance() {
+    private boolean isChancePassed() {
         return random.nextDouble() <= eventChance;
     }
 
@@ -76,11 +78,10 @@ public final class SuddenNightScheduler implements EventScheduler {
                 plugin,
                 pluginManager,
                 protocolManager,
-                eventManager,
                 config,
                 messageConfig,
                 world);
-        eventManager.startEvent(world, EVENT_TYPE, eventInstance);
+        EventManager.startEvent(world, EVENT_TYPE, eventInstance);
         LoggerUtility.info(this, "Scheduling event in: %s".formatted(world.getName()));
     }
 
@@ -93,7 +94,7 @@ public final class SuddenNightScheduler implements EventScheduler {
 
     private void cache() {
         worlds = EventAPI.getWorldsAllowingEvent(EVENT_TYPE);
-        checkFrequencyTicks = config.getCheckFrequencyTicks();
+        periodTicks = config.getCheckFrequencyTicks();
         eventChance = config.getEventChance();
         cooldownDays = config.getCooldownDays();
     }
@@ -104,8 +105,8 @@ public final class SuddenNightScheduler implements EventScheduler {
                 "taskId=" + taskId +
                 ", cooldownDays=" + cooldownDays +
                 ", eventChance=" + eventChance +
-                ", checkFrequencyTicks=" + checkFrequencyTicks +
-                ", worlds=" + worlds +
+                ", checkFrequencyTicks=" + periodTicks +
+                ", worlds=" + worlds.stream().map(World::getName).collect(Collectors.toSet()) +
                 '}';
     }
 }

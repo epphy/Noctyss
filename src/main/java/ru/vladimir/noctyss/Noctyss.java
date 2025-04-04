@@ -26,7 +26,6 @@ import java.util.logging.Level;
 
 public final class Noctyss extends JavaPlugin {
     private static final int CURRENT_VERSION = 101;
-    private EventManager eventManager;
     private GlobalEventScheduler globalEventScheduler;
 
     /*
@@ -61,11 +60,9 @@ public final class Noctyss extends JavaPlugin {
     }
 
     private void loadScheduler() {
-        eventManager = new EventManager();
         final PluginManager pluginManager = getServer().getPluginManager();
         final ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        globalEventScheduler = new GlobalEventScheduler(
-                this, pluginManager, protocolManager, eventManager);
+        globalEventScheduler = new GlobalEventScheduler(this, pluginManager, protocolManager);
         globalEventScheduler.start();
     }
 
@@ -80,9 +77,9 @@ public final class Noctyss extends JavaPlugin {
                 this,
                 this,
                 getServer().getPluginManager(),
-                eventManager,
                 globalEventScheduler,
                 ConfigService.getInstance().getMessageConfig());
+        commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);
     }
@@ -162,7 +159,7 @@ public final class Noctyss extends JavaPlugin {
 
     private void stopAllEvents() {
         globalEventScheduler.stop();
-        eventManager.stopAllEvents();
+        EventManager.stopAllEvents();
     }
 
     private void unloadUtilities() {

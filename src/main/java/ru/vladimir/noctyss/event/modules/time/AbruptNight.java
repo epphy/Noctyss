@@ -21,7 +21,6 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
     private static final long DELAY = 0L;
     private static final long MIDNIGHT_TIME = 18000L;
     private final JavaPlugin plugin;
-    private final EventManager eventManager;
     private final EventType eventType;
     private final World world;
     private final long[] nightLengthRange;
@@ -49,7 +48,7 @@ final class AbruptNight implements TimeModificationRule, Controllable, Listener 
         elapsedTime += frequency;
 
         if (elapsedTime >= nightLength) {
-            eventManager.stopEvent(world, eventType);
+            EventManager.stopEvent(world, eventType);
             return;
         }
 

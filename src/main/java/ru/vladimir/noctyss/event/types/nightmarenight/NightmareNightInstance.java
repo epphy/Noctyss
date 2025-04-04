@@ -11,7 +11,6 @@ import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightEndEvent;
 import ru.vladimir.noctyss.api.events.nightmarenight.NightmareNightStartEvent;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.config.NightmareNightConfig;
-import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.modules.Module;
 import ru.vladimir.noctyss.event.modules.bukkitevents.BukkitEventService;
@@ -29,12 +28,11 @@ import java.util.List;
 import java.util.Random;
 
 @RequiredArgsConstructor
-public final class NightmareNightInstance implements EventInstance {
+final class NightmareNightInstance implements EventInstance {
     private static final EventType EVENT_TYPE = EventType.NIGHTMARE_NIGHT;
     private final List<Module> modules = new ArrayList<>();
     private final JavaPlugin plugin;
     private final ProtocolManager protocolManager;
-    private final EventManager eventManager;
     private final PluginManager pluginManager;
     private final NightmareNightConfig config;
     private final MessageConfig messageConfig;
@@ -128,7 +126,6 @@ public final class NightmareNightInstance implements EventInstance {
                 new TimeService.Builder(
                         plugin,
                         pluginManager,
-                        eventManager,
                         world,
                         EVENT_TYPE)
                         .addMidnightLoopModifier(config.getTimeModifyFrequency(), config.getNightLength())

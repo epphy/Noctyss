@@ -17,7 +17,6 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
     private static final long FULL_DAY_TICKS_TIME = 24000L;
     private final JavaPlugin plugin;
     private final World world;
-    private final EventManager eventManager;
     private final EventType eventType;
     private final long frequency;
     private final long nightLength;
@@ -44,7 +43,7 @@ final class MidnightLoopModifier implements TimeModificationRule, Controllable {
         }
 
         if (elapsedTime >= nightLength && nightState == NightState.FINAL) {
-            eventManager.stopEvent(world, eventType);
+            EventManager.stopEvent(world, eventType);
             return;
         }
 

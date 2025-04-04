@@ -82,19 +82,18 @@ public final class TimeService implements Module {
         private final List<TimeModificationRule> rules = new ArrayList<>();
         private final JavaPlugin plugin;
         private final PluginManager pluginManager;
-        private final EventManager eventManager;
         private final World world;
         private final EventType eventType;
 
         public Builder addMidnightLoopModifier(long frequency, long nightLength) {
             final var rule = new MidnightLoopModifier(
-                    plugin, world, eventManager, eventType, frequency, nightLength);
+                    plugin, world, eventType, frequency, nightLength);
             rules.add(rule);
             return this;
         }
 
         public Builder addAbruptNight(long frequency, long[] nightLength, Random random) {
-            final var abruptNight = new AbruptNight(plugin, eventManager, eventType, world, nightLength, frequency, random);
+            final var abruptNight = new AbruptNight(plugin, eventType, world, nightLength, frequency, random);
             rules.add(abruptNight);
             return this;
         }

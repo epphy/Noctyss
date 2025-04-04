@@ -17,7 +17,6 @@ import ru.vladimir.noctyss.command.list.StartEventCommand;
 import ru.vladimir.noctyss.command.list.StopEventCommand;
 import ru.vladimir.noctyss.command.list.eventinformation.EventInfoCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
-import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
 import ru.vladimir.noctyss.utility.MessageUtil;
 
@@ -28,11 +27,10 @@ public final class NoctyssCommand extends SubCommandManager implements TabExecut
     private final Noctyss noctyss;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
-    private final EventManager eventManager;
     private final GlobalEventScheduler globalEventScheduler;
     private final MessageConfig messageConfig;
 
-    {
+    public void init() {
         registerCommands();
     }
 
@@ -100,7 +98,7 @@ public final class NoctyssCommand extends SubCommandManager implements TabExecut
         );
 
         addSubCommand(
-                new StopEventCommand(eventManager, messageConfig),
+                new StopEventCommand(messageConfig),
                 "stop",
                 new Permission("noctyss.event.stop")
         );

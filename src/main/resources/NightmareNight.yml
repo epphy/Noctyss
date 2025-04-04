@@ -4,7 +4,7 @@
 
 settings:
   enabled: true
-  event-chance: 5
+  event-chance: 0.05 # Chance in percents. from 0.0 to 1.0
   check-frequency: 100 # How often should be checked for night
 
   light:

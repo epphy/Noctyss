@@ -26,7 +26,7 @@ public final class EventInfoCommand implements SubCommand {
     }
 
     @Override
-    public void onCommand(@NotNull CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
         if (args.length != 1) {
             sendFeedback(sender, messageConfig.getCommandUsage());
             return;
@@ -45,7 +45,7 @@ public final class EventInfoCommand implements SubCommand {
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
         return List.of();
     }
 }

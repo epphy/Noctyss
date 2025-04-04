@@ -17,13 +17,9 @@ public final class ReloadConfigCommand implements SubCommand {
     private final MessageConfig messageConfig;
 
     @Override
-    public void onCommand(@NotNull CommandSender sender, String[] args) {
-        if (args.length != 1) {
-            sendFeedback(sender, messageConfig.getCommandUsage());
-        } else {
-            noctyss.onReload();
-            sendFeedback(sender, messageConfig.getConfigReloaded());
-        }
+    public void onCommand(@NotNull CommandSender sender, @NotNull String[] args) {
+        noctyss.onReload();
+        sendFeedback(sender, messageConfig.getConfigReloaded());
     }
 
     private void sendFeedback(CommandSender sender, Component message, Object... values) {
@@ -31,7 +27,7 @@ public final class ReloadConfigCommand implements SubCommand {
     }
 
     @Override
-    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String[] args) {
         return List.of();
     }
 }

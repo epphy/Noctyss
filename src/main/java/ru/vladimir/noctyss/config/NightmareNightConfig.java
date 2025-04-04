@@ -38,7 +38,7 @@ public final class NightmareNightConfig implements IConfig {
     // General
     private boolean eventEnabled;
     private long checkFrequency;
-    private int eventChance;
+    private double eventChance;
 
     // Light
     private boolean darkness;
@@ -88,7 +88,7 @@ public final class NightmareNightConfig implements IConfig {
     private void parseGeneralSettings() {
         eventEnabled = fileConfig.getBoolean(SETTINGS + "enabled", true);
         checkFrequency = fileConfig.getInt(SETTINGS + "check-frequency", 100);
-        eventChance = fileConfig.getInt(SETTINGS + "event-chance", 5);
+        eventChance = fileConfig.getDouble(SETTINGS + "event-chance", 0.05);
     }
 
     private void parseLightSettings() {

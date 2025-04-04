@@ -3,7 +3,6 @@ package ru.vladimir.noctyss.api;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.bukkit.World;
-import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.types.EventInstance;
 import ru.vladimir.noctyss.utility.LoggerUtility;
@@ -49,7 +48,7 @@ public class EventAPI {
      * @param eventInstance the instance of the event to be executed, must not be null
      * @return true if the event was successfully started, false otherwise
      */
-    public boolean startEvent(@NotNull World world, @NotNull EventType eventType, @NotNull EventInstance eventInstance) {
+    public boolean startEvent(@NonNull World world, @NonNull EventType eventType, @NonNull EventInstance eventInstance) {
         WorldState worldState = WorldStateManagerProvider.provide().getWorldState(world);
         if (!worldState.addActiveEvent(eventType, eventInstance)) {
             return false;
@@ -65,7 +64,7 @@ public class EventAPI {
      * @param eventType the type of event to be stopped
      * @return true if the event was successfully stopped, false otherwise
      */
-    public boolean stopEvent(@NotNull World world, @NotNull EventType eventType) {
+    public boolean stopEvent(@NonNull World world, @NonNull EventType eventType) {
         WorldState worldState = WorldStateManagerProvider.provide().getWorldState(world);
         EventInstance eventInstance = worldState.getActiveEvent(eventType);
         if (eventInstance == null || !worldState.removeActiveEvent(eventType)) {
@@ -82,11 +81,11 @@ public class EventAPI {
      * @param eventType the type of event to check for activity
      * @return true if the specified event is currently active in the given world, false otherwise
      */
-    public boolean isEventActive(@NotNull World world, @NotNull EventType eventType) {
+    public boolean isEventActive(@NonNull World world, @NonNull EventType eventType) {
         return WorldStateManagerProvider.provide().getWorldState(world).isEventActive(eventType);
     }
 
-    public boolean isAnyEventActive(@NotNull World world) {
+    public boolean isAnyEventActive(@NonNull World world) {
         return !WorldStateManagerProvider.provide().getWorldState(world).activeEvents().isEmpty();
     }
 
@@ -96,8 +95,8 @@ public class EventAPI {
      * @param world the world for which to retrieve the list of active events
      * @return a non-null, immutable list of {@code EventType} instances representing the active events in the specified world
      */
-    @NotNull
-    public List<EventType> getActiveEventsInWorld(@NotNull World world) {
+    @NonNull
+    public List<EventType> getActiveEventsInWorld(@NonNull World world) {
         return WorldStateManagerProvider.provide().getWorldState(world).getActiveEventTypes();
     }
 
@@ -107,8 +106,8 @@ public class EventAPI {
      * @param eventType the type of event to check for activity
      * @return a non-null, immutable list of {@code World} instances where the specified event is active
      */
-    @NotNull
-    public List<World> getWorldsWithActiveEvent(@NotNull EventType eventType) {
+    @NonNull
+    public List<World> getWorldsWithActiveEvent(@NonNull EventType eventType) {
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : WorldStateManagerProvider.provide().getWorldStatesEntries()) {
@@ -125,8 +124,8 @@ public class EventAPI {
      * @param eventType the type of event to check for inactivity, must not be null
      * @return a non-null, immutable list of {@code World} instances where the specified event type is inactive
      */
-    @NotNull
-    public List<World> getWorldsWithoutEvent(@NotNull EventType eventType) {
+    @NonNull
+    public List<World> getWorldsWithoutEvent(@NonNull EventType eventType) {
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : WorldStateManagerProvider.provide().getWorldStatesEntries()) {
@@ -142,7 +141,7 @@ public class EventAPI {
      *
      * @return a non-null, immutable list of {@code World} instances where at least one event is active
      */
-    @NotNull
+    @NonNull
     public List<World> getWorldsWithAnyActiveEvent() {
         List<World> result = new ArrayList<>();
 
@@ -160,7 +159,7 @@ public class EventAPI {
      * @return a non-null, immutable set of {@code Map.Entry<World, List<EventType>>} where each entry maps a
      *         {@code World} to a list of its active {@code EventType}s
      */
-    @NotNull
+    @NonNull
     public Set<Map.Entry<World, List<EventType>>> getActiveEventsPerWorldEntries() {
         return Set.copyOf(getActiveEventsPerWorld().entrySet());
     }
@@ -172,7 +171,7 @@ public class EventAPI {
      * @return a non-null, immutable map where the key is the {@code World} instance and the value is a
      *         list of {@code EventType} instances representing the active events in that world.
      */
-    @NotNull
+    @NonNull
     public Map<World, List<EventType>> getActiveEventsPerWorld() {
         Map<World, List<EventType>> result = new HashMap<>();
 
@@ -198,7 +197,7 @@ public class EventAPI {
      * @param eventType the type of event to check for permissions
      * @return {@code true} if the event type is allowed in the specified world; {@code false} otherwise
      */
-    public boolean isEventAllowed(@NotNull World world, @NotNull EventType eventType) {
+    public boolean isEventAllowed(@NonNull World world, @NonNull EventType eventType) {
         return WorldStateManagerProvider.provide().getWorldState(world).isEventAllowed(eventType);
     }
 
@@ -208,7 +207,7 @@ public class EventAPI {
      * @param world the world for which to retrieve the allowed event types
      * @return a non-null, immutable list of {@code EventType} instances representing the allowed events in the specified world
      */
-    @NotNull
+    @NonNull
     public List<EventType> getAllowedEventsInWorld(@NonNull World world) {
         return WorldStateManagerProvider.provide().getWorldState(world).allowedEvents();
     }
@@ -219,8 +218,8 @@ public class EventAPI {
      * @param eventType the type of event to check for permission, must not be null
      * @return a non-null, immutable list of {@code World} instances where the specified event type is allowed
      */
-    @NotNull
-    public List<World> getWorldsAllowingEvent(@NotNull EventType eventType) {
+    @NonNull
+    public List<World> getWorldsAllowingEvent(@NonNull EventType eventType) {
         List<World> result = new ArrayList<>();
 
         for (Map.Entry<World, WorldState> entry : WorldStateManagerProvider.provide().getWorldStatesEntries()) {
@@ -236,7 +235,7 @@ public class EventAPI {
      * @return a non-null, immutable list of {@code World} instances where at least
      *         one event type is allowed.
      */
-    @NotNull
+    @NonNull
     public List<World> getWorldsWithAnyAllowedEvent() {
         List<World> result = new ArrayList<>();
 
@@ -255,7 +254,7 @@ public class EventAPI {
      *         and the value is a list of {@code EventType} instances representing
      *         the allowed events in that specific world.
      */
-    @NotNull
+    @NonNull
     public Map<World, List<EventType>> getAllowedEventsPerWorld() {
         Map<World, List<EventType>> result = new HashMap<>();
 
@@ -283,7 +282,7 @@ public class EventAPI {
      * @return the last recorded day of the specified event type in the given world;
      *         returns -1 if the event type has no record in the specified world
      */
-    public long getLastDayTheEventWas(@NotNull World world, @NotNull EventType eventType) {
+    public long getLastDayTheEventWas(@NonNull World world, @NonNull EventType eventType) {
         return WorldStateManagerProvider.provide().getWorldState(world).getEventLastDay(eventType);
     }
 }

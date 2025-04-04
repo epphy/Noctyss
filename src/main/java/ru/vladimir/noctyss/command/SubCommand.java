@@ -34,6 +34,5 @@ public interface SubCommand {
      *               the subcommand name, followed by additional arguments specific to that subcommand.
      * @return a list of string suggestions for tab completion.
      */
-    @Nullable
-    List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String[] args);
+    @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String[] args);
 }
