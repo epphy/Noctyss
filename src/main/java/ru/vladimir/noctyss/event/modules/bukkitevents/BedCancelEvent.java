@@ -16,7 +16,7 @@ final class BedCancelEvent implements BukkitEvent {
     @EventHandler
     private void on(PlayerBedEnterEvent event) {
         if (event.getBed().getWorld().equals(world)) {
-            MessageUtil.sendMessage(event.getPlayer(), cannotSleep);
+            MessageUtil.sendActionBar(event.getPlayer(), cannotSleep);
             event.setCancelled(true);
         }
     }
