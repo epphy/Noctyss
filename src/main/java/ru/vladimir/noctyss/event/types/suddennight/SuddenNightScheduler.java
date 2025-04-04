@@ -34,12 +34,9 @@ public final class SuddenNightScheduler implements EventScheduler {
     private long cooldownDays;
     private int taskId = -1;
 
-    {
-        cache();
-    }
-
     @Override
     public void start() {
+        cache();
         taskId = Bukkit.getScheduler().runTaskTimer(
                 plugin, this::processWorlds, 0L, periodTicks).getTaskId();
     }

@@ -48,7 +48,6 @@ public final class Noctyss extends JavaPlugin {
         PlayerNotificationService.init(this);
         NotificationManager.init(this);
         ConfigService.init(this);
-        ConfigService.init(this);
     }
 
     private void configureLogger() {
@@ -69,8 +68,7 @@ public final class Noctyss extends JavaPlugin {
     private void loadCommand() {
         final PluginCommand command = getServer().getPluginCommand("noctyss");
         if (command == null) {
-            LoggerUtility.error(this, "Failed to load the main command");
-            return;
+            throw new IllegalStateException("Failed to load the main command. Ensure it is defined in plugin.yml.");
         }
 
         final NoctyssCommand commandHandler = new NoctyssCommand(
@@ -114,6 +112,7 @@ public final class Noctyss extends JavaPlugin {
             if (response.statusCode() != 200) return null;
 
             final JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+            if (!json.has("tag_name")) return null;
             return json.get("tag_name").getAsString();
         } catch (IOException | InterruptedException e) {
             LoggerUtility.error(this, "Error fetching latest version: %s".formatted(e.getMessage()));
