@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import ru.vladimir.noctyss.Noctyss;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
+import ru.vladimir.noctyss.utility.MessageUtil;
 
 import java.util.List;
 
@@ -17,15 +18,15 @@ public final class ReloadConfigCommand implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
+            sendFeedback(sender, messageConfig.getCommandUsage());
         } else {
             noctyss.onReload();
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getConfigReloaded()));
+            sendFeedback(sender, messageConfig.getConfigReloaded());
         }
     }
 
-    private void sendFeedback(CommandSender sender, Component message) {
-        sender.sendMessage(message);
+    private void sendFeedback(CommandSender sender, Component message, Object... values) {
+        MessageUtil.sendMessage(sender, message, values);
     }
 
     @Override

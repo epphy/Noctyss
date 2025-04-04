@@ -8,6 +8,7 @@ import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventType;
+import ru.vladimir.noctyss.utility.MessageUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,14 @@ public final class ActiveEventListCommand implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
+            sendFeedback(sender, messageConfig.getCommandUsage());
         } else {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getActiveEventListMsg(), getActiveEvents()));
+            sendFeedback(sender, messageConfig.getActiveEventListMsg(), getActiveEvents());
         }
     }
 
-    private void sendFeedback(CommandSender sender, Component message) {
-        sender.sendMessage(message);
+    private void sendFeedback(CommandSender sender, Component message, Object... values) {
+        MessageUtil.sendMessage(sender, message, values);
     }
 
     @Override
@@ -39,7 +40,7 @@ public final class ActiveEventListCommand implements SubCommand {
         final Map<World, List<EventType>> worldsWithActiveEvents = EventAPI.getActiveEventsPerWorld();
 
         if (worldsWithActiveEvents.isEmpty()) {
-            return "No active events yet";
+            return "none";
         }
 
         for (final Map.Entry<World, List<EventType>> worldWithActiveEvents : EventAPI.getActiveEventsPerWorldEntries()) {

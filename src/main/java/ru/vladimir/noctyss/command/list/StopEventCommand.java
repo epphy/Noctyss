@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
@@ -61,17 +62,17 @@ public final class StopEventCommand implements SubCommand {
 
     private void attemptStopEvent(CommandSender sender, World world, EventType eventType) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
-            sendFeedback(sender, messageConfig.getEventDisallowed());
+            sendFeedback(sender, messageConfig.getEventDisallowed(), world.getName());
             return;
         }
 
         if (!EventAPI.isEventActive(world ,eventType)) {
-            sendFeedback(sender, messageConfig.getEventInactive());
+            sendFeedback(sender, messageConfig.getEventInactive(), world.getName());
             return;
         }
 
         eventManager.stopEvent(world, eventType);
-        sendFeedback(sender, messageConfig.getEventStopped());
+        sendFeedback(sender, messageConfig.getEventStopped(), world.getName());
     }
 
     private void sendFeedback(CommandSender sender, Component message, Object... values) {
@@ -99,10 +100,12 @@ public final class StopEventCommand implements SubCommand {
         return List.of();
     }
 
+    @Nullable
     private EventType getEventType(String eventTypeName) {
         try {
+            if (eventTypeName == null) return null;
             return EventType.valueOf(eventTypeName.toUpperCase().trim());
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
