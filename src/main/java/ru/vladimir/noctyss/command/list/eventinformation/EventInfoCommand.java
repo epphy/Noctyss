@@ -7,6 +7,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
+import ru.vladimir.noctyss.utility.MessageUtil;
 import ru.vladimir.noctyss.utility.TaskUtil;
 
 import java.util.List;
@@ -26,20 +27,20 @@ public final class EventInfoCommand implements SubCommand {
     @Override
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
+            sendFeedback(sender, messageConfig.getCommandUsage());
             return;
         }
 
         if (!(sender instanceof final Player player)) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getPlayerOnly()));
+            sendFeedback(sender, messageConfig.getPlayerOnly());
             return;
         }
 
         player.openInventory(eventInfoInventory.getInventory());
     }
 
-    private void sendFeedback(CommandSender sender, Component message) {
-        sender.sendMessage(message);
+    private void sendFeedback(CommandSender sender, Component message, Object... values) {
+        MessageUtil.sendMessage(sender, message, values);
     }
 
     @Override

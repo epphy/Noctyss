@@ -11,6 +11,7 @@ import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventType;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
+import ru.vladimir.noctyss.utility.MessageUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,18 +25,18 @@ public final class StartEventCommand implements SubCommand {
     public void onCommand(CommandSender sender, String[] args) {
         if (args.length == 2) handleWithoutWorld(sender, args);
         else if (args.length == 3) handleWithWorld(sender, args);
-        else sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
+        else sendFeedback(sender, messageConfig.getCommandUsage());
     }
 
     private void handleWithoutWorld(CommandSender sender, String[] args) {
         if (!(sender instanceof final Player player)) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getPlayerOnly()));
+            sendFeedback(sender, messageConfig.getPlayerOnly());
             return;
         }
 
         final EventType eventType = getEventType(args[1]);
         if (eventType == null) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownEvent()));
+            sendFeedback(sender, messageConfig.getUnknownEvent());
             return;
         }
 
@@ -45,13 +46,13 @@ public final class StartEventCommand implements SubCommand {
     private void handleWithWorld(CommandSender sender, String[] args) {
         final EventType eventType = getEventType(args[1]);
         if (eventType == null) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownEvent()));
+            sendFeedback(sender, messageConfig.getUnknownEvent());
             return;
         }
 
         final World world = Bukkit.getWorld(args[2]);
         if (world == null) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownWorld()));
+            sendFeedback(sender, messageConfig.getUnknownWorld());
             return;
         }
 
@@ -60,21 +61,21 @@ public final class StartEventCommand implements SubCommand {
 
     private void attemptStartEvent(CommandSender sender, World world, EventType eventType) {
         if (!EventAPI.isEventAllowed(world, eventType)) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventDisallowed()));
+            sendFeedback(sender, messageConfig.getEventDisallowed());
             return;
         }
 
         if (EventAPI.isEventActive(world ,eventType)) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventAlreadyActive()));
+            sendFeedback(sender, messageConfig.getEventAlreadyActive());
             return;
         }
 
         globalEventScheduler.getEventSchedulers().get(eventType).startEvent(world);
-        sendFeedback(sender, messageConfig.getMessage(messageConfig.getEventStarted()));
+        sendFeedback(sender, messageConfig.getEventStarted());
     }
 
-    private void sendFeedback(CommandSender sender, Component message) {
-        sender.sendMessage(message);
+    private void sendFeedback(CommandSender sender, Component message, Object... values) {
+        MessageUtil.sendMessage(sender, message, values);
     }
 
     @Override

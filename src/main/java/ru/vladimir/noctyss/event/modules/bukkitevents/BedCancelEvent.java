@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import ru.vladimir.noctyss.utility.MessageUtil;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 final class BedCancelEvent implements BukkitEvent {
@@ -15,7 +16,7 @@ final class BedCancelEvent implements BukkitEvent {
     @EventHandler
     private void on(PlayerBedEnterEvent event) {
         if (event.getBed().getWorld().equals(world)) {
-            event.getPlayer().sendActionBar(cannotSleep);
+            MessageUtil.sendMessage(event.getPlayer(), cannotSleep);
             event.setCancelled(true);
         }
     }
