@@ -3,6 +3,7 @@ package ru.vladimir.noctyss.command.list;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.Noctyss;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
@@ -16,7 +17,7 @@ public final class ReloadConfigCommand implements SubCommand {
     private final MessageConfig messageConfig;
 
     @Override
-    public void onCommand(CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, String[] args) {
         if (args.length != 1) {
             sendFeedback(sender, messageConfig.getCommandUsage());
         } else {
@@ -30,7 +31,7 @@ public final class ReloadConfigCommand implements SubCommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
         return List.of();
     }
 }

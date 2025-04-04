@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
@@ -23,7 +24,7 @@ public final class StartEventCommand implements SubCommand {
     private final MessageConfig messageConfig;
 
     @Override
-    public void onCommand(CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, String[] args) {
         if (args.length == 2) handleWithoutWorld(sender, args);
         else if (args.length == 3) handleWithWorld(sender, args);
         else sendFeedback(sender, messageConfig.getCommandUsage());
@@ -80,7 +81,7 @@ public final class StartEventCommand implements SubCommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
         if (args.length == 2) {
             return Arrays.stream(EventType.values())
                     .map(Enum::name)

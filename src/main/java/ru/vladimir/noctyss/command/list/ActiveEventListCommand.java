@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.api.EventAPI;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
@@ -18,7 +19,7 @@ public final class ActiveEventListCommand implements SubCommand {
     private final MessageConfig messageConfig;
 
     @Override
-    public void onCommand(CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, String[] args) {
         if (args.length != 1) {
             sendFeedback(sender, messageConfig.getCommandUsage());
         } else {
@@ -31,7 +32,7 @@ public final class ActiveEventListCommand implements SubCommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
         return List.of();
     }
 

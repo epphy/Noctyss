@@ -19,11 +19,12 @@ import ru.vladimir.noctyss.command.list.eventinformation.EventInfoCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.event.EventManager;
 import ru.vladimir.noctyss.event.GlobalEventScheduler;
+import ru.vladimir.noctyss.utility.MessageUtil;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class NoctyssCommand extends SubCommandManager implements TabExecutor {
+public final class NoctyssCommand extends SubCommandManager implements TabExecutor {
     private final Noctyss noctyss;
     private final JavaPlugin plugin;
     private final PluginManager pluginManager;
@@ -31,30 +32,25 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
     private final GlobalEventScheduler globalEventScheduler;
     private final MessageConfig messageConfig;
 
-    public void init() {
+    {
         registerCommands();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!sender.hasPermission("noctyss.admin")) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getNoPermission()));
-            return true;
-        }
-
         if (args.length < 1) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
+            sendFeedback(sender, messageConfig.getCommandUsage());
             return true;
         }
 
         final SubCommandWrapper wrapper = getWrapper(args[0]);
         if (wrapper == null) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getUnknownCommand()));
+            sendFeedback(sender, messageConfig.getUnknownCommand());
             return true;
         }
 
         if (!wrapper.hasPermission(sender)) {
-            sendFeedback(sender, messageConfig.getMessage(messageConfig.getNoPermission()));
+            sendFeedback(sender, messageConfig.getNoPermission());
             return true;
         }
 
@@ -62,13 +58,13 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
         return true;
     }
 
-    private void sendFeedback(CommandSender sender, Component message) {
-        sender.sendMessage(message);
+    private void sendFeedback(CommandSender sender, Component message, Object... values) {
+        MessageUtil.sendMessage(sender, message, values);
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
-        if (!sender.hasPermission("noctyss.admin")) return List.of();
+        if (!hasAnyPermission(sender)) return null;
         if (args.length == 1) return getFirstAliases(sender);
 
         final SubCommandWrapper wrapper = getWrapper(args[0]);

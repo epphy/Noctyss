@@ -6,7 +6,23 @@ import org.bukkit.permissions.Permission;
 import java.util.Arrays;
 import java.util.Objects;
 
-record SubCommandWrapper(SubCommand command, String[] aliases, Permission permission) {
+/**
+ * Represents a wrapper around a subcommand with associated aliases and required permission.
+ * This encapsulation provides utility methods to manage access control and metadata for the
+ * subcommand and its aliases.
+ *
+ * @param command the class executor of the command
+ * @param aliases the aliases of the sub command which may trigger this command
+ * @param permission the command's permission
+ */
+ record SubCommandWrapper(SubCommand command, String[] aliases, Permission permission) {
+
+    /**
+     * Checks if the given command sender has the wrapper's permission.
+     *
+     * @param sender the command sender whose permissions are being checked
+     * @return true if the sender has the required permission, false otherwise
+     */
     public boolean hasPermission(CommandSender sender) {
         return sender.hasPermission(permission);
     }

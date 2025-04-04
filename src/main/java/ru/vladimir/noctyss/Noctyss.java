@@ -83,7 +83,6 @@ public final class Noctyss extends JavaPlugin {
                 eventManager,
                 globalEventScheduler,
                 ConfigService.getInstance().getMessageConfig());
-        commandHandler.init();
         command.setExecutor(commandHandler);
         command.setTabCompleter(commandHandler);
     }

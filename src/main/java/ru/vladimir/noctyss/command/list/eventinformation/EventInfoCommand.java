@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import ru.vladimir.noctyss.command.SubCommand;
 import ru.vladimir.noctyss.config.MessageConfig;
 import ru.vladimir.noctyss.utility.MessageUtil;
@@ -25,7 +26,7 @@ public final class EventInfoCommand implements SubCommand {
     }
 
     @Override
-    public void onCommand(CommandSender sender, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, String[] args) {
         if (args.length != 1) {
             sendFeedback(sender, messageConfig.getCommandUsage());
             return;
@@ -44,7 +45,7 @@ public final class EventInfoCommand implements SubCommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
         return List.of();
     }
 }
