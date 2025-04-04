@@ -86,6 +86,10 @@ public class EventAPI {
         return WorldStateManagerProvider.provide().getWorldState(world).isEventActive(eventType);
     }
 
+    public boolean isAnyEventActive(@NotNull World world) {
+        return !WorldStateManagerProvider.provide().getWorldState(world).activeEvents().isEmpty();
+    }
+
     /**
      * Retrieves a list of currently active event types in the specified world.
      *

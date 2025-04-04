@@ -74,7 +74,6 @@ public final class TaskUtil {
     @Nullable
     public BukkitTask runTask(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
         if (shuttingDown) {
-            LoggerUtility.warn(CLASS_NAME, "Failed to schedule a task. Running without any scheduler now");
             task.run();
             return null;
         } else {
@@ -95,7 +94,6 @@ public final class TaskUtil {
     @Nullable
     public BukkitTask runTaskAsync(@NonNull JavaPlugin plugin, @NonNull Runnable task) {
         if (shuttingDown) {
-            LoggerUtility.warn(CLASS_NAME, "Failed to schedule an async task. Running without any scheduler now");
             task.run();
             return null;
         } else {

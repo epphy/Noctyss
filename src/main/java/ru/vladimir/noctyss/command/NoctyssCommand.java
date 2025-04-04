@@ -37,6 +37,11 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (!sender.hasPermission("noctyss.admin")) {
+            sendFeedback(sender, messageConfig.getMessage(messageConfig.getNoPermission()));
+            return true;
+        }
+
         if (args.length < 1) {
             sendFeedback(sender, messageConfig.getMessage(messageConfig.getCommandUsage()));
             return true;
@@ -63,6 +68,7 @@ public class NoctyssCommand extends SubCommandManager implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (!sender.hasPermission("noctyss.admin")) return List.of();
         if (args.length == 1) return getFirstAliases(sender);
 
         final SubCommandWrapper wrapper = getWrapper(args[0]);

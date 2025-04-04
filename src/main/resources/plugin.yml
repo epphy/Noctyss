@@ -9,8 +9,10 @@ website: https://github.com/epphy
 
 depend:
   - CrazyAdvancementsAPI
+  - ProtocolLib
 
 commands:
   noctyss:
     usage: /noctyss [start/stop/list/debug] <event> <world>
     description: Main command to manage all events of Noctyss.
+    permission: noctyss.admin

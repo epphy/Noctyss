@@ -48,6 +48,7 @@ public final class MessageConfig implements IConfig {
     // Event
     private Component eventAlreadyActive;
     private Component eventInactive;
+    private Component otherEventActive;
     private Component eventDisallowed;
     private Component eventStarted;
     private Component eventStopped;
@@ -100,6 +101,7 @@ public final class MessageConfig implements IConfig {
     private void parseEventMessages() {
         eventAlreadyActive = parseMessage(EVENTS + "event-active", "The event is already running in world {0}.");
         eventInactive = parseMessage(EVENTS + "event-inactive", "The event is not currently active in world {0}.");
+        otherEventActive = parseMessage(EVENTS + "different-event-active", "There is already an ongoing event in the world {0}.");
         eventDisallowed = parseMessage(EVENTS + "event-disallowed", "The event is not allowed in world {0}.");
         eventStarted = parseMessage(EVENTS + "event-started", "The event has started in world {0}.");
         eventStopped = parseMessage(EVENTS + "event-stopped", "The event has been stopped in world {0}.");
